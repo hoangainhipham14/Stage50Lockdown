@@ -13,8 +13,10 @@ app.use(express.json());
 
 
 const uri = process.env.ATLAS_URI;
+
 //add { useUnifiedTopology: true } to avoid DeprecationWarning
 mongoose.connect(uri, { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true });
+
 const connection = mongoose.connection;
 connection.once('open', () => {
     console.log("MongoDB database connection established successfully");
