@@ -20,9 +20,9 @@ connection.once('open', () => {
     console.log("MongoDB database connection established successfully");
 })
 
-const userLogOut = require("./routes/api/logout");
+const userVerify = require("./routes/api/verify");
 
-app.use("/users/logout", userLogOut);
+app.use("/users/verify", userVerify);
 
 app.listen(port, () => {
   console.log(`Server is running on port: ${port}`);
