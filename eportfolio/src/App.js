@@ -7,43 +7,10 @@ import Navbar from "./components/navbar.component";
 import ExercisesList from "./components/exercises-list.component";
 import EditExercise from "./components/edit-exercise.component";
 import CreateExercise from "./components/create-exercise.component";
-import CreateUser from "./components/create-user.component";
-
-// function Moff(props) {
-//   return (
-//     <a
-//       href="https://www.youtube.com/watch?v=suu4hdD3qd4"
-//       target="_blank"
-//       rel="noopener noreferrer"
-//     >
-//       <button>Get Moffed</button>
-//     </a>
-//   );
-// }
+import Login from "./components/login.component";
+import Signup from "./components/signup.component";
 
 function App() {
-  //   render() {
-  //     let message;
-  //     if (this.state.clicks >= 69) {
-  //       message = "Nice.";
-  //     } else if (this.state.clicks >= 420) {
-  //       message = "Go outside or something holy shit.";
-  //     } else {
-  //       message = "";
-  //     }
-
-  //   return (
-  //     <div className="clicker">
-  //       <h2>Counter</h2>
-  //       <button
-  //         onClick={() => }
-  //       >
-  //         Click me!
-  //       </button>
-  //       {/* <p>Clicks: {this.state.clicks}</p> */}
-  //       <p>{"message"}</p>
-  //     </div>
-  //   );
   return (
     <Router>
       <div className="container">
@@ -52,7 +19,8 @@ function App() {
         <Route path="/" exact component={ExercisesList} />
         <Route path="/edit/:id" component={EditExercise} />
         <Route path="/create" component={CreateExercise} />
-        <Route path="/user" component={CreateUser} />
+        <Route path="/login" component={Login} />
+        <Route path="/signup" component={Signup} />
       </div>
     </Router>
   );
