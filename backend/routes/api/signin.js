@@ -53,7 +53,7 @@ signin.route('/').post((req, res) => {
         const user = users[0];
         
         if (!user.validPassword(password)) {
-            return res.end({
+            return res.send({
                 success: false,
                 message: "Error: invalid password"})
         }
