@@ -52,7 +52,7 @@ signup.route('/').post((req, res) => {
   newUser.firstname = firstname;
   newUser.lastname = lastname;
   newUser.email = email;
-  newUser.password = newUser.generateHarsh(password);
+  newUser.password = newUser.generateHash(password);
 
   newUser.save()
   .then(() => res.json('Signed up!'))
