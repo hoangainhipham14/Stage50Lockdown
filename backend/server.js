@@ -26,6 +26,11 @@ const userSignUp = require("./routes/api/signup");
 
 app.use("/users/signup", userSignUp);
 
+/*
+app.post('/confirmation', userController.confirmationPost);
+app.post('/resend', userController.resendTokenPost);
+*/
+
 app.listen(port, () => {
   console.log(`Server is running on port: ${port}`);
 });
