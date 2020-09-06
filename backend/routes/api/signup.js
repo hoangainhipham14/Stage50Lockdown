@@ -90,7 +90,8 @@ signup.route('/').post((req, res) => {
     from: 'noreply',
     to: newUser.email, 
     subject: 'Account Verification Token', 
-    text: 'Verify your account by clicking the link (Will be required in the near future): \nhttp:\/\/' + req.headers.host + '\/users/validation\/' + token.token + '.\n' 
+    text: 'Verify your account by clicking the link (Will be required in the near future): \nhttp:\/\/' 
+    + req.headers.host + '\/users/validation\/\n and entering the token: ' + token.token, 
   };
 
   // Send the email

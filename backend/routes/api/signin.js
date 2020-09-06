@@ -58,6 +58,13 @@ signin.route('/').post((req, res) => {
                 message: "Error: invalid password"})
         }
 
+        // Extra case here to handle if a user is not yet verified
+        if(!user.isVerified) {
+            return res.send({
+                success: false,
+                message: "Error: Account has not yet been validated, check email or spam folder for validation"})
+        }
+
         //correct user
         const userSession = new UserSession();
         userSession.userId = user._id;
