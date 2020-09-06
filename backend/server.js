@@ -5,12 +5,11 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 
 const app = express();
-const port = process.env.PORT || 7000;
+const port = process.env.PORT || 10000;
 
 
 app.use(cors());
 app.use(express.json());
-
 
 const uri = process.env.ATLAS_URI;
 
@@ -23,11 +22,13 @@ connection.once('open', () => {
 })
 
 const userSignUp = require("./routes/api/signup");
+const userEmailValidation = require("./routes/api/validation");
 
 app.use("/users/signup", userSignUp);
+app.use("/users/validation", userEmailValidation);
 
 /*
-app.post('/confirmation', userController.confirmationPost);
+// To Be implimented for email validation
 app.post('/resend', userController.resendTokenPost);
 */
 
