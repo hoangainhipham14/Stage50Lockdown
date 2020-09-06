@@ -11,6 +11,8 @@ let UserToken = require('../../models/userToken');
 
 signup.route('/').post((req, res) => {
 
+  console.log('signing up user')
+
     const firstname = req.body.firstname;
     const lastname = req.body.lastname;
     const password = req.body.password;
@@ -64,52 +66,39 @@ signup.route('/').post((req, res) => {
 
   // This is where the fun starts 
   console.log('Account being created...');
+  newUser.save().catch(err => res.status(400).json('Error: ' + err));
 
-  // Here the user is saved and the email is sent to the user based on the above information
-  newUser.save(function (err) {
+  var token = new UserToken({ _userId: newUser._id, token: crypto.randomBytes(16).toString('hex') });
+  console.log('Token Generated....');
 
-    // New error message
-    if (err) { 
-      return res.status(400).send({ msg: err.message })
-    }
-    // Old error message 
-    //.catch(err => res.status(400).json('Error: ' + err));
-    // Generate the verification token for the user
-    //ff
-    console.log('Token Generated....');
-    var token = new userToken({ _userId: newUser._id, token: crypto.randomBytes(16).toString('hex') });
+  // Save the verification token
+  token.save().catch(err => res.status(500).send({ msgFromTokenSave: err.message })); 
+  console.log('Token Saved....');
 
-    // Save the verification token
-    token.save(function (err) {
-      // Error message 
-      if (err) { return res.status(500).send({ msg: err.message }); }
-
-      // Create the email (With information from .env file)
-      var transporter = nodemailer.createTransport({ 
-        service: 'Sendgrid', 
-        auth: { 
-        user: process.env.SENDGRID_USERNAME, 
-        pass: process.env.SENDGRID_PASSWORD 
-        } 
-      });
-
-      // Specify the email contents
-      var mailOptions = {
-        from: 'noreplyportfolio2020@gmail.com',
-        to: newUser.email, 
-        subject: 'Account Verification Token', 
-        text: 'Verify your account by clicking the link (Will be required in the near future): \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + token.token + '.\n' 
-      };
-      
-      // Send the email
-      transporter.sendMail(mailOptions, function (err) {
-        if (err) { 
-         return res.status(500).send({ msg: err.message }); 
-        }
-        res.status(200).send('A verification email has been sent to ' + user.email + '.');
-      });
-    });
+  // Create the email (With information from .env file)
+  var transporter = nodemailer.createTransport({ 
+    service: 'Sendgrid', 
+    auth: { 
+    user: process.env.SENDGRID_USERNAME, 
+    pass: process.env.SENDGRID_PASSWORD 
+    } 
   });
+  console.log('Email Created....');
+
+  // Specify the email contents
+  var mailOptions = {
+    from: 'noreplyportfolio2020@gmail.com',
+    to: newUser.email, 
+    subject: 'Account Verification Token', 
+    text: 'Verify your account by clicking the link (Will be required in the near future): \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + token.token + '.\n' 
+  };
+
+  // Send the email
+  transporter.sendMail(mailOptions, function (err) {
+    if (err) { return res.status(500).send({ errMsgFromSendMail: err.message }); }
+    res.status(200).send('A verification email has been sent to ' + user.email + '.');
+  });
+  console.log('Email Sent....');
 });
 
 module.exports = signup;
