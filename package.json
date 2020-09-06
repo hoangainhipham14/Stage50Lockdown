@@ -3,20 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "axios": "^0.18.1",
-    "bootstrap": "^4.3.1",
-    "react": "^16.8.6",
-    "react-datepicker": "^2.5.0",
-    "react-dom": "^16.8.6",
-    "react-router-dom": "^5.0.0",
-    "react-scripts": "^3.4.3"
+    "concurrently": "^4.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "dev": "nodemon server"
+    "client-install": "npm install --prefix client",
+    "server-install": "npm install --prefix server",
+    "server": "npm run dev --prefix backend",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "eslintConfig": {
     "extends": "react-app"
