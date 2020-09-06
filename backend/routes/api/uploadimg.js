@@ -58,14 +58,10 @@ uploadimg.route("/").post((req, res) => {
           msg: "Error: No File Selected!",
         });
       } else {
-        res.render(
-          uploadview,
-          {
-            msg: "File Uploaded!",
-            file: `upload/${req.file.filename}`,
-          },
-          console.log(path.join(__dirname, uploadpath, req.file.filename))
-        );
+        res.render(uploadview, {
+          msg: "File Uploaded!",
+          file: `${uploadpath}${req.file.filename}`,
+        });
       }
     }
   });
