@@ -1,38 +1,46 @@
-const signup = require('express').Router();
-let User = require('../../models/user.model');
-let UserSession = require('../../models/userSession');
+const signup = require("express").Router();
+let User = require("../../models/user.model");
+let UserSession = require("../../models/userSession");
 
-signup.route('/').post((req, res) => {
-    const firstname = req.body.firstname;
-    const lastname = req.body.lastname;
-    const password = req.body.password;
-    email = req.body.email;
+signup.route("/").post((req, res) => {
+  const firstname = req.body.firstname;
+  const lastname = req.body.lastname;
+  const username = req.body.username;
+  const password = req.body.password;
+  email = req.body.email;
 
   if (!firstname) {
     return res.send({
-          success: false,
-          message: "First name is required"
+      success: false,
+      message: "First name is required",
     });
   }
 
   if (!lastname) {
     return res.send({
-          success: false,
-          message: "Last name is required"
+      success: false,
+      message: "Last name is required",
+    });
+  }
+
+  if (!username) {
+    return res.send({
+      success: false,
+      message: "Username is required",
     });
   }
 
   if (!email) {
     return res.send({
-          success: false,
-          message: "Email is required"
+      success: false,
+      message: "Email is required",
     });
   }
 
   if (!password) {
     return res.send({
-          success: false,
-          message: "Password is required"
+      success: false,
+      message: "Password is required",
     });
   }
 
@@ -42,7 +50,7 @@ signup.route('/').post((req, res) => {
     email: email,
   }).catch((err, preUsers) => {
     if (preUsers.length > 0) {
-        return res.end("Error: Account already exists")
+      return res.end("Error: Account already exists");
     } else {
       res.end("Error");
     }
@@ -51,12 +59,14 @@ signup.route('/').post((req, res) => {
   const newUser = new User();
   newUser.firstname = firstname;
   newUser.lastname = lastname;
+  newUser.username = username;
   newUser.email = email;
   newUser.password = newUser.generateHash(password);
 
-  newUser.save()
-  .then(() => res.json('Signed up!'))
-  .catch(err => res.status(400).json('Error: ' + err));
+  newUser
+    .save()
+    .then(() => res.json("Signed up!"))
+    .catch((err) => res.status(400).json("Error: " + err));
 });
 
 module.exports = signup;
