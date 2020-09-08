@@ -23,14 +23,14 @@ connection.once('open', () => {
 
 const userSignUp = require("./routes/api/signup");
 const userEmailValidation = require("./routes/api/validation");
+const userResendValidation = require("./routes/api/resendValidation");
 
 app.use("/users/signup", userSignUp);
 app.use("/users/validation", userEmailValidation);
 
-/*
 // To Be implimented for email validation
-app.post('/resend', userController.resendTokenPost);
-*/
+app.use("/users/resendValidation", userResendValidation);
+
 
 app.listen(port, () => {
   console.log(`Server is running on port: ${port}`);
