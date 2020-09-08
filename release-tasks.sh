@@ -1,0 +1,1 @@
+npm install && npm run server-install && npm run client-install
