@@ -65,7 +65,7 @@ signup.route('/').post((req, res) => {
 
   // This is where the fun starts 
   //console.log('Account being created...');
-  newUser.save().catch(err => res.status(400).json('Error: ' + err));
+  //newUser.save().catch(err => res.status(400).json('Error: ' + err));
 
   var token = new UserToken({ _userId: newUser._id, token: crypto.randomBytes(16).toString('hex') });
   //console.log('Token Generated....');
@@ -96,14 +96,11 @@ signup.route('/').post((req, res) => {
   // Send the email
   transporter.sendMail(mailOptions).catch(err => res.status(500).send({ errMsgFromSendMail: err.message }));
 
-  // res.status(200).send('A verification email has been sent to ' + newUser.email + '.');
-  
-  
   newUser.save((err, user) => {
     if (err) {
       res.send({
         success: false,
-        message: "Error: Server error"
+        message: "Error: Server error" + err.message
       });
     } else {
       res.send({
@@ -113,6 +110,7 @@ signup.route('/').post((req, res) => {
       console.log('Email Sent....');
     }
   });
+  // res.status(200).send('A verification email has been sent to ' + newUser.email + '.');
 
 });
 
