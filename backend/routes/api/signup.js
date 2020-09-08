@@ -3,10 +3,12 @@ let User = require('../../models/user.model');
 let UserSession = require('../../models/userSession');
 
 signup.route('/').post((req, res) => {
-    const firstname = req.body.firstname;
-    const lastname = req.body.lastname;
+    const firstname = req.body.firstName;
+    const lastname = req.body.lastName;
     const password = req.body.password;
     email = req.body.email;
+
+    console.log(firstname, lastname, email, password);
 
   if (!firstname) {
     return res.send({
@@ -54,9 +56,22 @@ signup.route('/').post((req, res) => {
   newUser.email = email;
   newUser.password = newUser.generateHash(password);
 
-  newUser.save()
-  .then(() => res.json('Signed up!'))
-  .catch(err => res.status(400).json('Error: ' + err));
+  // newUser.save()
+  // .then(() => res.json('Signed up!'))
+  // .catch(err => res.status(400).json('Error: ' + err));
+
+  newUser.save((err, user) => {
+    if (err) {
+      res.send({
+        success: false,
+        message: "Error: Server error"
+      });
+    }
+    res.send({
+      success: true,
+      message: "Signed up"
+    });
+  });
 });
 
 module.exports = signup;
