@@ -10,13 +10,12 @@ let UserSession = require('../../models/userSession');
 let UserToken = require('../../models/userToken');
 
 signup.route('/').post((req, res) => {
-
-  //console.log('signing up user')
-
-    const firstname = req.body.firstname;
-    const lastname = req.body.lastname;
+    const firstname = req.body.firstName;
+    const lastname = req.body.lastName;
     const password = req.body.password;
     email = req.body.email;
+
+    console.log(firstname, lastname, email, password);
 
   if (!firstname) {
     return res.send({
@@ -96,9 +95,25 @@ signup.route('/').post((req, res) => {
 
   // Send the email
   transporter.sendMail(mailOptions).catch(err => res.status(500).send({ errMsgFromSendMail: err.message }));
-  res.status(200).send('A verification email has been sent to ' + newUser.email + '.');
-  console.log('Email Sent....');
+
+  // res.status(200).send('A verification email has been sent to ' + newUser.email + '.');
   
+  
+  newUser.save((err, user) => {
+    if (err) {
+      res.send({
+        success: false,
+        message: "Error: Server error"
+      });
+    } else {
+      res.send({
+        success: true,
+        message: 'A verification email has been sent to ' + newUser.email + '.'
+      });
+      console.log('Email Sent....');
+    }
+  });
+
 });
 
 module.exports = signup;
