@@ -30,7 +30,6 @@ connection.once("open", () => {
 const userVerify = require("./routes/api/verify");
 const userSignUp = require("./routes/api/signup");
 const userSignIn = require("./routes/api/signin");
-const userSignIn = require("./routes/api/signin");
 const userLogOut = require("./routes/api/logout");
 
 app.use("/users/verify", userVerify);
