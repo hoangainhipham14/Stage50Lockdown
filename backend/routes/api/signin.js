@@ -4,24 +4,8 @@ let UserSession = require('../../models/userSession');
 
 signin.route('/').post((req, res) => {
 
-    const firstname = req.body.firstname;
-    const lastname = req.body.lastname;
     email = req.body.email;
     const password = req.body.password;
-
-    if (!firstname) {
-        return res.send({
-            success: false,
-            message: "First name is required"
-        });
-    }
-
-    if (!lastname) {
-        return res.send({
-            success: false,
-            message: "Last name is required"
-        });
-    }
 
     if (!email) {
         return res.send({
@@ -58,12 +42,20 @@ signin.route('/').post((req, res) => {
                 message: "Error: invalid password"})
         }
 
+        // Extra case here to handle if a user is not yet verified
+        if(!user.isValidated) {
+            return res.send({
+                success: false,
+                message: "Error: Account has not yet been validated, check email or spam folder for validation"})
+        }
+
         //correct user
         const userSession = new UserSession();
         userSession.userId = user._id;
 
         userSession.save()
-        .then(() => res.json({
+        .then(() => res.send({
+            success: true,
             message: 'Signed in!',
             token: user._id}))
         .catch(err => res.status(400).json('Error: ' + err));

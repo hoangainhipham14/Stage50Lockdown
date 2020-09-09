@@ -30,6 +30,10 @@ const userSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  isValidated: {
+    type: Boolean,
+    default: false
+  },
 });
 
 userSchema.methods.generateHash = function (password) {

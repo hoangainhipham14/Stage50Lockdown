@@ -3,7 +3,7 @@ let User = require('../../models/user.model');
 let UserSession = require('../../models/userSession');
 
 logout.route('/').get((req, res) => {
-
+    
     const { query } = req;
     const { token }= query;
 
