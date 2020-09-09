@@ -51,7 +51,6 @@ class Home extends Component {
   }
 
   onChange = e => {
-    console.log("change");
     this.setState({
       [e.target.id]: e.target.value
     });
@@ -86,6 +85,7 @@ class Home extends Component {
       .then(json => {
         if (json.success) {
           this.setState({
+            signUpError: "",
             signUpFirstName: "",
             signUpLastName: "",
             signUpEmail: "",
@@ -125,17 +125,15 @@ class Home extends Component {
     }).then(res => res.json())
       .then(json => {
         if (json.success) {
-          console.log("json success in sign in");
           setInStorage("eportfolio", {token: json.token});
           this.setState({
-            signIn: json.message,
+            signInError: "",
             isLoading: false,
             signInPassword: "",
             signInEmail: "",
             token: json.token,
           });
         } else {
-          console.log("json failure in sign in");
           this.setState({
             signInError: json.message,
             isLoading: false,
@@ -154,7 +152,6 @@ class Home extends Component {
       fetch("/users/logout?token=" + token)
         .then(res => res.json())
         .then(json => {
-          console.log(json);
           if (json.success) {
             setInStorage("eportfolio", { token: "" });
             this.setState({
