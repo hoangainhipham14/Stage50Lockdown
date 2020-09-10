@@ -7,9 +7,18 @@ profile.route("/:username").get((req, res) => {
   // Search for profile matching username parameter
   User.findOne({ username: username }, (err, user) => {
     if (!user) {
-      res.send("User could not be found");
+      res.send({
+        success: false,
+        message: "Profile does not exist",
+      });
     } else {
-      res.json(user);
+      res.send({
+        success: true,
+        message: "Profile exists",
+        firstName: user.firstname,
+        lastName: user.lastname,
+        email: user.email,
+      });
     }
   });
 });

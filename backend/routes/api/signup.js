@@ -12,6 +12,7 @@ let UserToken = require("../../models/userToken");
 signup.route("/").post((req, res) => {
   const firstname = req.body.firstName;
   const lastname = req.body.lastName;
+  const username = req.body.username;
   const password = req.body.password;
   email = req.body.email;
 
