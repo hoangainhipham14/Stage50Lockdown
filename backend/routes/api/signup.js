@@ -1,16 +1,15 @@
 // For the email verification
 ///
-var crypto = require('crypto');
-var nodemailer = require('nodemailer');
+var crypto = require("crypto");
+var nodemailer = require("nodemailer");
 ///
 
-const signup = require('express').Router();
-let User = require('../../models/user.model');
-let UserSession = require('../../models/userSession');
-let UserToken = require('../../models/userToken');
+const signup = require("express").Router();
+let User = require("../../models/user.model");
+let UserSession = require("../../models/userSession");
+let UserToken = require("../../models/userToken");
 
-signup.route('/').post((req, res) => {
-
+signup.route("/").post((req, res) => {
   // EXTRACT SIGN UP INFORMATION
 
   const firstname = req.body.firstName;
@@ -22,36 +21,36 @@ signup.route('/').post((req, res) => {
 
   if (!firstname) {
     return res.send({
-          success: false,
-          message: "First name is required"
+      success: false,
+      message: "First name is required",
     });
   }
 
   if (!lastname) {
     return res.send({
-          success: false,
-          message: "Last name is required"
+      success: false,
+      message: "Last name is required",
     });
   }
 
   if (!email) {
     return res.send({
-          success: false,
-          message: "Email is required"
+      success: false,
+      message: "Email is required",
     });
   }
 
   if (!password) {
     return res.send({
-          success: false,
-          message: "Password is required"
+      success: false,
+      message: "Password is required",
     });
   }
 
   email = email.toLowerCase();
 
   // proceed only if email is not already in database
-  User.findOne({email: email}).then(user => {
+  User.findOne({ email: email }).then((user) => {
     if (user) {
       return res.send({
         success: false,
@@ -68,34 +67,48 @@ signup.route('/').post((req, res) => {
 
       // SEND EMAIL VALIDATION
 
-      var token = new UserToken({ _userId: newUser._id, token: crypto.randomBytes(16).toString('hex') });
+      var token = new UserToken({
+        _userId: newUser._id,
+        token: crypto.randomBytes(16).toString("hex"),
+      });
       //console.log('Token Generated....');
 
       // Save the verification token
-      token.save().catch(err => res.status(500).send({ msgFromTokenSave: err.message }));
+      token
+        .save()
+        .catch((err) =>
+          res.status(500).send({ msgFromTokenSave: err.message })
+        );
       //console.log('Token Saved....');
 
       // Create the email (With information from .env file)
       var transporter = nodemailer.createTransport({
-        service: 'gmail',
+        service: "gmail",
         auth: {
           user: process.env.GMAIL_USERNAME,
-          pass: process.env.GMAIL_PASSWORD
-        }
+          pass: process.env.GMAIL_PASSWORD,
+        },
       });
       //console.log('Email Created....');
 
       // Specify the email contents
       var mailOptions = {
-        from: 'noreply',
+        from: "noreply",
         to: newUser.email,
-        subject: 'Account Verification Token',
-        text: 'Verify your account by clicking the link (Will be required in the near future): \nhttp:\/\/'
-          + req.headers.host + '\/users/validation\/\n and entering the token: ' + token.token,
+        subject: "Account Verification Token",
+        text:
+          "Verify your account by clicking the link (Will be required in the near future): \nhttp://" +
+          req.headers.host +
+          "/users/validation/\n and entering the token: " +
+          token.token,
       };
 
       // Send the email
-      transporter.sendMail(mailOptions).catch(err => res.status(500).send({ errMsgFromSendMail: err.message }));
+      transporter
+        .sendMail(mailOptions)
+        .catch((err) =>
+          res.status(500).send({ errMsgFromSendMail: err.message })
+        );
 
       // SAVE THE NEW USER
 
@@ -104,19 +117,19 @@ signup.route('/').post((req, res) => {
           console.log("server error when saving");
           res.send({
             success: false,
-            message: "Error: Server error" + err.message
+            message: "Error: Server error" + err.message,
           });
         } else {
           res.send({
             success: true,
-            message: 'A verification email has been sent to ' + newUser.email + '.'
+            message:
+              "A verification email has been sent to " + newUser.email + ".",
           });
-          console.log('Email Sent....');
+          console.log("Email Sent....");
         }
       });
     }
   });
-
 });
 
 module.exports = signup;
