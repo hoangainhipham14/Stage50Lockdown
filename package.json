@@ -6,6 +6,7 @@
     "concurrently": "^4.0.1"
   },
   "scripts": {
+    "full-install": "npm install && cd backend && npm install && cd .. && cd client && npm install && cd ..",
     "client-install": "cd client && npm install && cd ..",
     "server-install": "cd backend && npm install && cd ..",
     "server": "npm run dev --prefix backend",
