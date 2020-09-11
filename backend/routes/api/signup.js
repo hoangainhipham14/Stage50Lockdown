@@ -33,6 +33,13 @@ signup.route("/").post((req, res) => {
     });
   }
 
+  if (!username) {
+    return res.send({
+      success: false,
+      message: "Username is required",
+    });
+  }
+
   if (!email) {
     return res.send({
       success: false,

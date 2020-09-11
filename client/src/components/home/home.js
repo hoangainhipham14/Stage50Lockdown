@@ -1,9 +1,6 @@
 import React, { Component } from "react";
 
-import {
-  getFromStorage,
-  setInStorage,
-} from "../../utils/storage";
+import { getFromStorage, setInStorage } from "../../utils/storage";
 
 class Home extends Component {
   constructor(props) {
@@ -18,9 +15,10 @@ class Home extends Component {
       signInPassword: "",
       signUpFirstName: "",
       signUpLastName: "",
+      signUpUsername: "",
       signUpEmail: "",
       signUpPassword: "",
-    }
+    };
   }
 
   componentDidMount() {
@@ -29,19 +27,19 @@ class Home extends Component {
       const { token } = obj;
       // verify token
       fetch("/users/verify?token=" + token)
-      .then(res => res.json())
-      .then(json => {
-        if (json.success) {
-          this.setState({
-            token,
-            isLoading: false
-          });
-        } else {
-          this.setState({
-            isLoading: false,
-          })
-        }
-      })
+        .then((res) => res.json())
+        .then((json) => {
+          if (json.success) {
+            this.setState({
+              token,
+              isLoading: false,
+            });
+          } else {
+            this.setState({
+              isLoading: false,
+            });
+          }
+        });
     } else {
       // no token
       this.setState({
@@ -52,15 +50,16 @@ class Home extends Component {
 
   onChange = e => {
     this.setState({
-      [e.target.id]: e.target.value
+      [e.target.id]: e.target.value,
     });
-  }
+  };
 
   onSignUp = () => {
     // Grab state
     const {
       signUpFirstName,
       signUpLastName,
+      signUpUsername,
       signUpEmail,
       signUpPassword,
     } = this.state;
@@ -78,41 +77,41 @@ class Home extends Component {
       body: JSON.stringify({
         firstName: signUpFirstName,
         lastName: signUpLastName,
+        username: signUpUsername,
         email: signUpEmail,
         password: signUpPassword,
       }),
-    }).then(res => res.json())
-      .then(json => {
+    })
+      .then((res) => res.json())
+      .then((json) => {
         if (json.success) {
           this.setState({
             signUpFirstName: "",
             signUpLastName: "",
+            signUpUsername: "",
             signUpEmail: "",
             signUpPassword: "",
             isLoading: false,
-          })
+          });
         } else {
           this.setState({
             signUpError: json.message,
             isLoading: false,
-          })
+          });
         }
       });
-  }
+  };
 
   onSignIn = () => {
     // Grab state
-    const {
-      signInEmail,
-      signInPassword,
-    } = this.state;
+    const { signInEmail, signInPassword } = this.state;
 
     this.setState({
       isLoading: true,
     });
 
     // Post request to backend
-    fetch("users/signin",{
+    fetch("users/signin", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -121,11 +120,12 @@ class Home extends Component {
         email: signInEmail,
         password: signInPassword,
       }),
-    }).then(res => res.json())
-      .then(json => {
+    })
+      .then((res) => res.json())
+      .then((json) => {
         if (json.success) {
           console.log("json success in sign in");
-          setInStorage("eportfolio", {token: json.token});
+          setInStorage("eportfolio", { token: json.token });
           this.setState({
             signIn: json.message,
             isLoading: false,
@@ -141,7 +141,7 @@ class Home extends Component {
           });
         }
       });
-  }
+  };
 
   logout = () => {
     this.setState({
@@ -152,14 +152,14 @@ class Home extends Component {
     if (obj && obj.token) {
       const { token } = obj;
       fetch("/users/logout?token=" + token)
-        .then(res => res.json())
-        .then(json => {
+        .then((res) => res.json())
+        .then((json) => {
           console.log(json);
           if (json.success) {
             setInStorage("eportfolio", { token: "" });
             this.setState({
               token: "",
-              isLoading: false
+              isLoading: false,
             });
           } else {
             this.setState({
@@ -172,7 +172,7 @@ class Home extends Component {
         isLoading: false,
       });
     }
-  }
+  };
 
   render() {
     const {
@@ -184,76 +184,83 @@ class Home extends Component {
       signInPassword,
       signUpFirstName,
       signUpLastName,
+      signUpUsername,
       signUpEmail,
       signUpPassword,
     } = this.state;
 
     if (isLoading) {
-      return (<div><p>Loading...</p></div>);
+      return (
+        <div>
+          <p>Loading...</p>
+        </div>
+      );
     }
 
     if (!token) {
       return (
         <div>
           <div>
-            {
-              (signInError) ? (
-                <p>{signInError}</p>
-              ) : (null)
-            }
+            {signInError ? <p>{signInError}</p> : null}
             <p>Sign In</p>
-            <input 
+            <input
               onChange={this.onChange}
               id="signInEmail"
-              type="email" 
-              placeholder="Email" 
-              value={signInEmail}/>
+              type="email"
+              placeholder="Email"
+              value={signInEmail}
+            />
             <br />
-            <input 
+            <input
               onChange={this.onChange}
               id="signInPassword"
-              type="password" 
-              placeholder="Password" 
-              value={signInPassword}/>
+              type="password"
+              placeholder="Password"
+              value={signInPassword}
+            />
             <br />
             <button onClick={this.onSignIn}>Sign In</button>
           </div>
           <br />
           <div>
-            {
-              (signUpError) ? (
-                <p>{signUpError}</p>
-              ) : (null)
-            }
+            {signUpError ? <p>{signUpError}</p> : null}
             <p>Sign Up</p>
-            <input 
+            <input
               onChange={this.onChange}
               id="signUpFirstName"
-              type="text" 
-              placeholder="First Name" 
+              type="text"
+              placeholder="First Name"
               value={signUpFirstName}
             />
             <br />
-            <input 
+            <input
               onChange={this.onChange}
               id="signUpLastName"
-              type="text" 
+              type="text"
               placeholder="Last Name"
               value={signUpLastName}
             />
             <br />
-            <input 
+            <input
+              onChange={this.onChange}
+              id="signUpUsername"
+              type="text"
+              placeholder="Username"
+              value={signUpUsername}
+            />
+            <br />
+            <input
               onChange={this.onChange}
               id="signUpEmail"
-              type="email" 
+              type="email"
               placeholder="Email"
               value={signUpEmail}
             />
             <br />
-            <input 
+            <input
               onChange={this.onChange}
               id="signUpPassword"
-              type="password" 
+              type="password"
               placeholder="Password"
               value={signUpPassword}
             />
@@ -269,7 +276,7 @@ class Home extends Component {
         <p>Account</p>
         <button onClick={this.logout}>Logout</button>
       </div>
-    )
+    );
   }
 }
 

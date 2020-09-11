@@ -1,25 +1,28 @@
-import React from 'react';
-import { render } from 'react-dom';
+import React from "react";
+import { render } from "react-dom";
 
 import {
   BrowserRouter as Router,
   Route,
   // Link,
-  Switch
-} from 'react-router-dom'
+  Switch,
+} from "react-router-dom";
 
-import App from './components/app/app';
+import App from "./components/app/app";
+import Profile from "./components/profile/profile";
 import NotFound from "./components/app/notfound";
 
-import Home from './components/home/home';
+import Home from "./components/home/home";
 
-render((
+render(
   <Router>
     <App>
       <Switch>
         <Route exact path="/" component={Home} />
+        <Route exact path="/users/:username" component={Profile} />
         <Route component={NotFound} />
       </Switch>
     </App>
-  </Router>
-), document.getElementById('app'));
+  </Router>,
+  document.getElementById("app")
+);
