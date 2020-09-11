@@ -48,8 +48,7 @@ class Home extends Component {
     }
   }
 
-  onChange = (e) => {
-    console.log("change");
+  onChange = e => {
     this.setState({
       [e.target.id]: e.target.value,
     });
@@ -147,6 +146,7 @@ class Home extends Component {
   logout = () => {
     this.setState({
       isLoading: true,
+      signInError: "",
     });
     const obj = getFromStorage("eportfolio");
     if (obj && obj.token) {
