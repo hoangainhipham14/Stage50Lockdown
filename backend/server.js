@@ -27,7 +27,6 @@ connection.once("open", () => {
   console.log("MongoDB database connection established successfully");
 });
 
-
 // authentication
 
 const userVerify = require("./routes/api/verify");
@@ -39,6 +38,7 @@ app.use("/users/verify", userVerify);
 app.use("/users/signin", userSignIn);
 app.use("/users/logout", userLogOut);
 app.use("/users/signup", userSignUp);
+app.use("/users/signin", userSignIn);
 
 // email validation
 
@@ -48,11 +48,15 @@ const userResendValidation = require("./routes/api/resendValidation");
 app.use("/users/validation", userEmailValidation);
 app.use("/users/resendValidation", userResendValidation);
 
+// profile urls
+
+const profile = require("./routes/api/profile");
+app.use("/users/", profile);
+
 // image upload
 
 const uploadimg = require("./routes/api/uploadimg");
 app.use("/upload", uploadimg);
-
 
 app.listen(port, () => {
   console.log(`Server is running on port: ${port}`);
