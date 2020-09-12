@@ -14,6 +14,7 @@ app.use(express.json());
 app.set("view engine", "ejs");
 
 const uri =
+  process.env.ATLAS_URI ||
   "mongodb+srv://Rowan:CloudPassword1@cluster0.xwvij.mongodb.net/itproject?retryWrites=true&w=majority";
 
 //add { useUnifiedTopology: true } to avoid DeprecationWarning
