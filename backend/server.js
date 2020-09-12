@@ -13,19 +13,27 @@ app.use(express.json());
 // Embedded JavaScript
 app.set("view engine", "ejs");
 
-const uri = process.env.ATLAS_URI;
+const uri =
+  "mongodb+srv://Rowan:CloudPassword1@cluster0.xwvij.mongodb.net/itproject?retryWrites=true&w=majority";
 
 //add { useUnifiedTopology: true } to avoid DeprecationWarning
-mongoose.connect(uri, {
-  useUnifiedTopology: true,
-  useNewUrlParser: true,
-  useCreateIndex: true,
-});
+mongoose
+  .connect(uri, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
+    useCreateIndex: true,
+  })
+  .then(() => {
+    console.log("Connected to MongoDB Atlas");
+  })
+  .catch((err) => {
+    console.error("Error connecting to MongoDB", err);
+  });
 
-const connection = mongoose.connection;
-connection.once("open", () => {
-  console.log("MongoDB database connection established successfully");
-});
+// const connection = mongoose.connection;
+// connection.once("open", () => {
+//   console.log("MongoDB database connection established successfully");
+// });
 
 // authentication
 
