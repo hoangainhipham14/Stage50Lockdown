@@ -15,6 +15,7 @@ signup.route("/").post((req, res) => {
   const firstname = req.body.firstName;
   const lastname = req.body.lastName;
   const password = req.body.password;
+  const username = req.body.username;
   email = req.body.email;
 
   // VALIDATE SIGN UP INFORMATION
@@ -70,6 +71,7 @@ signup.route("/").post((req, res) => {
       newUser.firstname = firstname;
       newUser.lastname = lastname;
       newUser.email = email;
+      newUser.username = username;
       newUser.password = newUser.generateHash(password);
 
       // SEND EMAIL VALIDATION
