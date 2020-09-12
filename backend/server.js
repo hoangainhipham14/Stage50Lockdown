@@ -13,7 +13,8 @@ app.use(express.json());
 // Embedded JavaScript
 app.set("view engine", "ejs");
 
-const uri = process.env.ATLAS_URI;
+const uri =
+  "mongodb+srv://Rowan:CloudPassword1@cluster0.xwvij.mongodb.net/itproject?retryWrites=true&w=majority";
 
 //add { useUnifiedTopology: true } to avoid DeprecationWarning
 mongoose.connect(uri, {
@@ -60,11 +61,11 @@ app.use("/upload", uploadimg);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("../client/build"));
-
-  app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "..", "build", "index.html"));
-  });
 }
+
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "../client/build/index.html"));
+});
 
 const port = process.env.PORT || 5000;
 
