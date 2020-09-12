@@ -58,6 +58,10 @@ app.use("/users/", profile);
 const uploadimg = require("./routes/api/uploadimg");
 app.use("/upload", uploadimg);
 
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("../client/build"));
+}
+
 app.listen(port, () => {
   console.log(`Server is running on port: ${port}`);
 });
