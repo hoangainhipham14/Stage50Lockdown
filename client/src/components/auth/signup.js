@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Form, Button } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 class Signup extends Component {
   constructor(props) {
@@ -60,66 +61,70 @@ class Signup extends Component {
 
   render() {
     return (
-      <div className="container">
-        <Form onSubmit={this.onSignUp}>
-          <Form.Group controlId="firstName">
-            <Form.Label>First Name</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="First name"
-              onChange={this.onChange}
-              value={this.state.firstName}
-            />
-          </Form.Group>
+      <div className="container" style={{maxWidth: "30rem", margin: "0 auto"}}>
+        <div className="formContainer">
+          <h2 align="center">Sign Up</h2>
+          <p align="center">Already have an account? <Link to="/signin">Sign in</Link></p>
+          <Form onSubmit={this.onSignUp}>
+            <Form.Group controlId="firstName">
+              <Form.Label>First Name</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="First name"
+                onChange={this.onChange}
+                value={this.state.firstName}
+              />
+            </Form.Group>
 
-          <Form.Group controlId="lastName">
-            <Form.Label>First Name</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Last name"
-              onChange={this.onChange}
-              value={this.state.lastName}
-            />
-          </Form.Group>
+            <Form.Group controlId="lastName">
+              <Form.Label>First Name</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Last name"
+                onChange={this.onChange}
+                value={this.state.lastName}
+              />
+            </Form.Group>
 
-          <Form.Group controlId="username">
-            <Form.Label>Username</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Username"
-              onChange={this.onChange}
-              value={this.state.username}
-            />
-          </Form.Group>
+            <Form.Group controlId="username">
+              <Form.Label>Username</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Username"
+                onChange={this.onChange}
+                value={this.state.username}
+              />
+            </Form.Group>
 
-          <Form.Group controlId="email">
-            <Form.Label>Email</Form.Label>
-            <Form.Control
-              type="email"
-              placeholder="Email"
-              onChange={this.onChange}
-              value={this.state.email}
-            />
-          </Form.Group>
+            <Form.Group controlId="email">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="Email"
+                onChange={this.onChange}
+                value={this.state.email}
+              />
+            </Form.Group>
 
-          <Form.Group controlId="password">
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="Password"
-              onChange={this.onChange}
-              value={this.state.password}
-            />
-          </Form.Group>
+            <Form.Group controlId="password">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Password"
+                onChange={this.onChange}
+                value={this.state.password}
+              />
+            </Form.Group>
 
-          <Button variant="primary" type="submit">
-            Sign Up
-          </Button>
+            <Button variant="primary" type="submit">
+              Sign Up
+            </Button>
 
-          <div style={{ color: "red", marginTop: "0.5rem" }}>
-            {this.state.error ? <p>{this.state.error}</p> : null}
-          </div>
-        </Form>
+            <div style={{ color: "red", marginTop: "0.5rem" }}>
+              {this.state.error ? <p>{this.state.error}</p> : null}
+            </div>
+          </Form>
+        </div>
       </div>
     )
   }

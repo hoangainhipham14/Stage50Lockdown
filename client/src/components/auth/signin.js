@@ -2,6 +2,7 @@ import React, { Component } from "react";
 // import { setInStorage } from "../../utils/storage";
 
 import { Form, Button } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 class Signin extends Component {
   constructor(props) {
@@ -57,7 +58,10 @@ class Signin extends Component {
 
   render() {
     return (
-      <div className="container">
+      <div className="container" style={{ maxWidth: "30rem", margin: "0 auto" }}>
+        <h2 align="center">Sign In</h2>
+        <p align="center">Need an account? <Link to="/signup">Sign up</Link></p>
+
         <Form onSubmit={this.onSignIn}>
           <Form.Group controlId="email">
             <Form.Label>Email address</Form.Label>
