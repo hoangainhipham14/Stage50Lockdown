@@ -15,6 +15,7 @@ signup.route("/").post((req, res) => {
   const firstname = req.body.firstName;
   const lastname = req.body.lastName;
   const password = req.body.password;
+  const username = req.body.username;
   email = req.body.email;
 
   // VALIDATE SIGN UP INFORMATION
@@ -69,6 +70,7 @@ signup.route("/").post((req, res) => {
       const newUser = new User();
       newUser.firstname = firstname;
       newUser.lastname = lastname;
+      newUser.username = username;
       newUser.email = email;
       newUser.password = newUser.generateHash(password);
 
@@ -121,11 +123,11 @@ signup.route("/").post((req, res) => {
 
       newUser.save((err, user) => {
         if (err) {
-          console.log("server error when saving");
           res.send({
             success: false,
-            message: "Error: Server error" + err.message,
+            message: "Error: Server error",
           });
+          console.log("Server error when saving:", err.message);
         } else {
           res.send({
             success: true,
