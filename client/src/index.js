@@ -22,7 +22,7 @@ render(
         <Navbar />
         <Route exact path="/signin" component={Signin} />
         <Route exact path="/signup" component={Signup} />
-        <Route exact path="/users/:username" component={Profile} />
+        <Route exact path="/profile/:username" component={Profile} />
         {/* <Route component={NotFound} /> */}
       </Router>
     </App>
