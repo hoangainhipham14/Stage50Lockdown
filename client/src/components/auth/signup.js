@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Form, Button } from "react-bootstrap";
 
 class Signup extends Component {
   constructor(props) {
@@ -20,7 +21,11 @@ class Signup extends Component {
     });
   }
 
-  onSignUp = () => {
+  onSignUp = (event) => {
+    event.preventDefault();
+    this.setState({
+      error: "",
+    });
     fetch("/users/signup", {
       method: "POST",
       headers: {
@@ -55,50 +60,66 @@ class Signup extends Component {
 
   render() {
     return (
-      <div>
-        {this.state.error ? <p>{this.state.error}</p> : null}
-        <p>Sign Up</p>
-        <input
-          onChange={this.onChange}
-          id="firstName"
-          type="text"
-          placeholder="First Name"
-          value={this.state.firstName}
-        />
-        <br />
-        <input
-          onChange={this.onChange}
-          id="lastName"
-          type="text"
-          placeholder="Last Name"
-          value={this.state.lastName}
-        />
-        <br />
-        <input
-          onChange={this.onChange}
-          id="username"
-          type="text"
-          placeholder="Username"
-          value={this.state.username}
-        />
-        <br />
-        <input
-          onChange={this.onChange}
-          id="email"
-          type="email"
-          placeholder="Email"
-          value={this.state.email}
-        />
-        <br />
-        <input
-          onChange={this.onChange}
-          id="password"
-          type="password"
-          placeholder="Password"
-          value={this.state.password}
-        />
-        <br />
-        <button onClick={this.onSignUp}>Sign Up</button>
+      <div className="container">
+        <Form onSubmit={this.onSignUp}>
+          <Form.Group controlId="firstName">
+            <Form.Label>First Name</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="First name"
+              onChange={this.onChange}
+              value={this.state.firstName}
+            />
+          </Form.Group>
+
+          <Form.Group controlId="lastName">
+            <Form.Label>First Name</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Last name"
+              onChange={this.onChange}
+              value={this.state.lastName}
+            />
+          </Form.Group>
+
+          <Form.Group controlId="username">
+            <Form.Label>Username</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Username"
+              onChange={this.onChange}
+              value={this.state.username}
+            />
+          </Form.Group>
+
+          <Form.Group controlId="email">
+            <Form.Label>Email</Form.Label>
+            <Form.Control
+              type="email"
+              placeholder="Email"
+              onChange={this.onChange}
+              value={this.state.email}
+            />
+          </Form.Group>
+
+          <Form.Group controlId="password">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Password"
+              onChange={this.onChange}
+              value={this.state.password}
+            />
+          </Form.Group>
+
+          <Button variant="primary" type="submit">
+            Sign Up
+          </Button>
+
+          <div style={{ color: "red", marginTop: "0.5rem" }}>
+            {this.state.error ? <p>{this.state.error}</p> : null}
+          </div>
+        </Form>
       </div>
     )
   }

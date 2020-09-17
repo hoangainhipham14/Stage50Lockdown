@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 // import { setInStorage } from "../../utils/storage";
 
+import { Form, Button } from "react-bootstrap";
+
 class Signin extends Component {
   constructor(props) {
     super(props);
@@ -18,7 +20,11 @@ class Signin extends Component {
     });
   };
 
-  onSignIn = () => {
+  onSignIn = (event) => {
+    event.preventDefault();
+    this.setState({
+      error: "",
+    });
     fetch("users/signin", {
       method: "POST",
       headers: {
@@ -51,9 +57,35 @@ class Signin extends Component {
 
   render() {
     return (
-      <div>
-        {this.state.error ? <p>{this.state.error}</p> : null}
-        <p>Sign In</p>
+      <div className="container">
+        <Form onSubmit={this.onSignIn}>
+          <Form.Group controlId="email">
+            <Form.Label>Email address</Form.Label>
+            <Form.Control
+              type="email" 
+              placeholder="Enter email"
+              onChange={this.onChange}
+            />
+          </Form.Group>
+
+          <Form.Group controlId="password">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Password"
+              onChange={this.onChange}
+            />
+          </Form.Group>
+
+          <Button variant="primary" type="submit">
+            Sign In
+          </Button>
+
+          <div style={{color: "red", marginTop: "0.5rem"}}>
+            {this.state.error ? <p>{this.state.error}</p> : null}
+          </div>
+        </Form>
+        {/* <p>Sign In</p>
         <input
           onChange={this.onChange}
           id="email"
@@ -70,7 +102,7 @@ class Signin extends Component {
           value={this.state.password}
         />
         <br />
-        <button onClick={this.onSignIn}>Sign In</button>
+        <button onClick={this.onSignIn}>Sign In</button> */}
       </div>
     );
   }
