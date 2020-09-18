@@ -1,65 +1,74 @@
 const signin = require('express').Router();
+const isEmpty = require('is-empty');
+const Validator = require("validator");
+
 let User = require('../../models/user.model');
 let UserSession = require('../../models/userSession');
 
+function validate(data) {
+  let errors = {};
+
+  data.email = !isEmpty(data.email) ? data.email : "";
+  data.password = !isEmpty(data.password) ? data.password : "";
+
+  // email checks
+  if (Validator.isEmpty(data.email)) {
+    errors.email = "Email is required";
+  } else if (!Validator.isEmail(data.email)) {
+    errors.email = "Email is invalid";
+  }
+
+  // password
+  if (Validator.isEmpty(data.password)) {
+    errors.password = "Password is required";
+  }
+
+  return {
+    errors,
+    isValid: isEmpty(errors)
+  };
+};
+
 signin.route('/').post((req, res) => {
 
-    email = req.body.email;
-    const password = req.body.password;
+  // validate user info
+  const { errors, isValid } = validate(req.body);
 
-    if (!email) {
-        return res.send({
-            success: false,
-            message: "Email is required"
-        });
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
+  const email = req.body.email.toLowerCase();
+  const password = req.body.password;
+
+  User.findOne({email: email}).then(user => {
+    // check user exists
+    if (!user) {
+      return res.status(404).json({emailnotfound: "Email not found"});
     }
 
-    if (!password) {
-        return res.send({
-            success: false,
-            message: "Password is required"
-        });
+    // check password
+    if (!user.validPassword(password)) {
+      return res.status(400).json({passwordincorrect: "Incorrect password"});
     }
 
-    email = email.toLowerCase();
+    // check verified account
+    if (!user.isValidated) {
+      return res.status(400).json({notvalidated: "Your account has not yet been verified. Please check your email (including your spam folder) for instructions."});
+    }
 
-    User.find({
-        email: email,
-    }, (err, users) => {
-        if (users.length != 1) {
-            return res.send({
-                success: false,
-                message: "Error: Invalid"})
-        } else if (err) {
-            return res.end("Error: invalid email")
-        }
+    const userSession = new UserSession();
+    userSession.userId = user._id;
 
-        const user = users[0];
-        
-        if (!user.validPassword(password)) {
-            return res.send({
-                success: false,
-                message: "Error: invalid password"})
-        }
-
-        // Extra case here to handle if a user is not yet verified
-        if(!user.isValidated) {
-            return res.send({
-                success: false,
-                message: "Error: Account has not yet been validated, check email or spam folder for validation"})
-        }
-
-        //correct user
-        const userSession = new UserSession();
-        userSession.userId = user._id;
-
-        userSession.save()
-        .then(() => res.send({
-            success: true,
-            message: 'Signed in!',
-            token: user._id}))
-        .catch(err => res.status(400).json('Error: ' + err));
-    });
+    userSession.save()
+      .then(() => res.json({
+        success: true,
+        token: user._id
+      }))
+      .catch(err => res.status(400).json({
+        error: err
+      }));
+  });
 });
 
 module.exports = signin;

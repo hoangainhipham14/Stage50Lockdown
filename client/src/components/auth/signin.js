@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-// import { setInStorage } from "../../utils/storage";
-
 import { Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { signinUser } from "../../actions/authActions";
 
 class Signin extends Component {
   constructor(props) {
@@ -12,6 +13,19 @@ class Signin extends Component {
       error: "",
       email: "",
       password: "",
+      errors: {}
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.auth.isAuthenticated) {
+      this.props.history.push("/dashboard");
+    }
+
+    if (nextProps.errors) {
+      this.setState({
+        errors: nextProps.errors
+      });
     }
   }
 
@@ -21,48 +35,26 @@ class Signin extends Component {
     });
   };
 
-  onSignIn = (event) => {
-    event.preventDefault();
-    this.setState({
-      error: "",
-    });
-    fetch("users/signin", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: this.state.email,
-        password: this.state.password,
-      }),
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        console.log("Received json response with message", json.message);
-        if (json.success) {
-          // setInStorage("eportfolio", { token: json.token });
-          this.setState({
-            // isLoading: false,
-            email: "",
-            password: "",
-            error: "",
-            // token: json.token,
-          });
-        } else {
-          this.setState({
-            error: json.message,
-          });
-        }
-      });
+  onSubmit = e => {
+    e.preventDefault();
+    
+    const userData = {
+      email: this.state.email,
+      password: this.state.password
+    };
+
+    this.props.signinUser(userData);
   }
 
   render() {
+    const { errors } = this.state;
+
     return (
       <div className="container" style={{ maxWidth: "30rem", margin: "0 auto" }}>
         <h2 align="center">Sign In</h2>
         <p align="center">Need an account? <Link to="/signup">Sign up</Link></p>
 
-        <Form onSubmit={this.onSignIn}>
+        <Form onSubmit={this.onSubmit}>
           <Form.Group controlId="email">
             <Form.Label>Email address</Form.Label>
             <Form.Control
@@ -70,6 +62,10 @@ class Signin extends Component {
               placeholder="Enter email"
               onChange={this.onChange}
             />
+            <div className="error-text">
+              {errors.email}
+              {errors.emailnotfound}
+            </div>
           </Form.Group>
 
           <Form.Group controlId="password">
@@ -79,37 +75,37 @@ class Signin extends Component {
               placeholder="Password"
               onChange={this.onChange}
             />
+            <div className="error-text">
+              {errors.password}
+              {errors.passwordincorrect}
+            </div>
           </Form.Group>
 
           <Button variant="primary" type="submit">
             Sign In
           </Button>
 
-          <div style={{color: "red", marginTop: "0.5rem"}}>
-            {this.state.error ? <p>{this.state.error}</p> : null}
+          <div className="error-text">
+            {errors.notvalidated}
           </div>
         </Form>
-        {/* <p>Sign In</p>
-        <input
-          onChange={this.onChange}
-          id="email"
-          type="email"
-          placeholder="Email"
-          value={this.state.email}
-        />
-        <br />
-        <input
-          onChange={this.onChange}
-          id="password"
-          type="password"
-          placeholder="Password"
-          value={this.state.password}
-        />
-        <br />
-        <button onClick={this.onSignIn}>Sign In</button> */}
       </div>
     );
   }
 }
 
-export default Signin;
+Signin.propTypes = {
+  signinUser: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth,
+  errors: state.errors
+});
+
+export default connect(
+  mapStateToProps,
+  { signinUser }
+)(Signin);

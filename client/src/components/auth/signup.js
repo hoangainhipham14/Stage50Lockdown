@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { Form, Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { registerUser } from "../../actions/authActions";
 
 class Signup extends Component {
   constructor(props) {
@@ -13,6 +16,15 @@ class Signup extends Component {
       username: "",
       email: "",
       password: "",
+      errors: {}
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.errors) {
+      this.setState({
+        errors: nextProps.errors
+      });
     }
   }
 
@@ -22,68 +34,47 @@ class Signup extends Component {
     });
   }
 
-  onSignUp = (event) => {
-    event.preventDefault();
-    this.setState({
-      error: "",
-    });
-    fetch("/users/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        firstName: this.state.firstName,
-        lastName: this.state.lastName,
-        username: this.state.username,
-        email: this.state.email,
-        password: this.state.password,
-      }),
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        if (json.success) {
-          this.setState({
-            firstName: "",
-            lastName: "",
-            username: "",
-            email: "",
-            password: "",
-            error: "",
-          });
-        } else {
-          this.setState({
-            error: json.message,
-          });
-        }
-      });
+  onSubmit = e => {
+    e.preventDefault();
+
+    const newUser = {
+      firstName: this.state.firstName,
+      lastName: this.state.lastName,
+      username: this.state.username,
+      email: this.state.email,
+      password: this.state.password,
+    }
+
+    this.props.registerUser(newUser, this.props.history);
   }
 
   render() {
+    const { errors } = this.state;
+
     return (
       <div className="container" style={{maxWidth: "30rem", margin: "0 auto"}}>
         <div className="formContainer">
           <h2 align="center">Sign Up</h2>
           <p align="center">Already have an account? <Link to="/signin">Sign in</Link></p>
-          <Form onSubmit={this.onSignUp}>
+          <Form onSubmit={this.onSubmit}>
             <Form.Group controlId="firstName">
               <Form.Label>First Name</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="First name"
                 onChange={this.onChange}
-                value={this.state.firstName}
               />
+              <div className="error-text">{errors.firstName}</div>
             </Form.Group>
 
             <Form.Group controlId="lastName">
-              <Form.Label>First Name</Form.Label>
+              <Form.Label>Last Name</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Last name"
                 onChange={this.onChange}
-                value={this.state.lastName}
               />
+              <div className="error-text">{errors.lastName}</div>
             </Form.Group>
 
             <Form.Group controlId="username">
@@ -92,8 +83,8 @@ class Signup extends Component {
                 type="text"
                 placeholder="Username"
                 onChange={this.onChange}
-                value={this.state.username}
               />
+              <div className="error-text">{errors.username}</div>
             </Form.Group>
 
             <Form.Group controlId="email">
@@ -102,8 +93,8 @@ class Signup extends Component {
                 type="email"
                 placeholder="Email"
                 onChange={this.onChange}
-                value={this.state.email}
               />
+              <div className="error-text">{errors.email}</div>
             </Form.Group>
 
             <Form.Group controlId="password">
@@ -112,17 +103,13 @@ class Signup extends Component {
                 type="password"
                 placeholder="Password"
                 onChange={this.onChange}
-                value={this.state.password}
               />
+              <div className="error-text">{errors.password}</div>
             </Form.Group>
 
             <Button variant="primary" type="submit">
               Sign Up
             </Button>
-
-            <div style={{ color: "red", marginTop: "0.5rem" }}>
-              {this.state.error ? <p>{this.state.error}</p> : null}
-            </div>
           </Form>
         </div>
       </div>
@@ -130,4 +117,18 @@ class Signup extends Component {
   }
 }
 
-export default Signup;
+Signup.propTypes = {
+  registerUser: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth,
+  errors: state.errors
+});
+
+export default connect(
+  mapStateToProps,
+  { registerUser }
+)(withRouter(Signup));
