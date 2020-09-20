@@ -26,7 +26,7 @@ class Home extends Component {
     if (obj && obj.token) {
       const { token } = obj;
       // verify token
-      fetch("/users/verify?token=" + token)
+      fetch("/api/users/verify?token=" + token)
         .then((res) => res.json())
         .then((json) => {
           if (json.success) {
@@ -48,7 +48,7 @@ class Home extends Component {
     }
   }
 
-  onChange = e => {
+  onChange = (e) => {
     this.setState({
       [e.target.id]: e.target.value,
     });
@@ -69,7 +69,7 @@ class Home extends Component {
     });
 
     // Post request to backend
-    fetch("/users/signup", {
+    fetch("/api/users/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -111,7 +111,7 @@ class Home extends Component {
     });
 
     // Post request to backend
-    fetch("users/signin", {
+    fetch("/api/users/signin", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -151,7 +151,7 @@ class Home extends Component {
     const obj = getFromStorage("eportfolio");
     if (obj && obj.token) {
       const { token } = obj;
-      fetch("/users/logout?token=" + token)
+      fetch("/api/users/logout?token=" + token)
         .then((res) => res.json())
         .then((json) => {
           console.log(json);
