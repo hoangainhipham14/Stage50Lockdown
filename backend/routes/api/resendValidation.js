@@ -61,7 +61,7 @@ resendValidation.route("/").post((req, res) => {
         text:
           "Verify your account by clicking the link (Will be required in the near future): \nhttp://" +
           req.headers.host +
-          "/users/validation/" +
+          "/api/users/validation/" +
           token.token,
       };
 

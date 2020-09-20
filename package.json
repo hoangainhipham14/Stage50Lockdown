@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "concurrently": "^4.0.1"
+    "concurrently": "^4.0.1",
+    "is-empty": "^1.2.0"
   },
   "scripts": {
     "full-install": "npm install && cd backend && npm install && cd .. && cd client && npm install && cd ..",
