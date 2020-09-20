@@ -95,7 +95,6 @@ signup.route("/").post((req, res) => {
           });
           newUser.password = newUser.generateHash(password);
 
-
           // Send verification email
           var token = new UserToken({
             _userId: newUser._id,
