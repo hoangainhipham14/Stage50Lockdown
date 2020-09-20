@@ -125,7 +125,7 @@ signup.route("/").post((req, res) => {
             text:
               "Verify your account by clicking the link (Will be required in the near future): \nhttp://" +
               req.headers.host +
-              "/users/validation/\n and entering the token: " +
+              "/api/users/validation/\n and entering the token: " +
               token.token,
           };
 

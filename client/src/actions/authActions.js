@@ -9,7 +9,7 @@ import {
 
 export const registerUser = (userData, history) => dispatch => {
   axios
-    .post("/users/signup", userData)
+    .post("/api/users/signup", userData)
     .then(res => {
       console.log("Signup success with res.data =", res.data);
       history.push("/signin");
@@ -25,7 +25,7 @@ export const registerUser = (userData, history) => dispatch => {
 
 export const signinUser = userData => dispatch => {
   axios
-    .post("/users/signin", userData)
+    .post("/api/users/signin", userData)
     .then(res => {
       // Save to local storage
       console.log("Login success with res.data =", res.data);
