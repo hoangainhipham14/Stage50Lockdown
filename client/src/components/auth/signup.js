@@ -5,9 +5,6 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { registerUser } from "../../actions/authActions";
 
-/**
- * Signup component let's users sign up for the eportfolio service.
- */
 class Signup extends Component {
   constructor(props) {
     super(props);
@@ -23,10 +20,6 @@ class Signup extends Component {
     }
   }
 
-  /**
-   * Called when props are passed to the component instance
-   * @param {object} nextProps 
-   */
   componentWillReceiveProps(nextProps) {
     if (nextProps.errors) {
       this.setState({
@@ -35,10 +28,6 @@ class Signup extends Component {
     }
   }
 
-  /**
-   * Update state when form is edited.
-   * @param {event} e 
-   */
   onChange = e => {
     this.setState({
       [e.target.id]: e.target.value,
@@ -128,28 +117,17 @@ class Signup extends Component {
   }
 }
 
-/**
- * We can't define types of these in our constructor, so this alternative is a
- * good convention.
- */
 Signup.propTypes = {
   registerUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired
 };
 
-/**
- * Gets the state from Redux and maps it to props
- * @param {*} state 
- */
 const mapStateToProps = state => ({
   auth: state.auth,
   errors: state.errors
 });
 
-/**
- * Export the Signup connected to Redux.
- */
 export default connect(
   mapStateToProps,
   { registerUser }

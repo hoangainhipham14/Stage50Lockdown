@@ -14,8 +14,6 @@ const initialState = {
 export default function(state = initialState, action) {
   switch(action.type) {
     case SET_CURRENT_USER:
-      // user is given in the payload
-      // if the user is not null, we have authentication
       return {
         ...state,
         isAuthenticated: !isEmpty(action.payload),
