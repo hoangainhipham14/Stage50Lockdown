@@ -57,6 +57,14 @@ const userResendValidation = require("./routes/api/resendValidation");
 app.use("/api/users/validation", userEmailValidation);
 app.use("/api/users/resendValidation", userResendValidation);
 
+// password recovery 
+
+const userRequestRecovery = require("./routes/api/requestRecovery");
+const userRecoverPassword = require("./routes/api/recoverPassword");
+
+app.use("/api/recovery/requestRecovery", userRequestRecovery);
+app.use("/api/recovery/recoverPassword", userRecoverPassword);
+
 // profile urls
 
 const profile = require("./routes/api/profile");

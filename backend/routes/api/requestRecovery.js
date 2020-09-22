@@ -1,11 +1,11 @@
 var crypto = require("crypto");
 var nodemailer = require("nodemailer");
 
-const recoverPassword = require("express").Router();
+const requestRecovery = require("express").Router();
 let User = require("../../models/user.model");
 let RecoveryToken = require("../../models/recoveryToken");
 
-recoverPassword.route("/").post((req, res) => {
+requestRecovery.route("/").post((req, res) => {
 
   // The email is passed as a json file with a single element to verify the user
   const userEmail = req.body.email;
@@ -78,4 +78,4 @@ recoverPassword.route("/").post((req, res) => {
   });
 });
 
-module.exports = recoverPassword;
+module.exports = requestRecovery;

@@ -25,6 +25,6 @@ const recoveryTokenSchema = Schema({
     }
 });
 
-const userToken = mongoose.model('RecoveryToken', recoveryTokenSchema);
+const recoveryToken = mongoose.model('RecoveryToken', recoveryTokenSchema);
 
 module.exports = recoveryToken;

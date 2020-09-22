@@ -121,7 +121,7 @@ signup.route("/").post((req, res) => {
           var mailOptions = {
             from: "noreply",
             to: newUser.email,
-            subject: "Account Verification Token",
+            subject: "Account Verification Token (Updated)",
             text:
               "Verify your account by clicking the link: \nhttp://" +
               req.headers.host +
