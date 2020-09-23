@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { signinUser } from "../../actions/authActions";
+import RequestPasswordReset from "../password-recovery/requestRecovery";
 
 class Signin extends Component {
   constructor(props) {
@@ -81,7 +82,7 @@ class Signin extends Component {
             </div>
           </Form.Group>
 
-          <Button variant="primary" type="submit">
+          <Button variant="primary" type="submit">z
             Sign In
           </Button>
 
@@ -89,6 +90,7 @@ class Signin extends Component {
             {errors.notvalidated}
           </div>
         </Form>
+        <RequestPasswordReset/>
       </div>
     );
   }
