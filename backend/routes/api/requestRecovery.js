@@ -55,7 +55,7 @@ requestRecovery.route("/").post((req, res) => {
         text:
           "Recover your account by clicking the link: \nhttp://" +
           req.headers.host +
-          "/api/users/recovery/" +
+          "/api/recovery/recoverPassword" +
           recoveryToken.token +
           "\nNote that this link expires in 5 minutes.",
       };

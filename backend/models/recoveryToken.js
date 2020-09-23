@@ -20,8 +20,8 @@ const recoveryTokenSchema = Schema({
         type: Date,
         required: true,
         default: Date.now,
-        // Set 5 min expiration time to reduce risk
-        expires: 300 
+        // Set 60 min expiration time to reduce risk
+        expires: 3600 
     }
 });
 
