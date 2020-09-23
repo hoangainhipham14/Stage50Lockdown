@@ -2,26 +2,25 @@ const recoverPassword = require("express").Router();
 let User = require("../../models/user.model");
 let RecoveryToken = require("../../models/recoveryToken");
 
-recoverPassword.route("/:token").post((req, res) => {
-  
-    // With this recover password script, the user enters a new password, and the token is checked 
-    // at the conclusion of this program whilst saving the passwords
+recoverPassword.route("/").post((req, res) => {
+  // With this recover password script, the user enters a new password, and the token is checked
+  // at the conclusion of this program whilst saving the passwords
 
-  // Recovered from the URL
-  const recoveryToken = req.params.token;
+  const recoveryToken = req.body.token;
 
   // Passed as a json file
   const passwordNo1 = req.body.passwordNo1;
   const passwordNo2 = req.body.passwordNo2;
-  
+
   //console.log('Validating user with token...' + userToken);
 
   // Find a matching token and hence the userId that is stored with the Token
-  RecoveryToken.findOne({ token: req.params.token }, function (err, token) {
+  RecoveryToken.findOne({ token: recoveryToken }, function (err, token) {
     if (!token) {
       return res.status(400).send({
         type: "not-verified",
-        msg: "We were unable to find your recovery token. Your token has expired.",
+        msg:
+          "We were unable to find your recovery token. Your token has expired.",
       });
     } else {
       //console.log("_userid referenced:" + token._userId);
@@ -32,16 +31,15 @@ recoverPassword.route("/:token").post((req, res) => {
       User.findOne({ _id: token._userId }, function (err, user) {
         // Invalid token cases
         if (!user)
-          return res
-            .status(400)
-            .send({ msg: "We were unable to find a user for this recovery token." });
-        
+          return res.status(400).send({
+            msg: "We were unable to find a user for this recovery token.",
+          });
+
         // Hash both passwords and if they match save one of them
-        if(passwordNo1 == passwordNo2){
-            user.password = user.generateHash(passwordNo1);
-        }
-        else{
-            return res
+        if (passwordNo1 == passwordNo2) {
+          user.password = user.generateHash(passwordNo1);
+        } else {
+          return res
             .status(400)
             .send({ msg: "Passwords do not match, please try again" });
         }

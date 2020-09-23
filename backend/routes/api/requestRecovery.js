@@ -6,28 +6,24 @@ let User = require("../../models/user.model");
 let RecoveryToken = require("../../models/recoveryToken");
 
 requestRecovery.route("/").post((req, res) => {
-
   // The email is passed as a json file with a single element to verify the user
   const userEmail = req.body.email;
 
   // Find a matching user and hence the userId that is stored with the Token
   User.findOne({ email: userEmail }, function (err, user) {
     if (!user) {
-      return res
-        .status(400)
-        .send({
-          type: "no-account",
-          msg:
-            "This user does not yet exist, please make an account with the signup feature",
-        });
+      return res.status(400).send({
+        type: "no-account",
+        msg:
+          "This user does not yet exist, please make an account with the signup feature",
+      });
     } else {
-
       // Create another token and send it via email to the user
       var recoveryToken = new RecoveryToken({
         _userId: user._id,
         token: crypto.randomBytes(16).toString("hex"),
       });
-      console.log('Recovery Token Generated....');
+      console.log("Recovery Token Generated....");
 
       // Save the verification token
       recoveryToken
@@ -53,9 +49,9 @@ requestRecovery.route("/").post((req, res) => {
         to: userEmail,
         subject: "Recover Account",
         text:
-          "Recover your account by clicking the link: \nhttp://" +
+          "Recover your account by clicking the link: \n" +
           req.headers.host +
-          "/api/recovery/recoverPassword" +
+          "/resetPassword/" +
           recoveryToken.token +
           "\nNote that this link expires in 5 minutes.",
       };

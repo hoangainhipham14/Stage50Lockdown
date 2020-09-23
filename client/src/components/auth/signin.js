@@ -14,8 +14,8 @@ class Signin extends Component {
       error: "",
       email: "",
       password: "",
-      errors: {}
-    }
+      errors: {},
+    };
   }
 
   componentWillReceiveProps(nextProps) {
@@ -25,41 +25,46 @@ class Signin extends Component {
 
     if (nextProps.errors) {
       this.setState({
-        errors: nextProps.errors
+        errors: nextProps.errors,
       });
     }
   }
 
-  onChange = e => {
+  onChange = (e) => {
     this.setState({
       [e.target.id]: e.target.value,
     });
   };
 
-  onSubmit = e => {
+  onSubmit = (e) => {
     e.preventDefault();
-    
+
     const userData = {
       email: this.state.email,
-      password: this.state.password
+      password: this.state.password,
     };
 
     this.props.signinUser(userData);
-  }
+  };
 
   render() {
     const { errors } = this.state;
 
     return (
-      <div className="container" style={{ maxWidth: "30rem", margin: "0 auto" }}>
+      <div
+        className="container"
+        style={{ maxWidth: "30rem", margin: "0 auto" }}
+      >
         <h2 align="center">Sign In</h2>
-        <p align="center">Need an account? <Link to="/signup">Sign up</Link></p>
+        <p align="center">
+          Need an account? <Link to="/signup">Sign up</Link>
+        </p>
 
         <Form onSubmit={this.onSubmit}>
           <Form.Group controlId="email">
             <Form.Label>Email address</Form.Label>
             <Form.Control
-              type="email" 
+              type="email"
               placeholder="Enter email"
               onChange={this.onChange}
             />
@@ -82,15 +87,13 @@ class Signin extends Component {
             </div>
           </Form.Group>
 
-          <Button variant="primary" type="submit">z
+          <Button variant="primary" type="submit">
             Sign In
           </Button>
 
-          <div className="error-text">
-            {errors.notvalidated}
-          </div>
+          <div className="error-text">{errors.notvalidated}</div>
         </Form>
-        <RequestPasswordReset/>
+        <RequestPasswordReset />
       </div>
     );
   }
@@ -99,15 +102,12 @@ class Signin extends Component {
 Signin.propTypes = {
   signinUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired
+  errors: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   auth: state.auth,
-  errors: state.errors
+  errors: state.errors,
 });
 
-export default connect(
-  mapStateToProps,
-  { signinUser }
-)(Signin);
+export default connect(mapStateToProps, { signinUser })(Signin);
