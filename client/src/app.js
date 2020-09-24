@@ -15,6 +15,7 @@ import Signup from "./components/auth/signup";
 import Navbar from "./components/layout/navbar";
 import PrivateRoute from "./components/private-route/privateRoute";
 import Dashboard from "./components/dashboard/dashboard";
+import FileUpload from "./components/upload/FileUpload";
 
 // // check for token to keep user logged in
 // if (localStorage.jwtToken) {
@@ -33,6 +34,7 @@ class App extends Component {
             <Route exact path="/signin" component={Signin} />
             <Route exact path="/signup" component={Signup} />
             <Route exact path="/profile/:username" component={Profile} />
+            <Route exact path="/upload" component={FileUpload} />
             <Switch>
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
             </Switch>
