@@ -77,6 +77,9 @@ class RequestPasswordReset extends Component {
             <Alert variant="success" show={!isEmpty(successmsg)}>
               {successmsg}
             </Alert>
+            <Alert variant="danger" show={!isEmpty(errors.recoveryemail)}>
+              {errors.recoveryemail}
+            </Alert>
           </Form.Group>
 
           <Button variant="primary" type="submit">
