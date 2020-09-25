@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import { requestRecovery } from "../../actions/passwordReset";
 import { Form, Button } from "react-bootstrap";
+import Alert from "react-bootstrap/Alert";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import isEmpty from "is-empty";
 
 class RequestPasswordReset extends Component {
   constructor(props) {
@@ -10,7 +12,22 @@ class RequestPasswordReset extends Component {
 
     this.state = {
       email: "",
+      errors: {},
+      passwordReset: {},
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.errors) {
+      this.setState({
+        errors: nextProps.errors,
+      });
+    }
+    if (nextProps.passwordReset) {
+      this.setState({
+        passwordReset: nextProps.passwordReset,
+      });
+    }
   }
 
   onChange = (e) => {
@@ -30,6 +47,10 @@ class RequestPasswordReset extends Component {
   };
 
   render() {
+    const { errors } = this.state;
+    // const { passwordReset } = this.state;
+    const successmsg = this.props.successmsg.msg;
+
     return (
       <div
         className="container"
@@ -48,6 +69,14 @@ class RequestPasswordReset extends Component {
               placeholder="Enter email"
               onChange={this.onChange}
             />
+            {/* <div className="error-text">
+              {errors.recoveryemail}
+              {errors.emailnotfound}
+            </div> */}
+
+            <Alert variant="success" show={!isEmpty(successmsg)}>
+              {successmsg}
+            </Alert>
           </Form.Group>
 
           <Button variant="primary" type="submit">
@@ -64,7 +93,8 @@ RequestPasswordReset.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  email: state.email,
+  errors: state.errors,
+  successmsg: state.passwordReset,
 });
 
 //test

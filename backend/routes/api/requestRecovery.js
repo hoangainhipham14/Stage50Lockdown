@@ -1,11 +1,38 @@
 var crypto = require("crypto");
 var nodemailer = require("nodemailer");
+const isEmpty = require("is-empty");
+const Validator = require("validator");
 
 const requestRecovery = require("express").Router();
 let User = require("../../models/user.model");
 let RecoveryToken = require("../../models/recoveryToken");
 
+function validate(data) {
+  let errors = {};
+
+  data.email = !isEmpty(data.email) ? data.email : "";
+
+  // email checks
+  if (Validator.isEmpty(data.email)) {
+    errors.recoveryemail = "Email is required";
+  } else if (!Validator.isEmail(data.email)) {
+    errors.recoveryemail = "Email is invalid";
+  }
+
+  return {
+    errors,
+    isValid: isEmpty(errors),
+  };
+}
+
 requestRecovery.route("/").post((req, res) => {
+  const { errors, isValid } = validate(req.body);
+
+  if (!isValid) {
+    console.log("Not valid!");
+    return res.status(400).json(errors);
+  }
+
   // The email is passed as a json file with a single element to verify the user
   const userEmail = req.body.email;
 
@@ -64,11 +91,7 @@ requestRecovery.route("/").post((req, res) => {
         );
       res
         .status(200)
-        .send(
-          "A recovery email has been sent to " +
-            userEmail +
-            " with the recoveryToken."
-        );
+        .json({ msg: "Email has been sent. Please check your inbox" });
       console.log("Email Sent With A recovery Token....");
     }
   });

@@ -1,10 +1,11 @@
 import React, { Component } from "react";
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, Alert } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { signinUser } from "../../actions/authActions";
 import RequestPasswordReset from "../password-recovery/requestRecovery";
+import isEmpty from "is-empty";
 
 class Signin extends Component {
   constructor(props) {
@@ -68,10 +69,17 @@ class Signin extends Component {
               placeholder="Enter email"
               onChange={this.onChange}
             />
-            <div className="error-text">
+            <Alert
+              variant="danger"
+              show={!isEmpty(errors.email) || !isEmpty(errors.emailnotfound)}
+            >
               {errors.email}
               {errors.emailnotfound}
-            </div>
+            </Alert>
+            {/* <div className="error-text">
+              {errors.email}
+              {errors.emailnotfound}
+            </div> */}
           </Form.Group>
 
           <Form.Group controlId="password">
@@ -81,10 +89,19 @@ class Signin extends Component {
               placeholder="Password"
               onChange={this.onChange}
             />
-            <div className="error-text">
+            <Alert
+              variant="danger"
+              show={
+                !isEmpty(errors.password) || !isEmpty(errors.passwordincorrect)
+              }
+            >
               {errors.password}
               {errors.passwordincorrect}
-            </div>
+            </Alert>
+            {/* <div className="error-text">
+              {errors.password}
+              {errors.passwordincorrect}
+            </div> */}
           </Form.Group>
 
           <Button variant="primary" type="submit">
@@ -111,3 +128,5 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps, { signinUser })(Signin);
+
+// npm run hack.exe

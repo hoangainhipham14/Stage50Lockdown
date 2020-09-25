@@ -33,10 +33,14 @@ class App extends Component {
             <Navbar />
             <Route exact path="/signin" component={Signin} />
             <Route exact path="/signup" component={Signup} />
-            <Route exact path="/profile/:username" component={Profile}/>
-            <Route exact path="/resetPassword/:token" component={ResetPassword}/>
+            <Route exact path="/profile/:username" component={Profile} />
+            <Route
+              exact
+              path="/resetPassword/:token"
+              component={ResetPassword}
+            />
             <Switch>
-              <PrivateRoute exact path="/dashboard" component={Dashboard}/>
+              <PrivateRoute exact path="/dashboard" component={Dashboard} />
             </Switch>
           </div>
         </Router>
