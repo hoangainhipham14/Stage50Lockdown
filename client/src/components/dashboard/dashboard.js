@@ -25,7 +25,7 @@ class Dashboard extends Component {
         </Modal.Body>
 
         <Modal.Footer>
-          <Button variant="secondary" onClick={this.onLogoutClick}>Logout</Button>
+          <Button variant="secondary" onClick={this.onLogoutClick}>Sign Out</Button>
         </Modal.Footer>
       </Modal.Dialog>
     );
