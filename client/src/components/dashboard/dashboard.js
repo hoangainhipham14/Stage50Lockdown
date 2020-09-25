@@ -3,14 +3,31 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
 
+import { Modal, Button } from "react-bootstrap";
+
 class Dashboard extends Component {
+  onLogoutClick = e => {
+    e.preventDefault();
+    this.props.logoutUser();
+  };
+
   render() {
     const { user } = this.props.auth;
 
     return (
-      <div>
-        <p>Hey there, {user}!</p>
-      </div>
+      <Modal.Dialog>
+        <Modal.Header closeButton>
+          <Modal.Title>Hello, {user.firstName}!</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+          <p>This is your ePortfolio Dashboard.</p>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button variant="secondary" onClick={this.onLogoutClick}>Logout</Button>
+        </Modal.Footer>
+      </Modal.Dialog>
     );
   }
 }

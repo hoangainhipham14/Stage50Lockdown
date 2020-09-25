@@ -1,5 +1,6 @@
 const signin = require('express').Router();
 const isEmpty = require('is-empty');
+const jwt = require("jsonwebtoken");
 const Validator = require("validator");
 
 let User = require('../../models/user.model');
@@ -57,17 +58,39 @@ signin.route('/').post((req, res) => {
       return res.status(400).json({notvalidated: "Your account has not yet been verified. Please check your email (including your spam folder) for instructions."});
     }
 
+
+    // userSession.save()
+    //   .then(() => res.json({
+    //     success: true,
+    //     token: user._id
+    //   }))
+    //   .catch(err => res.status(400).json({
+    //     error: err
+    //   }));
+
     const userSession = new UserSession();
     userSession.userId = user._id;
-
     userSession.save()
-      .then(() => res.json({
-        success: true,
-        token: user._id
-      }))
-      .catch(err => res.status(400).json({
-        error: err
-      }));
+      .catch(err => console.log("Error saving user session:", err))
+
+    const payload = {
+      id: user._id,
+      firstName: user.firstname
+    };
+
+    jwt.sign(
+      payload,
+      "secret",
+      {
+        expiresIn: 31556926
+      },
+      (err, token) => {
+        res.json({
+          token: "Bearer " + token
+        });
+      }
+    );
+    
   });
 });
 
