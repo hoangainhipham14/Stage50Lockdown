@@ -4,12 +4,13 @@ import { connect } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
 
 import { Navbar, Nav, Container } from "react-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
 
 function NavbarAccountLoggedOut() {
   return (
     <>
-      <Nav.Link href="/signin">Sign In</Nav.Link>
-      <Nav.Link href="/signup">Sign up</Nav.Link>
+      <LinkContainer to="/signin"><Nav.Link>Sign In</Nav.Link></LinkContainer>
+      <LinkContainer to="/signup"><Nav.Link>Sign up</Nav.Link></LinkContainer>
     </>
   )
 }
@@ -17,7 +18,7 @@ function NavbarAccountLoggedOut() {
 function NavbarAccountLoggedIn(props) {
   return (
     <>
-      <Nav.Link href="/dashboard">{props.user.firstName}</Nav.Link>
+      <LinkContainer to="/dashboard"><Nav.Link>{props.user.firstName}</Nav.Link></LinkContainer>
       <Nav.Link onClick={props.onClickLogout}>Sign Out</Nav.Link>
     </>
   )
@@ -39,7 +40,6 @@ class MyNavbar extends Component {
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
               <Nav className="ml-auto">
-                {/* <NavbarAccount isLoggedIn={isAuthenticated} firstName={user.firstName} onClickLogout={this.onClickLogout} /> */}
                 {isAuthenticated ? (
                   <NavbarAccountLoggedIn onClickLogout={this.onClickLogout} user={user} />
                 ) : (

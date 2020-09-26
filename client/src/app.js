@@ -33,7 +33,7 @@ if (localStorage.token) {
     store.dispatch(logoutUser());
 
     // redirect to login
-    window.location.href="./login";
+    window.location.href="./";
   }
 }
 
