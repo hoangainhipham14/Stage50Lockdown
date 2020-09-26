@@ -76,7 +76,7 @@ requestRecovery.route("/").post((req, res) => {
         to: userEmail,
         subject: "Recover Account",
         text:
-          "Recover your account by clicking the link: \n" +
+          "Recover your account by clicking the link: \nhttp://" +
           req.headers.host +
           "/resetPassword/" +
           recoveryToken.token +
