@@ -32,7 +32,7 @@ export const changePassword = (userData, history) => (dispatch) => {
       console.log("Change Password failed. Errors:", err);
       dispatch({
         type: GET_ERRORS,
-        payload: err,
+        payload: err.response.data,
       });
     });
 };

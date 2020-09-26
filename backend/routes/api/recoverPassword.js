@@ -41,7 +41,7 @@ recoverPassword.route("/").post((req, res) => {
         } else {
           return res
             .status(400)
-            .send({ msg: "Passwords do not match, please try again" });
+            .json({ msg: "Passwords do not match, please try again" });
         }
 
         // Change this to a more efficient save function in the future

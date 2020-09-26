@@ -1,10 +1,11 @@
 // The goal of this page is to host a page that will accept two passwords and then save them back to the database of the user that requested the change
 
 import React, { Component } from "react";
-import { changePassword } from "../../actions/passwordReset";
-import { Form, Button } from "react-bootstrap";
+import { changePassword } from "../../actions/passwordResetActions";
+import { Form, Button, Alert } from "react-bootstrap";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import isEmpty from "is-empty";
 
 class ResetPassword extends Component {
   constructor(props) {
@@ -14,7 +15,16 @@ class ResetPassword extends Component {
       token: this.props.match.params.token,
       passwordNo1: "",
       passwordNo2: "",
+      errors: {},
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.errors) {
+      this.setState({
+        errors: nextProps.errors,
+      });
+    }
   }
 
   onChange = (e) => {
@@ -36,6 +46,7 @@ class ResetPassword extends Component {
   };
 
   render() {
+    const { errors } = this.state;
     return (
       <div
         className="container"
@@ -59,6 +70,9 @@ class ResetPassword extends Component {
               placeholder="Re-Enter Password"
               onChange={this.onChange}
             />
+            <Alert variant="danger" show={!isEmpty(errors)}>
+              {errors.msg}
+            </Alert>
           </Form.Group>
           <Button variant="primary" type="submit">
             Reset Password
@@ -76,6 +90,7 @@ ResetPassword.propTypes = {
 const mapStateToProps = (state) => ({
   passwordNo1: state.passwordNo1,
   passwordNo2: state.passwordNo2,
+  errors: state.errors,
 });
 //test
 export default connect(mapStateToProps, { changePassword })(ResetPassword);
