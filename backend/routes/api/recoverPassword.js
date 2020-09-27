@@ -13,7 +13,7 @@ recoverPassword.route("/").post((req, res) => {
   const passwordNo1 = req.body.passwordNo1;
   const passwordNo2 = req.body.passwordNo2;
 
-  if (passwordNo1.length < 6 || passwordNo2.length < 6) {
+  if (passwordNo1.length < 6) {
     return res.status(400).send({
       msg: "Password must be at least 6 characters long",
     });
