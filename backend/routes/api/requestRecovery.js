@@ -34,7 +34,7 @@ requestRecovery.route("/").post((req, res) => {
   }
 
   // The email is passed as a json file with a single element to verify the user
-  const userEmail = req.body.email;
+  const userEmail = req.body.email.toLowerCase();
 
   // Find a matching user and hence the userId that is stored with the Token
   User.findOne({ email: userEmail }, function (err, user) {
