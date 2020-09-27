@@ -1,75 +1,114 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, Component } from "react";
 import axios from "axios";
 import Message from "./Message";
+// import PropTypes from "prop-types";
+// import { connect } from "react-redux";
 
-const FileUpload = () => {
-  const [file, setFile] = useState("");
-  const [filename, setFilename] = useState("Choose File");
-  const [uploadedFile, setUploadedFile] = useState({});
-  const [message, setMessage] = useState("");
+class FileUpload extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      file: "",
+      fileName: "Choose File",
+      message: "",
+      data: [], 
+    }
+  }
+  
 
-  const onChange = (e) => {
-    setFile(e.target.files[0]);
-    setFilename(e.target.files[0].name);
+  onChange = (e) => {
+    this.setState({
+      file: e.target.files[0],
+      fileName: e.target.files[0].name
+    });
   };
 
-  const onSubmit = async (e) => {
+  onSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("file", file);
-
+    formData.append("file", this.file);
+    
+    // Submit Uploaded Image
     try {
-      const res = await axios.post("/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      const { fileName, filePath } = res.data;
-
-      setUploadedFile({ fileName, filePath });
-
-      setMessage("File Uploaded");
-    } catch (err) {
-      if (err.response.status === 500) {
-        setMessage("There was a problem with the server");
-      } else {
-        setMessage(err.response.data.msg);
+        const res = axios.post("/api/upload", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        
+        this.setState({
+          message: "File Uploaded"
+        });
+        
+      } catch (err) {
+        if (err.response.status === 500) {
+          this.setState({
+            message: "There was a problem with the server"
+          });
+        } else {
+          this.setState({
+            message: err.response.data.msg
+          });
       }
+    }
+    
+    try {
+      const res1 = axios.get("/api/upload", {
+        responseType: 'arraybuffer'
+      }).then(response => Buffer.from(response.data, 'binary'));
+      this.setState({
+        data: res1.data
+      })
+    } catch (err) {
+      console.log(err);
     }
   };
 
-  return (
-    <Fragment>
-      {message ? <Message msg={message} /> : null}
-      <form onSubmit={onSubmit}>
-        <div className="custom-file mb-4">
-          <input
-            type="file"
-            className="custom-file-input"
-            id="customFile"
-            onChange={onChange}
-          />
-          <label className="custom-file-label" htmlFor="customFile">
-            {filename}
-          </label>
-        </div>
-        <input
-          type="submit"
-          value="Upload"
-          className="btn btn-primary btn-block mt-4"
-        />
-      </form>
-      {uploadedFile ? (
-        <div className="row mt-5">
-          <div className="col-md-6 m-auto">
-            <h3 className="text-center">{uploadedFile.filename}</h3>
-            <img style={{ width: "100%" }} src={uploadedFile.filePath} alt="" />
+  render() {
+    return (
+      <Fragment>
+        {this.state.message ? <Message msg={this.state.message} /> : null}
+        <form onSubmit={this.onSubmit}>
+          <div className="custom-file mb-4">
+            <input 
+              name="file"
+              type="file"
+              className="custom-file-input"
+              id="customFile"
+              onChange={this.onChange}
+            />
+            <label className="custom-file-label" htmlFor="customFile">
+              {this.state.fileName}
+            </label>
           </div>
+          <input
+            type="submit"
+            value="Upload"
+            className="btn btn-primary btn-block mt-4"
+          />
+        </form>
+        <div>
+          <h1>{this.state.file ? this.state.fileName : null}</h1>
+          {this.state.data ? this.state.data.map(
+            file => (<div key={file.fileName}>{file ? <img src={`${file.file.path}`} 
+            alt={file.fileName}/>:<span>deleted</span>}</div>)): 
+          <h3>loading</h3>}
         </div>
-      ) : null}
-    </Fragment>
-  );
+      </Fragment>
+    );
+  }
 };
+
+// FileUpload.propTypes = {
+//   uploadFile: PropTypes.func.isRequired,
+// };
+
+// const mapStateToProps = state => ({
+//   auth: state.auth
+// });
+
+// export default connect(
+//   mapStateToProps,
+// )(FileUpload);
 
 export default FileUpload;
