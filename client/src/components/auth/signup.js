@@ -16,25 +16,25 @@ class Signup extends Component {
       username: "",
       email: "",
       password: "",
-      errors: {}
-    }
+      errors: {},
+    };
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.errors) {
       this.setState({
-        errors: nextProps.errors
+        errors: nextProps.errors,
       });
     }
   }
 
-  onChange = e => {
+  onChange = (e) => {
     this.setState({
       [e.target.id]: e.target.value,
     });
-  }
+  };
 
-  onSubmit = e => {
+  onSubmit = (e) => {
     e.preventDefault();
 
     const newUser = {
@@ -43,19 +43,24 @@ class Signup extends Component {
       username: this.state.username,
       email: this.state.email,
       password: this.state.password,
-    }
+    };
 
     this.props.registerUser(newUser, this.props.history);
-  }
+  };
 
   render() {
     const { errors } = this.state;
 
     return (
-      <div className="container" style={{maxWidth: "30rem", margin: "0 auto"}}>
+      <div
+        className="container"
+        style={{ maxWidth: "30rem", margin: "0 auto" }}
+      >
         <div className="formContainer">
           <h2 align="center">Sign Up</h2>
-          <p align="center">Already have an account? <Link to="/signin">Sign in</Link></p>
+          <p align="center">
+            Already have an account? <Link to="/signin">Sign in</Link>
+          </p>
           <Form onSubmit={this.onSubmit}>
             <Form.Group controlId="firstName">
               <Form.Label>First Name</Form.Label>
@@ -113,22 +118,19 @@ class Signup extends Component {
           </Form>
         </div>
       </div>
-    )
+    );
   }
 }
 
 Signup.propTypes = {
   registerUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired
+  errors: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   auth: state.auth,
-  errors: state.errors
+  errors: state.errors,
 });
 
-export default connect(
-  mapStateToProps,
-  { registerUser }
-)(withRouter(Signup));
+export default connect(mapStateToProps, { registerUser })(withRouter(Signup));

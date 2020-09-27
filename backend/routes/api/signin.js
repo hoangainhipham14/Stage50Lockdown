@@ -1,10 +1,10 @@
-const signin = require('express').Router();
-const isEmpty = require('is-empty');
+const signin = require("express").Router();
+const isEmpty = require("is-empty");
 const jwt = require("jsonwebtoken");
 const Validator = require("validator");
 
-let User = require('../../models/user.model');
-let UserSession = require('../../models/userSession');
+let User = require("../../models/user.model");
+let UserSession = require("../../models/userSession");
 
 function validate(data) {
   let errors = {};
@@ -26,12 +26,11 @@ function validate(data) {
 
   return {
     errors,
-    isValid: isEmpty(errors)
+    isValid: isEmpty(errors),
   };
-};
+}
 
-signin.route('/').post((req, res) => {
-
+signin.route("/").post((req, res) => {
   // validate user info
   const { errors, isValid } = validate(req.body);
 
@@ -42,22 +41,24 @@ signin.route('/').post((req, res) => {
   const email = req.body.email.toLowerCase();
   const password = req.body.password;
 
-  User.findOne({email: email}).then(user => {
+  User.findOne({ email: email }).then((user) => {
     // check user exists
     if (!user) {
-      return res.status(404).json({emailnotfound: "Email not found"});
+      return res.status(400).json({ emailnotfound: "Email not found" });
     }
 
     // check password
     if (!user.validPassword(password)) {
-      return res.status(400).json({passwordincorrect: "Incorrect password"});
+      return res.status(400).json({ passwordincorrect: "Incorrect password" });
     }
 
     // check verified account
     if (!user.isValidated) {
-      return res.status(400).json({notvalidated: "Your account has not yet been verified. Please check your email (including your spam folder) for instructions."});
+      return res.status(400).json({
+        notvalidated:
+          "Your account has not yet been verified. Please check your email (including your spam folder) for instructions.",
+      });
     }
-
 
     // userSession.save()
     //   .then(() => res.json({
@@ -70,27 +71,27 @@ signin.route('/').post((req, res) => {
 
     const userSession = new UserSession();
     userSession.userId = user._id;
-    userSession.save()
-      .catch(err => console.log("Error saving user session:", err))
+    userSession
+      .save()
+      .catch((err) => console.log("Error saving user session:", err));
 
     const payload = {
       id: user._id,
-      firstName: user.firstname
+      firstName: user.firstname,
     };
 
     jwt.sign(
       payload,
       "secret",
       {
-        expiresIn: 31556926
+        expiresIn: 31556926,
       },
       (err, token) => {
         res.json({
-          token: "Bearer " + token
+          token: "Bearer " + token,
         });
       }
     );
-    
   });
 });
 
