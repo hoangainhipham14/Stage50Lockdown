@@ -1,6 +1,7 @@
 const recoverPassword = require("express").Router();
 let User = require("../../models/user.model");
 let RecoveryToken = require("../../models/recoveryToken");
+const Validator = require("validator");
 
 recoverPassword.route("/").post((req, res) => {
   // With this recover password script, the user enters a new password, and the token is checked
@@ -11,6 +12,12 @@ recoverPassword.route("/").post((req, res) => {
   // Passed as a json file
   const passwordNo1 = req.body.passwordNo1;
   const passwordNo2 = req.body.passwordNo2;
+
+  if (passwordNo1.length < 6 || passwordNo2.length < 6) {
+    return res.status(400).send({
+      msg: "Password must be at least 6 characters long",
+    });
+  }
 
   //console.log('Validating user with token...' + userToken);
 
