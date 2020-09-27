@@ -42,7 +42,7 @@ class ResetPassword extends Component {
       passwordNo2: this.state.passwordNo2,
     };
 
-    this.props.changePassword(userData);
+    this.props.changePassword(userData, this.props.history);
   };
 
   render() {
