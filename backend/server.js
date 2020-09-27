@@ -35,8 +35,6 @@ mongoose
     console.error("Error connecting to MongoDB", err);
   });
 
-const conn = mongoose.connection;
-
 // authentication
 
 const userVerify = require("./routes/api/verify");
@@ -67,12 +65,6 @@ app.use("/api/users/", profile);
 
 const upload = require("./routes/api/upload");
 app.use("/api/upload", upload);
-
-conn.once('open', () => {
-  // Init stream
-  gfs = Grid(conn.db, mongoose.mongo);
-  gfs.collection('uploads');
-});
 
 const port = process.env.PORT || 5000;
 

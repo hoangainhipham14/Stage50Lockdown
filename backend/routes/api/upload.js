@@ -3,6 +3,7 @@ const { fstat } = require("fs");
 const multer = require("multer");
 const GridFsStorage = require('multer-gridfs-storage');
 const Grid = require('gridfs-stream');
+const mongoose = require("mongoose");
 // const bodyParser = require('body-parser')
 // const methodOverride = require('method-override');
 const path = require("path");
@@ -13,6 +14,28 @@ const crypto = require("crypto");
 // const uploadPath = path.join("./upload/");
 
 // const uploadView = path.join("../routes/views/uploadimage");
+
+const uri = process.env.ATLAS_URI;
+
+mongoose
+  .connect(uri, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
+    useCreateIndex: true,
+  })
+  .then(() => {
+    console.log("Connected to MongoDB Atlas");
+  })
+  .catch((err) => {
+    console.error("Error connecting to MongoDB", err);
+  });
+
+const conn = mongoose.connection;
+conn.once('open', () => {
+  // Init stream
+  gfs = Grid(conn.db, mongoose.mongo);
+  gfs.collection('uploads');
+});
 
 // Create storage engine
 const storage = new GridFsStorage({
@@ -37,21 +60,20 @@ const storage = new GridFsStorage({
 const uploading = multer({ storage });
 
 upload.route("/").post(uploading.single('file'), (req, res) => {
-});
-
-// @route GET /image/:filename
-// @desc Display Image
-upload.get('/', (req, res) => {
   
-  gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
+  file = req.file;
+  fileName = file.originalname;
+  
+  gfs.files.findOne({ fileName: fileName}, (err, file) => {
     // Check if file
+    // console.log(req.params.filename);
     if (!file || file.length === 0) {
-      return res.status(404).json({
+      return res.send({
         err: 'No file exists'
       });
     }
 
-    // Check if image
+    console.log(file.contentType);
     if (file.contentType === 'image/jpeg' || file.contentType === 'image/png') {
       // Read output to browser
       const readstream = gfs.createReadStream(file.filename);
@@ -62,6 +84,11 @@ upload.get('/', (req, res) => {
       });
     }
   });
+
+});
+
+upload.route("/").get((req, res) => {
+  return res.send("Good");
 });
 
 module.exports = upload;

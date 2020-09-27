@@ -34,7 +34,7 @@ class App extends Component {
             <Route exact path="/signin" component={Signin} />
             <Route exact path="/signup" component={Signup} />
             <Route exact path="/profile/:username" component={Profile} />
-            <Route exact path="/upload" component={FileUpload} />
+            <Route exact path="/test" component={FileUpload} />
             <Switch>
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
             </Switch>

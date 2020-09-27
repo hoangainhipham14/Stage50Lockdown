@@ -26,11 +26,12 @@ class FileUpload extends Component {
   onSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("file", this.file);
+    formData.append("file", this.state.file);
+    formData.append("fileName", this.state.fileName);
     
     // Submit Uploaded Image
     try {
-        const res = axios.post("/api/upload", formData, {
+        axios.post("/api/upload", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -51,13 +52,13 @@ class FileUpload extends Component {
           });
       }
     }
-    
     try {
-      const res1 = axios.get("/api/upload", {
-        responseType: 'arraybuffer'
-      }).then(response => Buffer.from(response.data, 'binary'));
+      const res = axios.get("/api/upload", {
+        fileName: this.state.fileName
+      });
+      console.log(res);
       this.setState({
-        data: res1.data
+        data: res.data
       })
     } catch (err) {
       console.log(err);
@@ -87,13 +88,13 @@ class FileUpload extends Component {
             className="btn btn-primary btn-block mt-4"
           />
         </form>
-        <div>
+        {/* <div>
           <h1>{this.state.file ? this.state.fileName : null}</h1>
           {this.state.data ? this.state.data.map(
             file => (<div key={file.fileName}>{file ? <img src={`${file.file.path}`} 
             alt={file.fileName}/>:<span>deleted</span>}</div>)): 
           <h3>loading</h3>}
-        </div>
+        </div> */}
       </Fragment>
     );
   }
