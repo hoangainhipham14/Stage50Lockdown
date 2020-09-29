@@ -50,12 +50,11 @@ function validateUserData(data) {
 
   return {
     errors,
-    isValid: isEmpty(errors)
+    isValid: isEmpty(errors),
   };
 }
 
 signup.route("/").post((req, res) => {
-
   // validate user info
   const { errors, isValid } = validateUserData(req.body);
 
@@ -73,19 +72,18 @@ signup.route("/").post((req, res) => {
   const password = req.body.password;
 
   // Check duplicate email
-  User.findOne({email:email}).then(user => {
+  User.findOne({ email: email }).then((user) => {
     if (user) {
       return res.status(400).json({
-        email: "Email already exists"
+        email: "Email already exists",
       });
     } else {
-      User.findOne({username:username}).then(user => {
+      User.findOne({ username: username }).then((user) => {
         if (user) {
           return res.status(400).json({
-            username: "Username taken"
+            username: "Username taken",
           });
         } else {
-          
           // Create new user
           const newUser = new User({
             firstname: firstname,
@@ -136,17 +134,16 @@ signup.route("/").post((req, res) => {
               res.status(500).send({ errMsgFromSendMail: err.message })
             );
 
-
           // Save user
           console.log("Saving user...");
           newUser
             .save()
-            .then(user => res.json(user))
-            .catch(err => console.log(err));
+            .then((user) => res.json(user))
+            .catch((err) => console.log(err));
         }
-      })
+      });
     }
-  })
+  });
 });
 
 module.exports = signup;

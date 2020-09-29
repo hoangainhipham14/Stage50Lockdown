@@ -17,6 +17,7 @@ import Signup from "./components/auth/signup";
 import Navbar from "./components/layout/navbar";
 import PrivateRoute from "./components/private-route/privateRoute";
 import Dashboard from "./components/dashboard/dashboard";
+import FileUpload from "./components/upload/FileUpload";
 
 // check for token to keep user logged in
 if (localStorage.token) {
@@ -34,7 +35,7 @@ if (localStorage.token) {
     store.dispatch(logoutUser());
 
     // redirect to login
-    window.location.href="./";
+    window.location.href = "./";
   }
 }
 
@@ -48,6 +49,7 @@ class App extends Component {
             <Route exact path="/signin" component={Signin} />
             <Route exact path="/signup" component={Signup} />
             <Route exact path="/profile/:username" component={Profile} />
+            <Route exact path="/upload" component={FileUpload} />
             <Route
               exact
               path="/resetPassword/:token"
