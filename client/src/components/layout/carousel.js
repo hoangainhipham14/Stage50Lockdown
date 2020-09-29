@@ -4,8 +4,8 @@ export default class Home extends Component {
   componentDidMount() {
     const track = document.querySelector(".carousel__track");
     const slides = Array.from(track.children);
-    const nextButton = document.querySelector(".carousel__rightbutton");
-    const prevButton = document.querySelector(".carousel__leftbutton");
+    const nextButton = document.querySelector(".carousel__leftbutton");
+    const prevButton = document.querySelector(".carousel__rightbutton");
     const navIndicator = document.querySelector(".carousel__nav");
     const dots = Array.from(navIndicator.children);
 
@@ -47,30 +47,28 @@ export default class Home extends Component {
 
     nextButton.addEventListener("click", (e) => {
       const currentSlide = track.querySelector(".current-slide");
-
-      if (!currentSlide) return;
-      const nextSlide = currentSlide.nextElementSibling;
-      const currentDot = navIndicator.querySelector(".current-slide");
-      const nextDot = currentDot.nextElementSibling;
-      const nextIndex = slides.findIndex((slide) => slide === nextSlide);
-
-      moveToSlide(track, currentSlide, nextSlide);
-      updateDots(currentDot, nextDot);
-      hideShowArrows(slides, prevButton, nextButton, nextIndex);
-    });
-
-    prevButton.addEventListener("click", (e) => {
-      const currentSlide = track.querySelector(".current-slide");
-
-      if (!currentSlide) return;
       const prevSlide = currentSlide.previousElementSibling;
       const currentDot = navIndicator.querySelector(".current-slide");
       const prevDot = currentDot.previousElementSibling;
       const prevIndex = slides.findIndex((slide) => slide === prevSlide);
+      const targetSlide = slides[prevIndex];
 
-      moveToSlide(track, currentSlide, prevSlide);
+      moveToSlide(track, currentSlide, targetSlide);
       updateDots(currentDot, prevDot);
       hideShowArrows(slides, prevButton, nextButton, prevIndex);
+    });
+
+    prevButton.addEventListener("click", (e) => {
+      const currentSlide = track.querySelector(".current-slide");
+      const nextSlide = currentSlide.nextElementSibling;
+      const currentDot = navIndicator.querySelector(".current-slide");
+      const nextDot = currentDot.nextElementSibling;
+      const nextIndex = slides.findIndex((slide) => slide === nextSlide);
+      const targetSlide = slides[nextIndex];
+
+      moveToSlide(track, currentSlide, targetSlide);
+      updateDots(currentDot, nextDot);
+      hideShowArrows(slides, prevButton, nextButton, nextIndex);
     });
 
     navIndicator.addEventListener("click", (e) => {
@@ -83,7 +81,7 @@ export default class Home extends Component {
       const targetIndex = dots.findIndex((dot) => dot === targetDot);
       const targetSlide = slides[targetIndex];
 
-      moveToSlide(track, currentSlide, targetSlide, targetIndex);
+      moveToSlide(track, currentSlide, targetSlide);
       updateDots(currentDot, targetDot);
       hideShowArrows(slides, prevButton, nextButton, targetIndex);
     });
@@ -93,19 +91,37 @@ export default class Home extends Component {
     return (
       <div class="carousel">
         <button class="carousel__button carousel__leftbutton is-hidden">
-          <img src="leftarrow.png" alt="leftarrow"></img>
+          <img src="leftarrow.png" alt=""></img>
         </button>
 
         <div class="carousel__track-container">
           <ul class="carousel__track">
             <div class="carousel__slide current-slide">
-              <img class="carousel__image" src="{{ image_uri }}"></img>
+              <img
+                class="carousel__image"
+                src="anywhere-door.png"
+                alt="anywhere-door"
+              ></img>
             </div>
+            <div class="carousel__slide">
+              <img
+                class="carousel__image"
+                src="copying-toast.png"
+                alt="copying-toast"
+              ></img>
+            </div>
+            <li class="carousel__slide">
+              <img
+                class="carousel__image"
+                src="take-copter.jpg"
+                alt="take-copter"
+              ></img>
+            </li>
           </ul>
         </div>
 
         <button class="carousel__button carousel__rightbutton">
-          <img src="rightarrow.png" alt="rightarrow"></img>
+          <img src="rightarrow.png" alt=""></img>
         </button>
 
         <div class="carousel__nav">
