@@ -17,6 +17,8 @@ class FileUpload extends Component {
     this.setState({
       file: e.target.files[0],
       fileName: e.target.files[0].name,
+      message: "",
+      isSubmitted: false,
     });
   };
 
@@ -33,10 +35,12 @@ class FileUpload extends Component {
           "Content-Type": "multipart/form-data",
         },
       });
-      this.setState({
-        message: "File Uploaded",
-        isSubmitted: true,
-      });
+      setTimeout(() => {
+        this.setState({
+          message: "File Uploaded",
+          isSubmitted: true,
+        });
+      }, 1000);
     } catch (err) {
       if (err.response.status === 500) {
         this.setState({
@@ -83,6 +87,7 @@ class FileUpload extends Component {
                 : null
             }
             alt=""
+            width="100%"
           ></img>
         </form>
       </Fragment>
