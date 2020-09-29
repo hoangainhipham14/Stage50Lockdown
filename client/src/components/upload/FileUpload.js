@@ -1,9 +1,6 @@
 import React, { Fragment, Component } from "react";
-// import axios from "axios";
+import axios from "axios";
 import Message from "./Message";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { uploadImage } from "../../actions/uploadAction";
 
 class FileUpload extends Component {
   constructor(props) {
@@ -12,51 +9,54 @@ class FileUpload extends Component {
       file: "",
       fileName: "Choose File",
       message: "",
-      isSubmitted: false
-    }
+      isSubmitted: false,
+    };
   }
-  
 
   onChange = (e) => {
     this.setState({
       file: e.target.files[0],
-      fileName: e.target.files[0].name
+      fileName: e.target.files[0].name,
     });
   };
 
   onSubmit = async (e) => {
     e.preventDefault();
-    
-    // Submit Uploaded Image
-    // try {
-    uploadImage(this.state.file, this.state.fileName);
-        
-    //     // Successful Upload
-    //     this.setState({
-    //       message: "File Uploaded",
-    //       isSubmitted: true
-    //     });
-        
-    //   } catch (err) {
-    //     if (err.response.status === 500) {
-    //       this.setState({
-    //         message: "There was a problem with the server"
-    //       });
-    //     } else {
-    //       this.setState({
-    //         message: err.response.data.msg
-    //       });
-    //   }
-    // }
+
+    const formData = new FormData();
+    formData.append("file", this.state.file);
+    formData.append("fileName", this.state.fileName);
+
+    try {
+      axios.post("/api/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      this.setState({
+        message: "File Uploaded",
+        isSubmitted: true,
+      });
+    } catch (err) {
+      if (err.response.status === 500) {
+        this.setState({
+          message: "There was a problem wrong with the server",
+        });
+      } else {
+        this.setState({
+          message: err.response.state,
+        });
+      }
+    }
   };
 
   render() {
     return (
       <Fragment>
         {this.state.message ? <Message msg={this.state.message} /> : null}
-        <form maxWidth={'30rem'} onSubmit={this.onSubmit}>
+        <form onSubmit={this.onSubmit}>
           <div className="custom-file mb-4">
-            <input 
+            <input
               name="file"
               type="file"
               className="custom-file-input"
@@ -77,31 +77,17 @@ class FileUpload extends Component {
             <h3>{this.state.isSubmitted ? this.state.fileName : null}</h3>
           </div>
           <img
-            src={this.state.isSubmitted ? `/api/upload/display/?fileName=${this.state.fileName}`  : null}
+            src={
+              this.state.isSubmitted
+                ? `/api/upload/display/?fileName=${this.state.fileName}`
+                : null
+            }
             alt=""
           ></img>
         </form>
       </Fragment>
     );
   }
-};
+}
 
-FileUpload.propTypes = {
-  uploadImage: PropTypes.func.isRequired,
-  file: PropTypes.object,
-  fileName: PropTypes.object,
-  message: PropTypes.object,
-  isSubmitted: PropTypes.object.isRequired
-};
-
-const mapStateToProps = state => ({
-  file: state.file,
-  fileName: state.fileName,
-  message: state.message,
-  isSubmitted: state.isSubmitted
-});
-
-export default connect(
-  mapStateToProps,
-  { uploadImage }
-)(FileUpload);
+export default FileUpload;
