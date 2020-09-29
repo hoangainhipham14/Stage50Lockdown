@@ -18,6 +18,7 @@ import Navbar from "./components/layout/navbar";
 import PrivateRoute from "./components/private-route/privateRoute";
 import Dashboard from "./components/dashboard/dashboard";
 import Carousel from "./components/layout/carousel";
+import FileUpload from "./components/upload/FileUpload";
 
 // check for token to keep user logged in
 if (localStorage.token) {
@@ -50,6 +51,8 @@ class App extends Component {
             <Route exact path="/signup" component={Signup} />
             <Route exact path="/profile/:username" component={Profile} />
             <Route exact path="/carousel" component={Carousel} />
+            <Route exact path="/upload" component={FileUpload} />
+
             <Route
               exact
               path="/resetPassword/:token"

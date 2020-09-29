@@ -45,6 +45,9 @@ class MyNavbar extends Component {
             <Navbar.Brand href="/">ePortfolio</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
+              <Nav className="mr-auto">
+                <Nav.Link href="/upload">Upload</Nav.Link>
+              </Nav>
               <Nav className="ml-auto">
                 <Nav.Link href="/carousel">Carousel</Nav.Link>
               </Nav>
