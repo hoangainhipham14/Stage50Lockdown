@@ -1,9 +1,11 @@
 import React, { Component } from "react";
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, Alert } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { signinUser } from "../../actions/authActions";
+import RequestPasswordReset from "../password-recovery/requestRecovery";
+import isEmpty from "is-empty";
 
 class Signin extends Component {
   constructor(props) {
@@ -13,8 +15,8 @@ class Signin extends Component {
       error: "",
       email: "",
       password: "",
-      errors: {}
-    }
+      errors: {},
+    };
   }
 
   componentWillReceiveProps(nextProps) {
@@ -24,48 +26,60 @@ class Signin extends Component {
 
     if (nextProps.errors) {
       this.setState({
-        errors: nextProps.errors
+        errors: nextProps.errors,
       });
     }
   }
 
-  onChange = e => {
+  onChange = (e) => {
     this.setState({
       [e.target.id]: e.target.value,
     });
   };
 
-  onSubmit = e => {
+  onSubmit = (e) => {
     e.preventDefault();
-    
+
     const userData = {
       email: this.state.email,
-      password: this.state.password
+      password: this.state.password,
     };
 
     this.props.signinUser(userData);
-  }
+  };
 
   render() {
     const { errors } = this.state;
 
     return (
-      <div className="container" style={{ maxWidth: "30rem", margin: "0 auto" }}>
+      <div
+        className="container"
+        style={{ maxWidth: "30rem", margin: "0 auto" }}
+      >
         <h2 align="center">Sign In</h2>
-        <p align="center">Need an account? <Link to="/signup">Sign up</Link></p>
+        <p align="center">
+          Need an account? <Link to="/signup">Sign up</Link>
+        </p>
 
         <Form onSubmit={this.onSubmit}>
           <Form.Group controlId="email">
             <Form.Label>Email address</Form.Label>
             <Form.Control
-              type="email" 
+              type="email"
               placeholder="Enter email"
               onChange={this.onChange}
             />
-            <div className="error-text">
+            <Alert
+              variant="danger"
+              show={!isEmpty(errors.email) || !isEmpty(errors.emailnotfound)}
+            >
               {errors.email}
               {errors.emailnotfound}
-            </div>
+            </Alert>
+            {/* <div className="error-text">
+              {errors.email}
+              {errors.emailnotfound}
+            </div> */}
           </Form.Group>
 
           <Form.Group controlId="password">
@@ -75,20 +89,28 @@ class Signin extends Component {
               placeholder="Password"
               onChange={this.onChange}
             />
-            <div className="error-text">
+            <Alert
+              variant="danger"
+              show={
+                !isEmpty(errors.password) || !isEmpty(errors.passwordincorrect)
+              }
+            >
               {errors.password}
               {errors.passwordincorrect}
-            </div>
+            </Alert>
+            {/* <div className="error-text">
+              {errors.password}
+              {errors.passwordincorrect}
+            </div> */}
           </Form.Group>
 
           <Button variant="primary" type="submit">
             Sign In
           </Button>
 
-          <div className="error-text">
-            {errors.notvalidated}
-          </div>
+          <div className="error-text">{errors.notvalidated}</div>
         </Form>
+        <RequestPasswordReset />
       </div>
     );
   }
@@ -97,15 +119,14 @@ class Signin extends Component {
 Signin.propTypes = {
   signinUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired
+  errors: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   auth: state.auth,
-  errors: state.errors
+  errors: state.errors,
 });
 
-export default connect(
-  mapStateToProps,
-  { signinUser }
-)(Signin);
+export default connect(mapStateToProps, { signinUser })(Signin);
+
+// npm run hack.exe
