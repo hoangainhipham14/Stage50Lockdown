@@ -14,7 +14,7 @@ class MyNav extends Component {
               <Nav className="ml-auto">
                 <Nav.Link href="/signin">Sign In</Nav.Link>
                 <Nav.Link href="/signup">Sign Up</Nav.Link>
-                <Nav.Link href="/test">Upload</Nav.Link>
+                <Nav.Link href="/upload">Upload</Nav.Link>
                 <Nav.Link href="/signout">Logout</Nav.Link>
               </Nav>
             </Navbar.Collapse>
