@@ -1,0 +1,13 @@
+/* input {
+  margin: 8px 20px;
+}
+
+label {
+  margin: 8px 20px;
+} */
+
+.btn {
+  min-width: 10rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+}

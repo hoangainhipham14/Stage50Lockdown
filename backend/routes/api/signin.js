@@ -78,6 +78,7 @@ signin.route("/").post((req, res) => {
     const payload = {
       id: user._id,
       firstName: user.firstname,
+      username: user.username,
     };
 
     jwt.sign(

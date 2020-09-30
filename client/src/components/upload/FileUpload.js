@@ -10,6 +10,7 @@ class FileUpload extends Component {
       fileName: "Choose File",
       message: "",
       isSubmitted: false,
+      username: "",
     };
   }
 
@@ -19,6 +20,7 @@ class FileUpload extends Component {
       fileName: e.target.files[0].name,
       message: "",
       isSubmitted: false,
+      // username: e.target.
     });
   };
 

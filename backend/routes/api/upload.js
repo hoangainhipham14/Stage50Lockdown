@@ -4,8 +4,6 @@ const multer = require("multer");
 const GridFsStorage = require("multer-gridfs-storage");
 const Grid = require("gridfs-stream");
 const mongoose = require("mongoose");
-// const bodyParser = require('body-parser')
-// const methodOverride = require('method-override');
 const path = require("path");
 const resendValidation = require("./resendValidation");
 const upload = require("express").Router();
@@ -43,8 +41,10 @@ const storage = new GridFsStorage({
           return reject(err);
         }
         const filename = file.originalname;
+        const username = req.body.username;
         const fileInfo = {
           filename: filename,
+          username: username,
           bucketName: "uploads",
         };
         resolve(fileInfo);
