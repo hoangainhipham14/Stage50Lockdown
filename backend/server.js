@@ -4,8 +4,8 @@ const mongoose = require("mongoose");
 const ejs = require("ejs");
 const path = require("path");
 const multer = require("multer");
-const GridFsStorage = require('multer-gridfs-storage');
-const Grid = require('gridfs-stream');
+const GridFsStorage = require("multer-gridfs-storage");
+const Grid = require("gridfs-stream");
 
 require("dotenv").config();
 
@@ -56,7 +56,7 @@ const userResendValidation = require("./routes/api/resendValidation");
 app.use("/api/users/validation", userEmailValidation);
 app.use("/api/users/resendValidation", userResendValidation);
 
-// password recovery 
+// password recovery
 
 const userRequestRecovery = require("./routes/api/requestRecovery");
 const userRecoverPassword = require("./routes/api/recoverPassword");
@@ -73,6 +73,14 @@ app.use("/api/users/", profile);
 
 const upload = require("./routes/api/upload");
 app.use("/api/upload", upload);
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../client/build")));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "../client/build/index.html"));
+  });
+}
 
 const port = process.env.PORT || 5000;
 
