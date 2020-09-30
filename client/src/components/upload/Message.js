@@ -1,24 +1,44 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
+import { Alert } from "react-bootstrap";
 
-const Message = ({ msg }) => {
-  return (
-    <div className="alert alert-info alert-dismissible fade show" role="alert">
-      {msg}
-      <button
-        type="button"
-        className="close"
-        data-dismiss="alert"
-        aria-label="Close"
-      >
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-  );
+const Message = ({ isSubmitted, message }) => {
+  const [show, setShow] = useState(true);
+
+  if (show) {
+    if (isSubmitted) {
+      return (
+        <Alert
+          variant={"primary"}
+          onClose={() => {
+            setShow(false);
+          }}
+          dismissible
+        >
+          {message}
+        </Alert>
+      );
+    } else {
+      return (
+        <Alert
+          variant={"warning"}
+          onClose={() => {
+            setShow(false);
+          }}
+          dismissible
+        >
+          {message}
+        </Alert>
+      );
+    }
+  } else {
+    return null;
+  }
 };
 
 Message.propTypes = {
-  msg: PropTypes.string.isRequired,
+  message: PropTypes.string.isRequired,
+  isSubmitted: PropTypes.bool.isRequired,
 };
 
 export default Message;
