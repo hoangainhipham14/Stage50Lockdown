@@ -1,6 +1,5 @@
 import React, { Fragment, Component } from "react";
 import axios from "axios";
-// import { Alert } from "react-bootstrap";
 import Message from "./Message";
 
 class FileUpload extends Component {
@@ -15,12 +14,21 @@ class FileUpload extends Component {
   }
 
   onChange = (e) => {
-    this.setState({
-      file: e.target.files[0],
-      fileName: e.target.files[0].name,
-      message: "",
-      isSubmitted: false,
-    });
+    try {
+      this.setState({
+        file: e.target.files[0],
+        fileName: e.target.files[0].name,
+        message: "",
+        isSubmitted: false,
+      });
+    } catch (err) {
+      this.setState({
+        file: "",
+        fileName: "Choose File",
+        message: "Error File not selected",
+        isSubmitted: false,
+      });
+    }
   };
 
   onSubmit = async (e) => {
@@ -29,6 +37,16 @@ class FileUpload extends Component {
     if (this.state.file === "") {
       this.setState({
         message: "File not supplied",
+        isSubmitted: false,
+      });
+      return;
+    }
+    if (
+      this.state.file.type !== "image/jpeg" &&
+      this.state.file.type !== "image/png"
+    ) {
+      this.setState({
+        message: "Wrong File Type",
         isSubmitted: false,
       });
       return;
