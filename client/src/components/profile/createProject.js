@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Container, Form, Button } from "react-bootstrap";
 import "./style.css";
+// import store from "../../store.js";
 
 class CreateProject extends Component {
   constructor(props) {
@@ -10,12 +11,6 @@ class CreateProject extends Component {
       formData: new FormData(),
     };
   }
-
-  // onSubmit = async (e) => {
-  //   console.log("G");
-  //   e.preventDefault();
-  //   console.log(e.target);
-  // };
 
   onChange = (e) => {
     console.log("onChange clicked with e.target.id =", e.target.id);
@@ -27,12 +22,13 @@ class CreateProject extends Component {
   onSubmit = (e) => {
     e.preventDefault();
 
+    // console.log(store.getState().auth.user.username);
     console.log(this.state.formData);
-    axios.post("/api/createProject", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    // axios.post("/api/createProject", formData, {
+    //   headers: {
+    //     "Content-Type": "multipart/form-data",
+    //   },
+    // });
   };
 
   render() {

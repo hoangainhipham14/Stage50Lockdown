@@ -40,11 +40,12 @@ const storage = new GridFsStorage({
         if (err) {
           return reject(err);
         }
+
         const filename = file.originalname;
         const username = req.body.username;
         const fileInfo = {
           filename: filename,
-          username: username,
+          metadata: username,
           bucketName: "uploads",
         };
         resolve(fileInfo);

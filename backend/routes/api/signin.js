@@ -60,15 +60,6 @@ signin.route("/").post((req, res) => {
       });
     }
 
-    // userSession.save()
-    //   .then(() => res.json({
-    //     success: true,
-    //     token: user._id
-    //   }))
-    //   .catch(err => res.status(400).json({
-    //     error: err
-    //   }));
-
     const userSession = new UserSession();
     userSession.userId = user._id;
     userSession
