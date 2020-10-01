@@ -1,6 +1,7 @@
 // Model imports
 const User = require("../models/user");
 const UserToken = require("../models/userToken");
+const UserSession = require("../models/userSession");
 const RecoveryToken = require("../models/recoveryToken");
 
 // Library imports
@@ -185,6 +186,12 @@ exports.signin = (req, res) => {
           "Your account has not yet been verified. Please check your email (including your spam folder) for instructions.",
       });
     }
+
+    const userSession = new UserSession();
+    userSession.userId = user._id;
+    userSession
+      .save()
+      .catch((err) => console.log("Error saving user session:", err));
 
     // generate token
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
@@ -428,6 +435,26 @@ exports.resendValidation = (req, res) => {
 };
 
 exports.signout = (req, res) => {
+  UserSession.findOneAndUpdate(
+    {
+      _id: token,
+      isDeleted: false,
+    },
+    {
+      $set: {
+        isDeleted: true,
+      },
+    },
+    null,
+    (err, session) => {
+      if (err) {
+        return res.status(500).json({
+          error: "Server error",
+        });
+      }
+    }
+  );
+
   res.clearCookie("token");
   return res.json({
     success: true,
@@ -509,7 +536,7 @@ exports.verify = (req, res) => {
     });
 };
 
-exports.requireSignIn = expressJwt({
+exports.requireAuthentication = expressJwt({
   secret: process.env.JWT_SECRET,
   userProperty: "auth",
 });

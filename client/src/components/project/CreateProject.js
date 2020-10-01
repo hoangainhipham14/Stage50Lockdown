@@ -1,32 +1,74 @@
+import axios from "axios";
 import React, { Component } from "react";
 import { Container, Form, Button } from "react-bootstrap";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
 class CreateProject extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      formData: new FormData(),
+      title: "",
+      body: "",
+      image: null,
     };
   }
 
+  /*
+   * called whenever a value is changed in the form
+   */
   onChange = (e) => {
-    console.log("onChange clicked with e.target.id =", e.target.id);
+    // the name of field changed
     const name = e.target.id;
-    const value = name === "image" ? e.target.files[0] : e.target.value;
-    this.state.formData.set(name, value);
+    // the value of the field changed
+    var value;
+    switch (name) {
+      case "image":
+        // extract the image
+        value = e.target.files[0];
+        break;
+      default:
+        // by default, the value is just the field value
+        value = e.target.value;
+    }
+
+    this.setState({
+      [name]: value,
+    });
   };
 
   onSubmit = (e) => {
+    // prevent page from reloading
     e.preventDefault();
 
-    // console.log(store.getState().auth.user.username);
-    console.log(...this.state.formData);
-    // axios.post("/api/createProject", formData, {
-    //   headers: {
-    //     "Content-Type": "multipart/form-data",
-    //   },
-    // });
+    // create the formdata object
+    // we need to do this because JSON isn't sufficient for image sending
+    const formData = new FormData();
+    formData.set("title", this.state.title);
+    formData.set("body", this.state.body);
+    formData.set("image", this.state.image);
+
+    // configururation for post request since we aren't just posting json
+    const config = {
+      headers: {
+        "content-type": "multipart/form-data",
+      },
+    };
+
+    // get user id for post request
+    const _id = this.props.auth.user._id;
+
+    axios
+      .post(`/api/project/create/${_id}`, formData, config)
+      .then((response) => {
+        console.log("Success!");
+        console.log(response.data);
+      })
+      .catch((err) => {
+        console.log("Failure!");
+        console.log(err);
+      });
   };
 
   render() {
@@ -40,11 +82,6 @@ class CreateProject extends Component {
           <Form onSubmit={this.onSubmit}>
             <Form.Group controlId="title">
               <Form.Label>Title</Form.Label>
-              <Form.Control type="text" onChange={this.onChange} />
-            </Form.Group>
-
-            <Form.Group controlId="about">
-              <Form.Label>About</Form.Label>
               <Form.Control type="text" onChange={this.onChange} />
             </Form.Group>
 
@@ -76,4 +113,12 @@ class CreateProject extends Component {
   }
 }
 
-export default CreateProject;
+CreateProject.propTypes = {
+  auth: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+
+export default connect(mapStateToProps)(CreateProject);

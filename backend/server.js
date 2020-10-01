@@ -36,8 +36,10 @@ mongoose
   });
 
 const authRoutes = require("./routes/auth");
+const projectRoutes = require("./routes/project");
 
 app.use("/api", authRoutes);
+app.use("/api", projectRoutes);
 
 // // authentication
 

@@ -9,12 +9,14 @@ import { LinkContainer } from "react-router-bootstrap";
 function NavbarAccountLoggedOut() {
   return (
     <>
-      <LinkContainer to="/signin">
-        <Nav.Link>Sign In</Nav.Link>
-      </LinkContainer>
-      <LinkContainer to="/signup">
-        <Nav.Link>Sign up</Nav.Link>
-      </LinkContainer>
+      <Nav className="ml-auto">
+        <LinkContainer to="/signin">
+          <Nav.Link>Sign In</Nav.Link>
+        </LinkContainer>
+        <LinkContainer to="/signup">
+          <Nav.Link>Sign up</Nav.Link>
+        </LinkContainer>
+      </Nav>
     </>
   );
 }
@@ -22,10 +24,17 @@ function NavbarAccountLoggedOut() {
 function NavbarAccountLoggedIn(props) {
   return (
     <>
-      <LinkContainer to="/dashboard">
-        <Nav.Link>{props.user.firstName}</Nav.Link>
-      </LinkContainer>
-      <Nav.Link onClick={props.onClickLogout}>Sign Out</Nav.Link>
+      <Nav className="mr-auto">
+        <Nav.Link href="/upload">Upload</Nav.Link>
+        <Nav.Link href="/createProject">Create Project</Nav.Link>
+        <Nav.Link href="/my-projects">My Projects</Nav.Link>
+        <LinkContainer to="/dashboard">
+          <Nav.Link>{props.user.firstName}</Nav.Link>
+        </LinkContainer>
+      </Nav>
+      <Nav className="ml-auto">
+        <Nav.Link onClick={props.onClickLogout}>Sign Out</Nav.Link>
+      </Nav>
     </>
   );
 }
@@ -45,19 +54,14 @@ class MyNavbar extends Component {
             <Navbar.Brand href="/">ePortfolio</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
-              <Nav className="mr-auto">
-                <Nav.Link href="/upload">Upload</Nav.Link>
-              </Nav>
-              <Nav className="ml-auto">
-                {isAuthenticated ? (
-                  <NavbarAccountLoggedIn
-                    onClickLogout={this.onClickLogout}
-                    user={user}
-                  />
-                ) : (
-                  <NavbarAccountLoggedOut />
-                )}
-              </Nav>
+              {isAuthenticated ? (
+                <NavbarAccountLoggedIn
+                  onClickLogout={this.onClickLogout}
+                  user={user}
+                />
+              ) : (
+                <NavbarAccountLoggedOut />
+              )}
             </Navbar.Collapse>
           </Container>
         </Navbar>

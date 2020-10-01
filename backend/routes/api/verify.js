@@ -1,6 +1,6 @@
 const verify = require("express").Router();
-let User = require("../../backend/models/user");
-let UserSession = require("../../backend/models/userSession");
+let User = require("../../models/user");
+let UserSession = require("../../models/userSession");
 
 verify.route("/").get((req, res) => {
   const { query } = req;
