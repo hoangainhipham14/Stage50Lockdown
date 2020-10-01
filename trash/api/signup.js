@@ -7,9 +7,9 @@ const Validator = require("validator");
 ///
 
 const signup = require("express").Router();
-let User = require("../../models/user.model");
-let UserSession = require("../../models/userSession");
-let UserToken = require("../../models/userToken");
+let User = require("../../backend/models/user");
+let UserSession = require("../../backend/models/userSession");
+let UserToken = require("../../backend/models/userToken");
 
 function validateUserData(data) {
   let errors = {};
@@ -123,7 +123,7 @@ signup.route("/").post((req, res) => {
             text:
               "Verify your account by clicking the link: \nhttp://" +
               req.headers.host +
-              "/api/users/validation/" +
+              "/api/validation/" +
               token.token,
           };
 

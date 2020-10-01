@@ -1,5 +1,5 @@
 const profile = require("express").Router();
-let User = require("../../models/user.model");
+let User = require("../../models/user");
 
 profile.route("/:username").get((req, res) => {
   const username = req.params.username;

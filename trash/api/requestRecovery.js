@@ -4,7 +4,7 @@ const isEmpty = require("is-empty");
 const Validator = require("validator");
 
 const requestRecovery = require("express").Router();
-let User = require("../../models/user.model");
+let User = require("../../models/user");
 let RecoveryToken = require("../../models/recoveryToken");
 
 function validate(data) {

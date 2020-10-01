@@ -1,5 +1,5 @@
 const validation = require("express").Router();
-let User = require("../../models/user.model");
+let User = require("../../models/user");
 let UserSession = require("../../models/userSession");
 let UserToken = require("../../models/userToken");
 

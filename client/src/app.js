@@ -11,7 +11,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./app.css";
 
 import Profile from "./components/profile/profile";
-import ResetPassword from "./components/password-recovery/passwordReset";
+import ResetPassword from "./components/auth/passwordReset";
 import Signin from "./components/auth/signin";
 import Signup from "./components/auth/signup";
 import Navbar from "./components/layout/navbar";

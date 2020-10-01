@@ -3,8 +3,8 @@ const isEmpty = require("is-empty");
 const jwt = require("jsonwebtoken");
 const Validator = require("validator");
 
-let User = require("../../models/user.model");
-let UserSession = require("../../models/userSession");
+let User = require("../../backend/models/user");
+let UserSession = require("../../backend/models/userSession");
 
 function validate(data) {
   let errors = {};

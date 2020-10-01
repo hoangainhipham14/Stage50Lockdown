@@ -1,5 +1,5 @@
 const recoverPassword = require("express").Router();
-let User = require("../../models/user.model");
+let User = require("../../models/user");
 let RecoveryToken = require("../../models/recoveryToken");
 const Validator = require("validator");
 

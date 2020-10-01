@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { signinUser } from "../../actions/authActions";
-import RequestPasswordReset from "../password-recovery/requestRecovery";
+import RequestPasswordReset from "./requestRecovery";
 import isEmpty from "is-empty";
 
 class Signin extends Component {

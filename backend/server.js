@@ -35,55 +35,59 @@ mongoose
     console.error("Error connecting to MongoDB", err);
   });
 
-// authentication
+const authRoutes = require("./routes/auth");
 
-const userVerify = require("./routes/api/verify");
-const userSignUp = require("./routes/api/signup");
-const userSignIn = require("./routes/api/signin");
-const userLogOut = require("./routes/api/logout");
+app.use("/api", authRoutes);
 
-app.use("/api/users/verify", userVerify);
-app.use("/api/users/signin", userSignIn);
-app.use("/api/users/logout", userLogOut);
-app.use("/api/users/signup", userSignUp);
-app.use("/api/users/signin", userSignIn);
+// // authentication
 
-// email validation
+// const userVerify = require("./routes/api/verify");
+// const userSignUp = require("./routes/api/signup");
+// const userSignIn = require("./routes/api/signin");
+// const userLogOut = require("./routes/api/logout");
 
-const userEmailValidation = require("./routes/api/validation");
-const userResendValidation = require("./routes/api/resendValidation");
+// app.use("/api/users/verify", userVerify);
+// app.use("/api/users/signin", userSignIn);
+// app.use("/api/users/logout", userLogOut);
+// app.use("/api/users/signup", userSignUp);
+// app.use("/api/users/signin", userSignIn);
 
-app.use("/api/users/validation", userEmailValidation);
-app.use("/api/users/resendValidation", userResendValidation);
+// // email validation
 
-// password recovery
+// const userEmailValidation = require("./routes/api/validation");
+// const userResendValidation = require("./routes/api/resendValidation");
 
-const userRequestRecovery = require("./routes/api/requestRecovery");
-const userRecoverPassword = require("./routes/api/recoverPassword");
+// app.use("/api/users/validation", userEmailValidation);
+// app.use("/api/users/resendValidation", userResendValidation);
 
-app.use("/api/recovery/requestRecovery", userRequestRecovery);
-app.use("/api/recovery/recoverPassword", userRecoverPassword);
+// // password recovery
 
-// profile urls
+// const userRequestRecovery = require("./routes/api/requestRecovery");
+// const userRecoverPassword = require("./routes/api/recoverPassword");
 
-const profile = require("./routes/api/profile");
-app.use("/api/users/", profile);
+// app.use("/recovery/requestRecovery", userRequestRecovery);
+// app.use("/recovery/recoverPassword", userRecoverPassword);
 
-// image upload
+// // profile urls
 
-const upload = require("./routes/api/upload");
-app.use("/api/upload", upload);
+// const profile = require("./routes/api/profile");
+// app.use("/api/users/", profile);
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../client/build")));
+// // image upload
 
-  app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "../client/build/index.html"));
-  });
-}
+// const upload = require("./routes/api/upload");
+// app.use("/api/upload", upload);
 
+// if (process.env.NODE_ENV === "production") {
+//   app.use(express.static(path.join(__dirname, "../client/build")));
+
+//   app.get("*", (req, res) => {
+//     res.sendFile(path.resolve(__dirname, "../client/build/index.html"));
+//   });
+// }
+
+// production
 const port = process.env.PORT || 5000;
-
 app.listen(port, () => {
   console.log(`Server is running on port: ${port}`);
 });
