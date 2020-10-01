@@ -52,10 +52,7 @@ class RequestPasswordReset extends Component {
     const successmsg = this.props.successmsg.msg;
 
     return (
-      <div
-        className="container"
-        style={{ maxWidth: "30rem", margin: "0 auto" }}
-      >
+      <div style={{ maxWidth: "25rem", margin: "0 auto" }}>
         <h2 align="center">Forgot your password?</h2>
         <p align="center">
           Enter your email address here to request a recovery link
