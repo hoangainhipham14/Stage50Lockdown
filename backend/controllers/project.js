@@ -36,3 +36,23 @@ exports.createProject = (req, res, next) => {
     });
   });
 };
+
+exports.projectById = (req, res, next, id) => {
+  console.log("G");
+  Project.findById(id)
+    .populate("postedBy", "_id name")
+    .exec((err, project) => {
+      if (err || !project) {
+        return res.status(400).json({
+          error: err,
+        });
+      }
+      req.project = project;
+      next();
+    });
+};
+
+exports.singleProject = (req, res) => {
+  console.log("H");
+  return res.json(req.project);
+};

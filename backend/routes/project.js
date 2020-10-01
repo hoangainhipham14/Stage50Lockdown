@@ -1,8 +1,20 @@
 const express = require("express");
 const router = express.Router();
-const { createProject } = require("../controllers/project");
+const {
+  createProject,
+  singleProject,
+  projectById,
+} = require("../controllers/project");
+
 const { requireAuthentication } = require("../controllers/auth");
 
 router.post("/project/create/:userID", requireAuthentication, createProject);
+// router.get("/projects", getProject);
+// router.get("/Projects/by/:userId", requireAuthentication, ProjectsByUser);
+// router.get("/Project/photo/:ProjectId", photo);
 
+router.get("/project/:projectId", singleProject);
+
+// router.param("userId", userById);
+router.param("projectId", projectById);
 module.exports = router;
