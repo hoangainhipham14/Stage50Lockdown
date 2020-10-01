@@ -38,7 +38,6 @@ exports.createProject = (req, res, next) => {
 };
 
 exports.projectById = (req, res, next, id) => {
-  console.log("G");
   Project.findById(id)
     .populate("postedBy", "_id name")
     .exec((err, project) => {
@@ -53,6 +52,9 @@ exports.projectById = (req, res, next, id) => {
 };
 
 exports.singleProject = (req, res) => {
-  console.log("H");
-  return res.json(req.project);
+  const data = {
+    title: req.project.title,
+    body: req.project.body,
+  };
+  return res.json(data);
 };
