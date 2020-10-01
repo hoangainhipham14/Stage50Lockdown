@@ -20,7 +20,7 @@ router.post("/requestRecovery", requestRecovery);
 router.post("/recoverPassword", recoverPassword);
 
 // Email validation
-router.post("/validation/:token", validation);
+router.get("/validation/:token", validation);
 router.post("/resendValidation", resendValidation);
 
 module.exports = router;

@@ -158,7 +158,6 @@ function validateSignin(data) {
 }
 
 exports.signin = (req, res) => {
-  console.log("signin time");
   // validate sign in data
   const { errors, isValid } = validateSignin(req.body);
   if (!isValid) {
@@ -197,6 +196,7 @@ exports.signin = (req, res) => {
 
     // respond with token and also a subset of the user information
     const { _id, firstName, lastName, username, email } = user;
+    console.log("responding...");
     return res.json({
       token,
       user: { _id, firstName, lastName, username, email },
