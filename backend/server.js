@@ -1,11 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const ejs = require("ejs");
 const path = require("path");
-const multer = require("multer");
-const GridFsStorage = require("multer-gridfs-storage");
-const Grid = require("gridfs-stream");
 
 require("dotenv").config();
 
@@ -13,11 +9,6 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-// Embedded JavaScript
-app.set("view engine", "ejs");
-
-// Init gfs
-let gfs;
 
 const uri = process.env.ATLAS_URI;
 
