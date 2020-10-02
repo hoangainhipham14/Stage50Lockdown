@@ -67,3 +67,20 @@ export const logoutUser = () => (dispatch) => {
   setAuthToken(false);
   dispatch(setCurrentUser({}));
 };
+
+export const deleteUser = (history) => {
+  // const logoutUser = logoutUser;
+  // console.log("Clicked");
+  axios
+    .delete("/api/deleteuser")
+    .then((res) => {
+      console.log(res.data);
+      // dispatch(setCurrentUser({}));
+      logoutUser();
+      history.push("/");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  // history.push("/");
+};
