@@ -27,7 +27,7 @@ class SingleProject extends Component {
     return (
       <div className="card-body">
         <img
-          src={`/project/${project._id}`}
+          src={`/project/img/${project._id}`}
           alt={project.title}
           style={{ height: "300px", width: "100%", objectFit: "cover" }}
           className="img-thunbnail mb-3"

@@ -49,7 +49,6 @@ exports.projectById = (req, res, next, id) => {
         });
       }
       req.project = project;
-      console.log(req.project);
       next();
     });
 };
