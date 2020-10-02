@@ -19,9 +19,11 @@ exports.createProject = (req, res, next) => {
     let project = new Project(fields);
 
     // add the image to the project
+
     if (files.image) {
       project.image.data = fs.readFileSync(files.image.path);
       project.image.contentType = files.image.type;
+      project.image.fileName = files.image.name;
     }
 
     // save the new project
@@ -47,8 +49,17 @@ exports.projectById = (req, res, next, id) => {
         });
       }
       req.project = project;
+      console.log(req.project);
       next();
     });
+};
+
+exports.image = (req, res, next) => {
+  res.set({
+    "Content-Disposition": "inline; filename=" + req.project.image.fileName,
+    "Content-Type": req.project.image.contentType,
+  });
+  return res.send(req.project.image.data);
 };
 
 exports.singleProject = (req, res) => {

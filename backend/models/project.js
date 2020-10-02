@@ -16,6 +16,7 @@ const projectSchema = new Schema({
   image: {
     data: Buffer,
     contentType: String,
+    fileName: String,
   },
 
   postedBy: {
