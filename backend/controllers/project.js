@@ -4,8 +4,6 @@ const formidable = require("formidable");
 const fs = require("fs");
 
 exports.createProject = (req, res, next) => {
-  console.log("createProject controller");
-
   let form = new formidable.IncomingForm();
   form.keepExtensions = true;
   form.parse(req, (err, fields, files) => {
@@ -49,6 +47,7 @@ exports.projectById = (req, res, next, id) => {
         });
       }
       req.project = project;
+
       next();
     });
 };
@@ -66,5 +65,6 @@ exports.singleProject = (req, res) => {
     title: req.project.title,
     body: req.project.body,
   };
+
   return res.json(data);
 };

@@ -5,17 +5,20 @@ import { Link, Redirect } from "react-router-dom";
 class SingleProject extends Component {
   state = {
     project: "",
+    projectId: "",
     redirectToHome: false,
   };
 
   componentDidMount = () => {
     const projectId = this.props.match.params.projectId;
-
     singleProject(projectId).then((data) => {
       if (data.error) {
         console.log(data.error);
       } else {
-        this.setState({ project: data });
+        this.setState({
+          project: data,
+          projectId: projectId,
+        });
       }
     });
   };
@@ -27,7 +30,7 @@ class SingleProject extends Component {
     return (
       <div className="card-body">
         <img
-          src={`/project/img/${project._id}`}
+          src={`/api/project/img/${this.state.projectId}`}
           alt={project.title}
           style={{ height: "300px", width: "100%", objectFit: "cover" }}
           className="img-thunbnail mb-3"
@@ -55,7 +58,7 @@ class SingleProject extends Component {
     const { project } = this.state;
     return (
       <div className="container">
-        <h2 className="display-2 mt-5 mb-5">{project.title}</h2>
+        <h2 className="display-2 mt-5 mb-5">Title: {project.title}</h2>
         {!project ? (
           <div className="jumbotron text-center">
             <h2>Loading...</h2>
