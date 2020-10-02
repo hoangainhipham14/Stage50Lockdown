@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-export default class Home extends Component {
+export default class Carousel extends Component {
   componentDidMount() {
     const track = document.querySelector(".carousel__track");
     const slides = Array.from(track.children);
@@ -99,24 +99,24 @@ export default class Home extends Component {
             <div class="carousel__slide current-slide">
               <img
                 class="carousel__image"
-                src="anywhere-door.png"
-                alt="anywhere-door"
+                src={`/api/project/img/${this.state.projectId}`}
+                alt={project.title}
               ></img>
             </div>
             <div class="carousel__slide">
               <img
                 class="carousel__image"
-                src="copying-toast.png"
-                alt="copying-toast"
+                src={`/api/project/img/${this.state.projectId}`}
+                alt={project.title}
               ></img>
             </div>
-            <li class="carousel__slide">
+            <div class="carousel__slide">
               <img
                 class="carousel__image"
-                src="take-copter.jpg"
-                alt="take-copter"
+                src={`/api/project/img/${this.state.projectId}`}
+                alt={project.title}
               ></img>
-            </li>
+            </div>
           </ul>
         </div>
 

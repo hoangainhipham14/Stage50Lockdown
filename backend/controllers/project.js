@@ -13,6 +13,7 @@ exports.createProject = (req, res, next) => {
       });
     }
 
+    console.log(fields);
     // create the new project
     let project = new Project(fields);
 

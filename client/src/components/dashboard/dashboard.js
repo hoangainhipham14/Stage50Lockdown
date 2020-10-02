@@ -6,7 +6,7 @@ import { logoutUser } from "../../actions/authActions";
 import { Modal, Button } from "react-bootstrap";
 
 class Dashboard extends Component {
-  onLogoutClick = e => {
+  onLogoutClick = (e) => {
     e.preventDefault();
     this.props.logoutUser();
   };
@@ -14,6 +14,7 @@ class Dashboard extends Component {
   render() {
     const { user } = this.props.auth;
 
+    // console.log(user);
     return (
       <Modal.Dialog>
         <Modal.Header closeButton>
@@ -25,7 +26,9 @@ class Dashboard extends Component {
         </Modal.Body>
 
         <Modal.Footer>
-          <Button variant="secondary" onClick={this.onLogoutClick}>Sign Out</Button>
+          <Button variant="secondary" onClick={this.onLogoutClick}>
+            Sign Out
+          </Button>
         </Modal.Footer>
       </Modal.Dialog>
     );
@@ -34,14 +37,11 @@ class Dashboard extends Component {
 
 Dashboard.propTypes = {
   logoutUser: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired
+  auth: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = state => ({
-  auth: state.auth
+const mapStateToProps = (state) => ({
+  auth: state.auth,
 });
 
-export default connect(
-  mapStateToProps,
-  { logoutUser }
-)(Dashboard);
+export default connect(mapStateToProps, { logoutUser })(Dashboard);
