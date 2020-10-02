@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { requestRecovery } from "../../actions/passwordReset";
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, Container } from "react-bootstrap";
 import Alert from "react-bootstrap/Alert";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -52,38 +52,38 @@ class RequestPasswordReset extends Component {
     const successmsg = this.props.successmsg.msg;
 
     return (
-      <div style={{ maxWidth: "25rem", margin: "0 auto" }}>
-        <h2 align="center">Forgot your password?</h2>
-        <p align="center">
-          Enter your email address here to request a recovery link
-        </p>
+      <Container>
+        <div className="form-container">
+          <h2 align="center">Forgot your password?</h2>
+          <p align="center">
+            Enter your email address here to request a recovery link
+          </p>
 
-        <Form onSubmit={this.onSubmit}>
-          <Form.Group controlId="email">
-            <Form.Label>Email address</Form.Label>
-            <Form.Control
-              type="email"
-              placeholder="Enter email"
-              onChange={this.onChange}
-            />
-            {/* <div className="error-text">
-              {errors.recoveryemail}
-              {errors.emailnotfound}
-            </div> */}
+          <Form onSubmit={this.onSubmit}>
+            <Form.Group controlId="email">
+              <Form.Label>Email address</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="Enter email"
+                onChange={this.onChange}
+              />
 
-            <Alert variant="success" show={!isEmpty(successmsg)}>
-              {successmsg}
-            </Alert>
-            <Alert variant="danger" show={!isEmpty(errors.recoveryemail)}>
-              {errors.recoveryemail}
-            </Alert>
-          </Form.Group>
+              <Alert variant="success" show={!isEmpty(successmsg)}>
+                {successmsg}
+              </Alert>
+              <Alert variant="danger" show={!isEmpty(errors.recoveryemail)}>
+                {errors.recoveryemail}
+              </Alert>
+            </Form.Group>
 
-          <Button variant="primary" type="submit">
-            Send Recovery Email
-          </Button>
-        </Form>
-      </div>
+            <div className="text-center">
+              <Button variant="primary" type="submit">
+                Send Recovery Email
+              </Button>
+            </div>
+          </Form>
+        </div>
+      </Container>
     );
   }
 }

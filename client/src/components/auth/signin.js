@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import { Form, Button, Alert, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
+
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { signinUser } from "../../actions/authActions";
-import RequestPasswordReset from "./requestRecovery";
+
 import isEmpty from "is-empty";
+
+import { signinUser } from "../../actions/authActions";
 
 class Signin extends Component {
   constructor(props) {
@@ -53,7 +55,7 @@ class Signin extends Component {
 
     return (
       <Container>
-        <div style={{ maxWidth: "25rem", margin: "0 auto" }}>
+        <div className="form-container">
           <h2 align="center">Sign In</h2>
           <p align="center">
             Need an account? <Link to="/signup">Sign up</Link>
@@ -79,12 +81,7 @@ class Signin extends Component {
                 {errors.emailnotfound}
                 {errors.notvalidated}
               </Alert>
-              {/* <div className="error-text">
-              {errors.email}
-              {errors.emailnotfound}
-            </div> */}
             </Form.Group>
-
             <Form.Group controlId="password">
               <Form.Label>Password</Form.Label>
               <Form.Control
@@ -102,20 +99,18 @@ class Signin extends Component {
                 {errors.password}
                 {errors.passwordincorrect}
               </Alert>
-              {/* <div className="error-text">
-              {errors.password}
-              {errors.passwordincorrect}
-            </div> */}
             </Form.Group>
-
-            <Button variant="primary" type="submit">
-              Sign In
-            </Button>
-            {/* <div className="error-text">{errors.notvalidated}</div> */}
+            <div className="text-center">
+              <Button variant="primary" type="submit">
+                Sign In
+              </Button>
+            </div>
+            <p align="center">
+              Forgot your password? Click{" "}
+              <Link to="/forgot-password">here</Link>
+            </p>
           </Form>
         </div>
-        <hr />
-        <RequestPasswordReset />
       </Container>
     );
   }

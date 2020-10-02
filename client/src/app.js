@@ -19,6 +19,7 @@ import PrivateRoute from "./components/private-route/privateRoute";
 import Dashboard from "./components/dashboard/dashboard";
 import CreateProject from "./components/project/CreateProject";
 import SingleProject from "./components/project/SingleProject";
+import RequestPasswordReset from "./components/auth/requestRecovery";
 
 // check for token to keep user logged in
 if (localStorage.token) {
@@ -52,6 +53,11 @@ class App extends Component {
             <Route exact path="/profile/:username" component={Profile} />
             <Route exact path="/createProject" component={CreateProject} />
             <Route exact path="/project/:projectId" component={SingleProject} />
+            <Route
+              exact
+              path="/forgot-password"
+              component={RequestPasswordReset}
+            />
             <Route
               exact
               path="/resetPassword/:token"

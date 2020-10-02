@@ -54,7 +54,7 @@ class Signup extends Component {
 
     return (
       <Container>
-        <div style={{ maxWidth: "25rem", margin: "0 auto" }}>
+        <div className="form-container">
           <div className="formContainer">
             <h2 align="center">Sign Up</h2>
             <p align="center">
@@ -121,9 +121,11 @@ class Signup extends Component {
                 </Alert>
               </Form.Group>
 
-              <Button variant="primary" type="submit">
-                Sign Up
-              </Button>
+              <div className="text-center">
+                <Button variant="primary" type="submit">
+                  Sign Up
+                </Button>
+              </div>
             </Form>
           </div>
         </div>
