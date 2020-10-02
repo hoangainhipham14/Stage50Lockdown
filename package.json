@@ -5,7 +5,7 @@
   "dependencies": {
     "bootstrap": "^4.5.2",
     "concurrently": "^4.0.1",
-    "express-jwt": "^5.3.3",
+    "express-jwt": "^6.0.0",
     "formidable": "^1.2.2",
     "gridfs-stream": "^1.1.1",
     "is-empty": "^1.2.0",
