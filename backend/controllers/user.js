@@ -14,6 +14,7 @@ exports.userById = (req, res, next, id) => {
   });
 };
 
+// find user from databse by username
 exports.userByUsername = (req, res, next, username) => {
   User.findOne({ username: username }).exec((err, user) => {
     if (err || !user) {
@@ -35,10 +36,12 @@ exports.userPhoto = (req, res, next) => {
   next();
 };
 
+// get user from database
 exports.getUser = (req, res) => {
   return res.json(req.profile);
 };
 
+// Update use information
 exports.updateUser = (req, res, next) => {
   let form = new formidable.IncomingForm();
   form.keepExtensions = true;

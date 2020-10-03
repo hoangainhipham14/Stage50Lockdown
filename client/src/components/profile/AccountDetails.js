@@ -17,6 +17,7 @@ class AccountDetails extends Component {
   }
 
   componentDidMount() {
+    // Get user information stored in database when sign up
     axios
       .get(`/api/user/${this.props.match.params.username}`)
       .then((response) => {
@@ -34,13 +35,14 @@ class AccountDetails extends Component {
       });
   }
 
+  // Reset event, when discard changes, redirect to same page
   onReset = (e) => {
-    console.log("F");
     window.location.replace(
       `/user/${this.props.match.params.username}/account`
     );
   };
 
+  // Change event when fill in inputs
   onChange = (e) => {
     const name = e.target.id;
     const value = e.target.value;
@@ -50,6 +52,7 @@ class AccountDetails extends Component {
     });
   };
 
+  // Submit event, update user information
   onSubmit = (e) => {
     // prevent page from reloading
     e.preventDefault();
@@ -70,7 +73,7 @@ class AccountDetails extends Component {
       },
     };
 
-    // Pull user details from backend API
+    // Update user information by sending request to back end
     axios
       .post(`/api/user/${this.props.match.params.username}`, formData, config)
       .then((data) => {
