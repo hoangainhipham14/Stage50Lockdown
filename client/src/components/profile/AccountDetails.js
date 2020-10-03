@@ -34,6 +34,13 @@ class AccountDetails extends Component {
       });
   }
 
+  onReset = (e) => {
+    console.log("F");
+    window.location.replace(
+      `/user/${this.props.match.params.username}/account`
+    );
+  };
+
   onChange = (e) => {
     const name = e.target.id;
     const value = e.target.value;
@@ -89,7 +96,7 @@ class AccountDetails extends Component {
             <h2>Account Details</h2>
           </div>
 
-          <Form onSubmit={this.onSubmit}>
+          <Form onSubmit={this.onSubmit} onReset={this.onReset}>
             <Form.Group controlId="firstName">
               <Form.Label>First Name</Form.Label>
               <Form.Control
@@ -141,7 +148,7 @@ class AccountDetails extends Component {
             <Form.Group controlId="email">
               <Form.Label>Email</Form.Label>
               <Form.Control
-                type="text"
+                type="email"
                 placeholder={this.state.email}
                 onChange={this.onChange}
               />
@@ -152,7 +159,7 @@ class AccountDetails extends Component {
               <Button variant="success" type="submit">
                 Save Changes
               </Button>
-              <Button variant="secondary" type="submit">
+              <Button variant="secondary" type="reset">
                 Discard Changes
               </Button>
             </div>
