@@ -27,24 +27,24 @@ function validateSignup(data) {
 
   // validate first name
   if (Validator.isEmpty(data.firstName)) {
-    errors.firstName = "First name is required";
+    errors.firstName = "Required";
   }
 
   // validate last name
   if (Validator.isEmpty(data.lastName)) {
-    errors.lastName = "Last name is required";
+    errors.lastName = "Required";
   }
 
   // validate username
   if (Validator.isEmpty(data.username)) {
-    errors.username = "Username is required";
+    errors.username = "Required";
   }
 
   // validate email
   if (Validator.isEmpty(data.email)) {
-    errors.email = "Email is required";
+    errors.email = "Required";
   } else if (!Validator.isEmail(data.email)) {
-    errors.email = "Email is invalid";
+    errors.email = "Invalid email";
   }
 
   // validate password
