@@ -1,66 +1,101 @@
 // test the authentication modules
-const {
-  validateSignup,
-  validateSignin,
-  validateRequestRecovery,
-} = require("../auth");
+import * as validation from "../authValidation";
 
 describe("Authentication Validation Tests -> validateSignup", function () {
-  it("Should Reject A Signin Request with an invalid email", function () {
+  it("Should Reject A Signup Request with an invalid email", function () {
     const request1 = {
-      firstname: "Test",
-      lastname: "Test",
+      firstName: "Test",
+      lastName: "Test",
       username: "test123",
       email: "notvalid",
-      passoword: "testtesttesttest",
+      password: "testtesttesttest",
     };
-    expect(validateSignup(request1)).toEqual({
+    expect(validation.validateSignup(request1)).toEqual({
       errors: { email: "Email is invalid" },
       isValid: false,
     });
   });
   it("Should Reject A Signin Request with a password that is too short", function () {
     const request2 = {
-      firstname: "Test",
-      lastname: "Test",
+      firstName: "Test",
+      lastName: "Test",
       username: "test123",
-      email: "notvalid",
-      passoword: "testtesttesttest",
+      email: "valid@gmail.com",
+      password: "te",
     };
-
-    expect(true).toEqual(true);
+    expect(validation.validateSignup(request2)).toEqual({
+      errors: { password: "Password must be at least 6 characters" },
+      isValid: false,
+    });
   });
   it("Should Reject A Signin Request with no first name", function () {
     const request3 = {
-      firstname: "Test",
-      lastname: "Test",
+      firstName: "",
+      lastName: "Test",
       username: "test123",
-      email: "notvalid",
-      passoword: "testtesttesttest",
+      email: "valid@gmail.com",
+      password: "testtesttesttest",
     };
-    expect(true).toEqual(true);
+    expect(validation.validateSignup(request3)).toEqual({
+      errors: { firstName: "First name is required" },
+      isValid: false,
+    });
   });
   it("Should Accept A Valid Signin Request", function () {
     const request4 = {
-      firstname: "Test",
-      lastname: "Test",
+      firstName: "Test",
+      lastName: "Test",
       username: "test123",
-      email: "notvalid",
-      passoword: "testtesttesttest",
+      email: "valid@gmail.com",
+      password: "testtesttesttest",
     };
-    expect(true).toEqual(true);
+    expect(validation.validateSignup(request4)).toEqual({
+      errors: {},
+      isValid: true,
+    });
   });
 });
 
 describe("Authentication Validation Tests -> validateSignin", function () {
-  it("app module exists", async function () {
-    true;
+  it("Rejects a request with no password", function () {
+    const request5 = { email: "valid@gmail.com", password: "" };
+    expect(validation.validateSignin(request5)).toEqual({
+      errors: { password: "Password is required" },
+      isValid: false,
+    });
+  });
+  it("Checks Accepts a valid signin request", function () {
+    const request6 = { email: "valid@gmail.com", password: "testtesttest" };
+    expect(validation.validateSignin(request6)).toEqual({
+      errors: {},
+      isValid: true,
+    });
   });
 });
 
 describe("Authentication Validation Tests -> validateRequestRecovery", function () {
-  it("app module exists", async function () {
-    true;
+  it("Checks For empty email", function () {
+    const request7 = { email: "" };
+    expect(validation.validateRequestRecovery(request7)).toEqual({
+      errors: { recoveryemail: "Email is required" },
+      isValid: false,
+    });
+  });
+  it("Checks for invalid email", function () {
+    const request8 = {
+      email: "@invalidbutalsocouldtrickasimplesystemvalid@gmail,com",
+    };
+    expect(validation.validateRequestRecovery(request8)).toEqual({
+      errors: { recoveryemail: "Email is invalid" },
+      isValid: false,
+    });
+  });
+  it("Allows valid email", function () {
+    const request9 = { email: "valid@gmail.com" };
+    expect(validation.validateRequestRecovery(request9)).toEqual({
+      errors: {},
+      isValid: true,
+    });
   });
 });
 
