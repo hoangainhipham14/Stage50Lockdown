@@ -3,12 +3,13 @@ const bcrypt = require("bcrypt");
 
 const Schema = mongoose.Schema;
 
+// firstname has been changed to firstName etc.
 const userSchema = new Schema({
-  firstname: {
+  firstName: {
     type: String,
     required: true,
   },
-  lastname: {
+  lastName: {
     type: String,
     required: true,
   },
@@ -32,7 +33,7 @@ const userSchema = new Schema({
   },
   isValidated: {
     type: Boolean,
-    default: false
+    default: false,
   },
 });
 

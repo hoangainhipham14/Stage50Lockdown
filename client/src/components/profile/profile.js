@@ -13,7 +13,7 @@ class Profile extends Component {
     };
 
     // Pull user details from backend API
-    fetch("/api/users/" + this.props.match.params.username)
+    fetch("/api/" + this.props.match.params.username)
       .then((res) => res.json())
       .then((json) => {
         if (json.success) {

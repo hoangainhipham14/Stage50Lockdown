@@ -7,7 +7,7 @@ import { GET_ERRORS, SET_CURRENT_USER, USER_LOADING } from "./types";
 // Register user
 export const registerUser = (userData, history) => (dispatch) => {
   axios
-    .post("/api/users/signup", userData)
+    .post("/api/signup", userData)
     .then((res) => {
       console.log("Signup success with res.data =", res.data);
       history.push("/signin");
@@ -24,7 +24,7 @@ export const registerUser = (userData, history) => (dispatch) => {
 // Sign in user
 export const signinUser = (userData) => (dispatch) => {
   axios
-    .post("/api/users/signin", userData)
+    .post("/api/signin", userData)
     .then((res) => {
       // Save to local storage
       console.log("Login success with res.data =", res.data);
@@ -35,6 +35,7 @@ export const signinUser = (userData) => (dispatch) => {
       setAuthToken(token);
       // decode token to get user data
       const decoded = jwt_decode(token);
+      console.log(decoded);
       // set the current user
       dispatch(setCurrentUser(decoded));
     })

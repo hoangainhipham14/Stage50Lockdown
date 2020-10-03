@@ -11,14 +11,14 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./app.css";
 
 import Profile from "./components/profile/profile";
-import ResetPassword from "./components/password-recovery/passwordReset";
+import ResetPassword from "./components/auth/passwordReset";
 import Signin from "./components/auth/signin";
 import Signup from "./components/auth/signup";
 import Navbar from "./components/layout/navbar";
 import PrivateRoute from "./components/private-route/privateRoute";
 import Dashboard from "./components/dashboard/dashboard";
-import FileUpload from "./components/upload/FileUpload";
-import CreateProject from "./components/profile/createProject";
+import CreateProject from "./components/project/CreateProject";
+import SingleProject from "./components/project/SingleProject";
 
 // check for token to keep user logged in
 if (localStorage.token) {
@@ -50,8 +50,8 @@ class App extends Component {
             <Route exact path="/signin" component={Signin} />
             <Route exact path="/signup" component={Signup} />
             <Route exact path="/profile/:username" component={Profile} />
-            <Route exact path="/upload" component={FileUpload} />
-            <Route exact path="/create-project" component={CreateProject} />
+            <Route exact path="/createProject" component={CreateProject} />
+            <Route exact path="/project/:projectId" component={SingleProject} />
             <Route
               exact
               path="/resetPassword/:token"

@@ -1,5 +1,6 @@
 import React, { Fragment, Component } from "react";
 import axios from "axios";
+// import { Alert } from "react-bootstrap";
 import Message from "./Message";
 import store from "../../store.js";
 
@@ -28,6 +29,14 @@ class FileUpload extends Component {
 
   onSubmit = async (e) => {
     e.preventDefault();
+
+    if (this.state.file === "") {
+      this.setState({
+        message: "File not supplied",
+        isSubmitted: false,
+      });
+      return;
+    }
 
     const formData = new FormData();
     formData.append("file", this.state.file);
@@ -61,41 +70,53 @@ class FileUpload extends Component {
 
   render() {
     return (
-      <Fragment>
-        {this.state.message ? <Message msg={this.state.message} /> : null}
-        <form onSubmit={this.onSubmit}>
-          <div className="custom-file mb-4">
-            <input
-              name="file"
-              type="file"
-              className="custom-file-input"
-              id="customFile"
-              onChange={this.onChange}
+      <div
+        className="container"
+        style={{ maxWidth: "30rem", margin: "0 auto" }}
+      >
+        <Fragment>
+          {this.state.message ? (
+            <Message
+              isSubmitted={this.state.isSubmitted}
+              message={this.state.message}
             />
-            <label className="custom-file-label" htmlFor="customFile">
-              {this.state.fileName}
-            </label>
-          </div>
-          <input
-            type="submit"
-            value="Upload"
-            className="btn btn-primary btn-block mt-4"
-          />
-          <div>
-            {/* If File is uploaded then display filename */}
-            <h3>{this.state.isSubmitted ? this.state.fileName : null}</h3>
-          </div>
-          <img
-            src={
-              this.state.isSubmitted
-                ? `/api/upload/display/?fileName=${this.state.fileName}`
-                : null
-            }
-            alt=""
-            width="100%"
-          ></img>
-        </form>
-      </Fragment>
+          ) : null}
+          <form onSubmit={this.onSubmit}>
+            <div className="custom-file mb-4">
+              <input
+                name="file"
+                type="file"
+                className="custom-file-input"
+                id="customFile"
+                onChange={this.onChange}
+              />
+              <label className="custom-file-label" htmlFor="customFile">
+                {this.state.fileName}
+              </label>
+            </div>
+            <input
+              type="submit"
+              value="Upload"
+              className="btn btn-primary btn-block mt-4"
+            />
+            <div>
+              {/* If File is uploaded then display filename */}
+              <strong>
+                {this.state.isSubmitted ? this.state.fileName : null}
+              </strong>
+            </div>
+            <img
+              src={
+                this.state.isSubmitted
+                  ? `/api/upload/display/?fileName=${this.state.fileName}`
+                  : null
+              }
+              alt=""
+              width="100%"
+            ></img>
+          </form>
+        </Fragment>
+      </div>
     );
   }
 }
