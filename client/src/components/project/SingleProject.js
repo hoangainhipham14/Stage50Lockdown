@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { singleProject } from "./APIProject";
-import { Link, Redirect } from "react-router-dom";
-
+import { Redirect } from "react-router-dom";
+import { Card, Container, Image, Row, Jumbotron, Col } from "react-bootstrap";
 class SingleProject extends Component {
   state = {
     project: "",
@@ -24,30 +24,43 @@ class SingleProject extends Component {
   };
 
   renderProject = (project) => {
-    const userId = project.postedBy ? `/user/${project.postedBy._id}` : "";
-    const userName = project.postedBy ? project.postedBy.name : "Unknown";
-
     return (
-      <div className="card-body">
-        <img
-          src={`/api/project/img/${this.state.projectId}`}
-          alt={project.title}
-          style={{ height: "300px", width: "100%", objectFit: "cover" }}
-          className="img-thunbnail mb-3"
-        />
+      <Container>
+        <Card bg="Light" border="secondary">
+          <Card.Header>{project.title}</Card.Header>
+          <Card.Body>
+            <Card.Text>{project.body}</Card.Text>
+          </Card.Body>
+        </Card>
+        <Row>
+          <Col sm={20}>
+            <Image
+              src={`/api/project/img/${this.state.projectId}`}
+              alt={project.title}
+              fluid
+              rounded
+            />
+          </Col>
+          <Col lg={true}>
+            <Jumbotron>Project Details</Jumbotron>
+          </Col>
+        </Row>
 
-        <p className="card-text">{project.body}</p>
-        <br />
-        <p className="font-italic mark">
-          Posted by <Link to={`${userId}`}>{userName} </Link>
-          on {new Date(project.created).toDateString()}
-        </p>
-        <div className="d-inline-block">
-          <Link className="btn btn-raised btn-primary btn-sm mr-5" to={`/`}>
-            Back to projects...
-          </Link>
-        </div>
-      </div>
+        <Row className="justify-content-md-center">
+          <Image
+            src={`/api/project/img/${this.state.projectId}`}
+            alt={project.title}
+            rounded
+          />
+        </Row>
+        <Row className="justify-content-md-center">
+          <Image
+            src={`/api/project/img/${this.state.projectId}`}
+            alt={project.title}
+            rounded
+          />
+        </Row>
+      </Container>
     );
   };
 
@@ -58,7 +71,6 @@ class SingleProject extends Component {
     const { project } = this.state;
     return (
       <div className="container">
-        <h2 className="display-2 mt-5 mb-5">Title: {project.title}</h2>
         {!project ? (
           <div className="jumbotron text-center">
             <h2>Loading...</h2>

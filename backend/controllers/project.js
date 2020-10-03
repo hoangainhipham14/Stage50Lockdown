@@ -57,6 +57,7 @@ exports.image = (req, res, next) => {
     "Content-Disposition": "inline; filename=" + req.project.image.fileName,
     "Content-Type": req.project.image.contentType,
   });
+
   return res.send(req.project.image.data);
 };
 
