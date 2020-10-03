@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
 
-const { createUser } = require("../controllers/user");
+const { updateUser, getUser, userByUsername } = require("../controllers/user");
 
 const { requireAuthentication } = require("../controllers/auth");
 
-router.post("/user/:username", createUser);
+router.post("/user/:username", updateUser);
+router.get("/user/:username", getUser);
 
-// router.param("username", userByUsername);
+router.param("username", userByUsername);
 module.exports = router;

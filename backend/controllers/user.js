@@ -22,6 +22,8 @@ exports.userByUsername = (req, res, next, username) => {
       });
     }
     req.profile = user; //add
+    req.username = username;
+    next();
   });
 };
 
@@ -34,27 +36,23 @@ exports.userPhoto = (req, res, next) => {
 };
 
 exports.getUser = (req, res) => {
-  req.profile.hashed_password = undefined;
-  req.profile.salt = undefined;
   return res.json(req.profile);
 };
 
-exports.createUser = (req, res, next) => {
+exports.updateUser = (req, res, next) => {
   let form = new formidable.IncomingForm();
   form.keepExtensions = true;
-  form.parse(req, (err, fields) => {
-    console.log(fields);
-    //save
-    let newUser = new User(fields);
 
-    newUser.save((err, result) => {
-      if (err) {
-        return res.status(400).json({
-          error: err,
-        });
+  form.parse(req, (err, fields) => {
+    User.findOneAndUpdate(
+      { username: req.username },
+      fields,
+      { new: true },
+      (err, doc) => {
+        if (err) {
+          console.log("Something wrong when updating data!");
+        }
       }
-      // console.log("user after update with formdata: ", user);
-      res.json(newUser);
-    });
+    );
   });
 };
