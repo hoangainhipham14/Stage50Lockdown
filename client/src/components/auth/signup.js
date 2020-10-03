@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 import { Form, Button, Alert, Container } from "react-bootstrap";
 import { Link, withRouter } from "react-router-dom";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { registerUser } from "../../actions/authActions";
 import isEmpty from "is-empty";
+import axios from "axios";
+
+// REDUX DEPRACATED FOR THIS MODULE
+// import PropTypes from "prop-types";
+// import { connect } from "react-redux";
+// import { registerUser } from "../../actions/authActions";
 
 class Signup extends Component {
   constructor(props) {
@@ -32,25 +35,35 @@ class Signup extends Component {
   onSubmit = (e) => {
     e.preventDefault();
 
-    const {
-      firstName,
-      lastName,
-      username,
-      email,
-      password1,
-      password2,
-    } = this.state;
-
     const newUser = {
-      firstName,
-      lastName,
-      username,
-      email,
-      password1,
-      password2,
+      firstName: this.state.firstName,
+      lastName: this.state.lastName,
+      username: this.state.username,
+      email: this.state.email,
+      password1: this.state.password1,
+      password2: this.state.password2,
     };
 
-    this.props.registerUser(newUser, this.props.history);
+    // this.props.registerUser(newUser, this.props.history);
+
+    // post new user to backend
+    axios
+      .post("/api/signup", newUser)
+      .then((res) => {
+        // successful sign up! go to sign in page
+        console.log("Signup success with res.data =", res.data);
+        this.props.history.push("/signin");
+      })
+      .catch((err) => {
+        // sign in failed. receive errors and pass them to state for display.
+        console.log(
+          "Signup failure with err.response.data =",
+          err.response.data
+        );
+        this.setState({
+          errors: err.response.data,
+        });
+      });
   };
 
   render() {
@@ -150,15 +163,17 @@ class Signup extends Component {
   }
 }
 
-Signup.propTypes = {
-  registerUser: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired,
-};
+// Signup.propTypes = {
+//   registerUser: PropTypes.func.isRequired,
+//   auth: PropTypes.object.isRequired,
+//   errors: PropTypes.object.isRequired,
+// };
 
-const mapStateToProps = (state) => ({
-  auth: state.auth,
-  errors: state.errors,
-});
+// const mapStateToProps = (state) => ({
+//   auth: state.auth,
+//   errors: state.errors,
+// });
 
-export default connect(mapStateToProps, { registerUser })(withRouter(Signup));
+// export default connect(mapStateToProps, { registerUser })(withRouter(Signup));
+
+export default withRouter(Signup);
