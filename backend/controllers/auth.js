@@ -22,7 +22,8 @@ function validateSignup(data) {
   data.lastName = !isEmpty(data.lastName) ? data.lastName : "";
   data.username = !isEmpty(data.username) ? data.username : "";
   data.email = !isEmpty(data.email) ? data.email : "";
-  data.password = !isEmpty(data.password) ? data.password : "";
+  data.password1 = !isEmpty(data.password1) ? data.password1 : "";
+  data.password2 = !isEmpty(data.password2) ? data.password2 : "";
 
   // validate first name
   if (Validator.isEmpty(data.firstName)) {
@@ -47,8 +48,15 @@ function validateSignup(data) {
   }
 
   // validate password
-  if (!Validator.isLength(data.password, { min: 6 })) {
-    errors.password = "Password must be at least 6 characters";
+  // regex for password
+  const re = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)$");
+  if (!Validator.isLength(data.password1, { min: 8 })) {
+    errors.password1 = "Password must be at least 8 characters";
+  } else if (!re.test(data.password1)) {
+    errors.password1 =
+      "Password must contain at least one uppercase letter, one lowercase letter, and one number.";
+  } else if (data.password1 !== data.password2) {
+    errors.password2 = "Passwords must match";
   }
 
   return {

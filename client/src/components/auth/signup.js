@@ -11,12 +11,6 @@ class Signup extends Component {
     super(props);
 
     this.state = {
-      error: "",
-      firstName: "",
-      lastName: "",
-      username: "",
-      email: "",
-      password: "",
       errors: {},
     };
   }
@@ -38,12 +32,22 @@ class Signup extends Component {
   onSubmit = (e) => {
     e.preventDefault();
 
+    const {
+      firstName,
+      lastName,
+      username,
+      email,
+      password1,
+      password2,
+    } = this.state;
+
     const newUser = {
-      firstName: this.state.firstName,
-      lastName: this.state.lastName,
-      username: this.state.username,
-      email: this.state.email,
-      password: this.state.password,
+      firstName,
+      lastName,
+      username,
+      email,
+      password1,
+      password2,
     };
 
     this.props.registerUser(newUser, this.props.history);
@@ -62,7 +66,7 @@ class Signup extends Component {
             </p>
             <Form onSubmit={this.onSubmit}>
               <Form.Group controlId="firstName">
-                <Form.Label>First Name</Form.Label>
+                <Form.Label>First name</Form.Label>
                 <Form.Control
                   type="text"
                   placeholder="First name"
@@ -74,7 +78,7 @@ class Signup extends Component {
               </Form.Group>
 
               <Form.Group controlId="lastName">
-                <Form.Label>Last Name</Form.Label>
+                <Form.Label>Last name</Form.Label>
                 <Form.Control
                   type="text"
                   placeholder="Last name"
@@ -109,15 +113,27 @@ class Signup extends Component {
                 </Alert>
               </Form.Group>
 
-              <Form.Group controlId="password">
+              <Form.Group controlId="password1">
                 <Form.Label>Password</Form.Label>
                 <Form.Control
                   type="password"
                   placeholder="Password"
                   onChange={this.onChange}
                 />
-                <Alert variant="danger" show={!isEmpty(errors.password)}>
-                  {errors.password}
+                <Alert variant="danger" show={!isEmpty(errors.password1)}>
+                  {errors.password1}
+                </Alert>
+              </Form.Group>
+
+              <Form.Group controlId="password2">
+                <Form.Label>Re-type passworrd</Form.Label>
+                <Form.Control
+                  type="password"
+                  placeholder="Password"
+                  onChange={this.onChange}
+                />
+                <Alert variant="danger" show={!isEmpty(errors.password2)}>
+                  {errors.password2}
                 </Alert>
               </Form.Group>
 
