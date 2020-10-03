@@ -8,7 +8,7 @@ const isEmpty = require("is-empty");
 
 // Validate the input to the sign up form.
 // Works in isolation - does not consider duplicate email etc.
-export function validateSignup(data) {
+function validateSignup(data) {
   let errors = {};
 
   // convert empty fields to empty string for validator
@@ -52,7 +52,7 @@ export function validateSignup(data) {
 }
 
 // Validate the input to the sign in form.
-export function validateSignin(data) {
+function validateSignin(data) {
   let errors = {};
 
   data.email = !isEmpty(data.email) ? data.email : "";
@@ -76,7 +76,7 @@ export function validateSignin(data) {
   };
 }
 
-export function validateRequestRecovery(data) {
+function validateRequestRecovery(data) {
   let errors = {};
 
   data.email = !isEmpty(data.email) ? data.email : "";
@@ -93,3 +93,7 @@ export function validateRequestRecovery(data) {
     isValid: isEmpty(errors),
   };
 }
+
+module.exports.validateSignup = validateSignup;
+module.exports.validateSignin = validateSignin;
+module.exports.validateRequestRecovery = validateRequestRecovery;

@@ -1,5 +1,9 @@
 // test the authentication modules
-import * as validation from "../authValidation";
+const {
+  validateSignup,
+  validateSignin,
+  validateRequestRecovery,
+} = require("../authValidation");
 
 describe("Authentication Validation Tests -> validateSignup", function () {
   it("Should Reject A Signup Request with an invalid email", function () {
@@ -10,7 +14,7 @@ describe("Authentication Validation Tests -> validateSignup", function () {
       email: "notvalid",
       password: "testtesttesttest",
     };
-    expect(validation.validateSignup(request1)).toEqual({
+    expect(validateSignup(request1)).toEqual({
       errors: { email: "Email is invalid" },
       isValid: false,
     });
@@ -23,7 +27,7 @@ describe("Authentication Validation Tests -> validateSignup", function () {
       email: "valid@gmail.com",
       password: "te",
     };
-    expect(validation.validateSignup(request2)).toEqual({
+    expect(validateSignup(request2)).toEqual({
       errors: { password: "Password must be at least 6 characters" },
       isValid: false,
     });
@@ -36,7 +40,7 @@ describe("Authentication Validation Tests -> validateSignup", function () {
       email: "valid@gmail.com",
       password: "testtesttesttest",
     };
-    expect(validation.validateSignup(request3)).toEqual({
+    expect(validateSignup(request3)).toEqual({
       errors: { firstName: "First name is required" },
       isValid: false,
     });
@@ -49,7 +53,7 @@ describe("Authentication Validation Tests -> validateSignup", function () {
       email: "valid@gmail.com",
       password: "testtesttesttest",
     };
-    expect(validation.validateSignup(request4)).toEqual({
+    expect(validateSignup(request4)).toEqual({
       errors: {},
       isValid: true,
     });
@@ -59,14 +63,14 @@ describe("Authentication Validation Tests -> validateSignup", function () {
 describe("Authentication Validation Tests -> validateSignin", function () {
   it("Rejects a request with no password", function () {
     const request5 = { email: "valid@gmail.com", password: "" };
-    expect(validation.validateSignin(request5)).toEqual({
+    expect(validateSignin(request5)).toEqual({
       errors: { password: "Password is required" },
       isValid: false,
     });
   });
   it("Checks Accepts a valid signin request", function () {
     const request6 = { email: "valid@gmail.com", password: "testtesttest" };
-    expect(validation.validateSignin(request6)).toEqual({
+    expect(validateSignin(request6)).toEqual({
       errors: {},
       isValid: true,
     });
@@ -76,7 +80,7 @@ describe("Authentication Validation Tests -> validateSignin", function () {
 describe("Authentication Validation Tests -> validateRequestRecovery", function () {
   it("Checks For empty email", function () {
     const request7 = { email: "" };
-    expect(validation.validateRequestRecovery(request7)).toEqual({
+    expect(validateRequestRecovery(request7)).toEqual({
       errors: { recoveryemail: "Email is required" },
       isValid: false,
     });
@@ -85,14 +89,14 @@ describe("Authentication Validation Tests -> validateRequestRecovery", function 
     const request8 = {
       email: "@invalidbutalsocouldtrickasimplesystemvalid@gmail,com",
     };
-    expect(validation.validateRequestRecovery(request8)).toEqual({
+    expect(validateRequestRecovery(request8)).toEqual({
       errors: { recoveryemail: "Email is invalid" },
       isValid: false,
     });
   });
   it("Allows valid email", function () {
     const request9 = { email: "valid@gmail.com" };
-    expect(validation.validateRequestRecovery(request9)).toEqual({
+    expect(validateRequestRecovery(request9)).toEqual({
       errors: {},
       isValid: true,
     });
@@ -135,4 +139,5 @@ describe("Server test", function () {
     assert.isDefined(server);
   });
 });
+
 */

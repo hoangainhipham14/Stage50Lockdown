@@ -6,13 +6,20 @@ const RecoveryToken = require("../models/recoveryToken");
 
 // Library imports
 const crypto = require("crypto");
-const isEmpty = require("is-empty");
 const nodemailer = require("nodemailer");
-const Validator = require("validator");
 const expressJwt = require("express-jwt");
 const jwt = require("jsonwebtoken");
 
+/*import {
+  validateSignup,
+  validateSignin,
+  validateRequestRecovery,
+} from "./authValidation";
+*/
+
 // File imports
+//import * as validateFunctions from "./authValidation";
+
 const {
   validateSignup,
   validateSignin,
