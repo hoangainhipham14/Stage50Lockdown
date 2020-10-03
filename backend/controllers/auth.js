@@ -543,7 +543,7 @@ exports.requireAuthentication = expressJwt({
 
 exports.deleteUser = (req, res) => {
   const userId = req.auth._id;
-  console.log(userId);
+  // console.log(userId);
   User.findByIdAndDelete(userId, (err) => {
     if (err) {
       return res.send(err);

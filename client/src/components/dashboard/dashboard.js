@@ -24,7 +24,8 @@ class Dashboard extends Component {
 
   render() {
     const { user } = this.props.auth;
-    // const { deleteButtonClicked } = this.deleteButtonClicked;
+
+    // Are you sure dialog
     const popover = (
       <Popover id="popover-basic">
         <Popover.Title as="h3">
