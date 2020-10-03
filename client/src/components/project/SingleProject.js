@@ -1,12 +1,10 @@
 import React, { Component } from "react";
 import { singleProject } from "./APIProject";
-import { Redirect } from "react-router-dom";
 import { Card, Container, Image, Row, Jumbotron, Col } from "react-bootstrap";
 class SingleProject extends Component {
   state = {
     project: "",
     projectId: "",
-    redirectToHome: false,
   };
 
   componentDidMount = () => {
@@ -65,9 +63,6 @@ class SingleProject extends Component {
   };
 
   render() {
-    if (this.state.redirectToHome) {
-      return <Redirect to={`/`} />;
-    }
     const { project } = this.state;
     return (
       <div className="container">
