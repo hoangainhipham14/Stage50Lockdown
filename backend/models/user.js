@@ -23,10 +23,20 @@ const userSchema = new Schema({
     required: true,
     unique: true,
   },
+  phoneNumber: {
+    type: String,
+  },
   password: {
     type: String,
-    required: true,
+    // required: true,
   },
+
+  image: {
+    data: Buffer,
+    contentType: String,
+    fileName: String,
+  },
+
   isDeleted: {
     type: Boolean,
     default: false,

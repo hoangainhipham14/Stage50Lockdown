@@ -37,6 +37,7 @@ exports.signup = async (req, res) => {
 
   const { firstName, lastName, username } = req.body;
   const email = req.body.email.toLowerCase();
+  const phoneNumber = "";
   const password = req.body.password1;
 
   // check if email already exists
@@ -55,7 +56,13 @@ exports.signup = async (req, res) => {
   }
 
   // create new user
-  const newUser = new User({ firstName, lastName, username, email });
+  const newUser = new User({
+    firstName,
+    lastName,
+    username,
+    email,
+    phoneNumber,
+  });
   newUser.password = newUser.generateHash(password);
 
   // send verification email
