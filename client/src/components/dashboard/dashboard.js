@@ -9,7 +9,30 @@ class Dashboard extends Component {
   constructor(props) {
     super(props);
     this.deleteUser = deleteUser;
+
+    this.state = {
+      username: "",
+    };
   }
+
+  componentDidMount = () => {
+    const id = this.props.auth.user._id;
+    this.getUsernameId(id).then((data) => {
+      this.setState({
+        username: data,
+      });
+    });
+  };
+
+  getUsernameId = (id) => {
+    return fetch(`/api/userId/${id}`, {
+      method: "GET",
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .catch((err) => console.log(err));
+  };
 
   onLogoutClick = (e) => {
     e.preventDefault();
@@ -41,7 +64,7 @@ class Dashboard extends Component {
     return (
       <Modal.Dialog>
         <Modal.Header closeButton>
-          <Modal.Title>Hello, {user.firstName}!</Modal.Title>
+          <Modal.Title>Hello, {this.state.username}!</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
