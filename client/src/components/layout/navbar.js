@@ -22,6 +22,7 @@ function NavbarAccountLoggedOut() {
 }
 
 function NavbarAccountLoggedIn(props) {
+  // console.log(props);
   return (
     <>
       <Nav className="mr-auto">
@@ -29,11 +30,14 @@ function NavbarAccountLoggedIn(props) {
         {/* <Nav.Link href="/upload">Upload</Nav.Link> */}
         <Nav.Link href="/createProject">Create Project</Nav.Link>
         {/* <Nav.Link href="/project/projectId">My Projects</Nav.Link> */}
-        <LinkContainer to="/dashboard">
+        {/* <LinkContainer to="/dashboard">
           <Nav.Link>{props.user.firstName}</Nav.Link>
-        </LinkContainer>
+        </LinkContainer> */}
       </Nav>
       <Nav className="ml-auto">
+        <Nav.Link href={`/user/${props.user._id}/account`}>
+          Account Details
+        </Nav.Link>
         <Nav.Link onClick={props.onClickLogout}>Sign Out</Nav.Link>
       </Nav>
     </>
