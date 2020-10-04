@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { logoutUser, deleteUser } from "../../actions/authActions";
+import { getUsernameId } from "../layout/GetUsername";
 
 import { Modal, Button, OverlayTrigger, Popover } from "react-bootstrap";
 
@@ -9,7 +10,20 @@ class Dashboard extends Component {
   constructor(props) {
     super(props);
     this.deleteUser = deleteUser;
+
+    this.state = {
+      username: "",
+    };
   }
+
+  componentDidMount = () => {
+    const id = this.props.auth.user._id;
+    getUsernameId(id).then((data) => {
+      this.setState({
+        username: data,
+      });
+    });
+  };
 
   onLogoutClick = (e) => {
     e.preventDefault();
@@ -23,8 +37,6 @@ class Dashboard extends Component {
   };
 
   render() {
-    const { user } = this.props.auth;
-
     // Are you sure dialog
     const popover = (
       <Popover id="popover-basic">
@@ -39,11 +51,10 @@ class Dashboard extends Component {
         </Popover.Content>
       </Popover>
     );
-
     return (
       <Modal.Dialog>
         <Modal.Header closeButton>
-          <Modal.Title>Hello, {user.firstName}!</Modal.Title>
+          <Modal.Title>Hello, {this.state.username}!</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
+import { getUsernameId } from "../layout/GetUsername";
 
 import { Navbar, Nav, Container } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
@@ -22,6 +23,7 @@ function NavbarAccountLoggedOut() {
 }
 
 function NavbarAccountLoggedIn(props) {
+  // console.log("Props " + props.username);
   return (
     <>
       <Nav className="mr-auto">
@@ -29,11 +31,14 @@ function NavbarAccountLoggedIn(props) {
         {/* <Nav.Link href="/upload">Upload</Nav.Link> */}
         <Nav.Link href="/createProject">Create Project</Nav.Link>
         {/* <Nav.Link href="/project/projectId">My Projects</Nav.Link> */}
-        <LinkContainer to="/dashboard">
+        {/* <LinkContainer to="/dashboard">
           <Nav.Link>{props.user.firstName}</Nav.Link>
-        </LinkContainer>
+        </LinkContainer> */}
       </Nav>
       <Nav className="ml-auto">
+        <Nav.Link href={`/user/${props.username}/account`}>
+          Account Details
+        </Nav.Link>
         <Nav.Link onClick={props.onClickLogout}>Sign Out</Nav.Link>
       </Nav>
     </>
@@ -41,6 +46,23 @@ function NavbarAccountLoggedIn(props) {
 }
 
 class MyNavbar extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      username: "",
+    };
+  }
+
+  componentDidMount = () => {
+    const id = this.props.auth.user._id;
+    getUsernameId(id).then((data) => {
+      this.setState({
+        username: data,
+      });
+    });
+  };
+
   onClickLogout = (e) => {
     e.preventDefault();
     this.props.logoutUser();
@@ -59,6 +81,7 @@ class MyNavbar extends Component {
                 <NavbarAccountLoggedIn
                   onClickLogout={this.onClickLogout}
                   user={user}
+                  username={this.state.username}
                 />
               ) : (
                 <NavbarAccountLoggedOut />
