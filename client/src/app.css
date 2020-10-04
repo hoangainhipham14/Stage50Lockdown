@@ -1,5 +1,5 @@
 .btn {
-  width: 10rem;
+  min-width: 10rem;
   margin: 0.5rem;
   max-width: calc(100% - 1rem);
 }

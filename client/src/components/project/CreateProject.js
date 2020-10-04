@@ -1,6 +1,12 @@
 import axios from "axios";
 import React, { Component } from "react";
-import { Container, Form, Button } from "react-bootstrap";
+import {
+  Container,
+  Form,
+  Button,
+  OverlayTrigger,
+  Popover,
+} from "react-bootstrap";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
@@ -38,6 +44,10 @@ class CreateProject extends Component {
     });
   };
 
+  goBack = () => {
+    this.props.history.goBack();
+  };
+
   onSubmit = (e) => {
     // prevent page from reloading
     e.preventDefault();
@@ -72,6 +82,17 @@ class CreateProject extends Component {
   };
 
   render() {
+    const popover = (
+      <Popover id="popover-basic">
+        <Popover.Title as="h3">Are you sure?</Popover.Title>
+        <Popover.Content>
+          <Button variant="danger" onClick={this.goBack}>
+            Discard project
+          </Button>
+        </Popover.Content>
+      </Popover>
+    );
+
     return (
       <Container>
         <div style={{ maxWidth: "30rem", margin: "0 auto" }}>
@@ -102,9 +123,13 @@ class CreateProject extends Component {
               <Button variant="success" type="submit">
                 Create Project
               </Button>
-              <Button variant="secondary" type="submit">
-                Discard Project
-              </Button>
+              <OverlayTrigger
+                trigger="click"
+                placement="bottom"
+                overlay={popover}
+              >
+                <Button variant="secondary">Discard Project</Button>
+              </OverlayTrigger>
             </div>
           </Form>
         </div>
