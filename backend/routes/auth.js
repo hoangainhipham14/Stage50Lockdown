@@ -8,7 +8,10 @@ const {
   requestRecovery,
   validation,
   resendValidation,
+  deleteUser,
 } = require("../controllers/auth");
+
+const { requireAuthentication } = require("../controllers/auth");
 
 // Sign up/in/out
 router.post("/signin", signin);
@@ -22,5 +25,8 @@ router.post("/recoverPassword", recoverPassword);
 // Email validation
 router.get("/validation/:token", validation);
 router.post("/resendValidation", resendValidation);
+
+// Account deletion
+router.delete("/deleteuser", requireAuthentication, deleteUser);
 
 module.exports = router;
