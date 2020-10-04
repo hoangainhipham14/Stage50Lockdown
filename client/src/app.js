@@ -19,7 +19,6 @@ import PrivateRoute from "./components/private-route/privateRoute";
 import Dashboard from "./components/dashboard/dashboard";
 import CreateProject from "./components/project/CreateProject";
 import SingleProject from "./components/project/SingleProject";
-import dashboard from "./components/dashboard/dashboard";
 import LandingPage from "./components/landing-page/landingPage";
 
 // check for token to keep user logged in

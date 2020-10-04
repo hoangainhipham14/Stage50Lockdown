@@ -3,3 +3,8 @@
   font-size: small;
   height: 1rem;
 }
+
+hr {
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
