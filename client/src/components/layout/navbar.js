@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
+import { getUsernameId } from "../layout/GetUsername";
 
 import { Navbar, Nav, Container } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
@@ -54,25 +55,12 @@ class MyNavbar extends Component {
   }
 
   componentDidMount = () => {
-    // console.log("Component");
     const id = this.props.auth.user._id;
-    this.getUsernameId(id).then((data) => {
-      // console.log("data: " + data);
+    getUsernameId(id).then((data) => {
       this.setState({
         username: data,
       });
-      // console.log("Username: " + this.state.username);
     });
-  };
-
-  getUsernameId = (id) => {
-    return fetch(`/api/userId/${id}`, {
-      method: "GET",
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .catch((err) => console.log(err));
   };
 
   onClickLogout = (e) => {

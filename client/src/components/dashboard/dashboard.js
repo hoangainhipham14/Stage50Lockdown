@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { logoutUser, deleteUser } from "../../actions/authActions";
+import { getUsernameId } from "../layout/GetUsername";
 
 import { Modal, Button, OverlayTrigger, Popover } from "react-bootstrap";
 
@@ -17,21 +18,11 @@ class Dashboard extends Component {
 
   componentDidMount = () => {
     const id = this.props.auth.user._id;
-    this.getUsernameId(id).then((data) => {
+    getUsernameId(id).then((data) => {
       this.setState({
         username: data,
       });
     });
-  };
-
-  getUsernameId = (id) => {
-    return fetch(`/api/userId/${id}`, {
-      method: "GET",
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .catch((err) => console.log(err));
   };
 
   onLogoutClick = (e) => {
