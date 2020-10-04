@@ -10,6 +10,7 @@ class CreateProject extends Component {
 
     this.state = {
       title: "",
+      about: "",
       body: "",
       image: null,
     };
@@ -46,6 +47,7 @@ class CreateProject extends Component {
     // we need to do this because JSON isn't sufficient for image sending
     const formData = new FormData();
     formData.set("title", this.state.title);
+    formData.set("about", this.state.about);
     formData.set("body", this.state.body);
     formData.set("image", this.state.image);
 
@@ -83,6 +85,11 @@ class CreateProject extends Component {
             <Form.Group controlId="title">
               <Form.Label>Title</Form.Label>
               <Form.Control type="text" onChange={this.onChange} />
+            </Form.Group>
+
+            <Form.Group controlId="about">
+              <Form.Label>About</Form.Label>
+              <Form.Control as="textarea" rows="5" onChange={this.onChange} />
             </Form.Group>
 
             <Form.Group controlId="body">

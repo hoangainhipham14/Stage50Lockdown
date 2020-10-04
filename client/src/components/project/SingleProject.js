@@ -27,7 +27,7 @@ class SingleProject extends Component {
         <Card bg="Light" border="secondary">
           <Card.Header>{project.title}</Card.Header>
           <ListGroup variant="flush">
-            <ListGroup.Item> {project.body}</ListGroup.Item>
+            <ListGroup.Item>{project.about}</ListGroup.Item>
             <ListGroup.Item>
               <Row>
                 <Col sm={20}>
@@ -38,21 +38,7 @@ class SingleProject extends Component {
                     thumbnail
                   />
                 </Col>
-                <Col lg={true}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Quisque malesuada enim enim, non fermentum dui commodo ac.
-                  Aenean rhoncus turpis nisl, eu dictum sem molestie id. Morbi
-                  volutpat mattis ex vitae molestie. Proin id ante tempus,
-                  euismod nunc vel, suscipit diam. Praesent pretium tellus quis
-                  augue ultricies, sed congue erat gravida. Nulla tempor mattis
-                  eros, vitae pulvinar nunc congue vel. Vestibulum non mi
-                  tellus. Donec et mattis libero. Quisque eget urna nulla. Fusce
-                  sed rhoncus ante. Quisque sit amet purus magna. Quisque
-                  malesuada orci odio, vitae bibendum nulla porttitor ac. Nulla
-                  quis iaculis mauris, bibendum placerat quam. Etiam condimentum
-                  pellentesque suscipit. Aliquam erat volutpat. Mauris elit
-                  nisi, aliquet ac est a, congue vestibulum neque.
-                </Col>
+                <Col lg={true}>{project.body}</Col>
               </Row>
             </ListGroup.Item>
           </ListGroup>

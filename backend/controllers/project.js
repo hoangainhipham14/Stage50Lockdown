@@ -12,7 +12,6 @@ exports.createProject = (req, res, next) => {
         image: "Image could not be uploaded",
       });
     }
-
     // create the new project
     let project = new Project(fields);
 
@@ -64,6 +63,7 @@ exports.image = (req, res, next) => {
 exports.singleProject = (req, res) => {
   const data = {
     title: req.project.title,
+    about: req.project.about,
     body: req.project.body,
   };
 
