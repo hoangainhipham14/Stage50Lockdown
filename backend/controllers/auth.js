@@ -547,3 +547,18 @@ exports.requireAuthentication = expressJwt({
   secret: process.env.JWT_SECRET,
   userProperty: "auth",
 });
+
+exports.deleteUser = (req, res) => {
+  const userId = req.auth._id;
+  // console.log(userId);
+  User.findByIdAndDelete(userId, (err) => {
+    if (err) {
+      return res.send(err);
+    } else {
+      return res.status(200).send({
+        success: true,
+        message: "Account deleted: " + userId,
+      });
+    }
+  });
+};
