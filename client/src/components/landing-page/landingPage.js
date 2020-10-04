@@ -110,8 +110,8 @@ class DummySignUpForm extends Component {
 class TopLeftText extends Component {
   render() {
     return (
-      <div class="container pt-5">
-        <Card border="light" class="pt-300">
+      <div className="container pt-5">
+        <Card border="light" className="pt-300">
           <Card.Body>
             <Card.Title style={{ textAlign: "center" }}>
               <h1>ePortfolio</h1>
@@ -126,7 +126,7 @@ class TopLeftText extends Component {
               <a
                 href="mailto:stage50lockdown@gmail.com"
                 target="_blank"
-                class="btn btn-primary"
+                className="btn btn-primary"
                 rel="noopener noreferrer"
               >
                 Email Us
