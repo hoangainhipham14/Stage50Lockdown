@@ -46,7 +46,6 @@ class Dashboard extends Component {
   };
 
   render() {
-    const { user } = this.props.auth;
     // Are you sure dialog
     const popover = (
       <Popover id="popover-basic">
