@@ -6,76 +6,25 @@ const RecoveryToken = require("../models/recoveryToken");
 
 // Library imports
 const crypto = require("crypto");
-const isEmpty = require("is-empty");
 const nodemailer = require("nodemailer");
-const Validator = require("validator");
 const expressJwt = require("express-jwt");
 const jwt = require("jsonwebtoken");
 
-// Validate the input to the sign up form.
-// Works in isolation - does not consider duplicate email etc.
-function validateSignup(data) {
-  let errors = {};
+/*import {
+  validateSignup,
+  validateSignin,
+  validateRequestRecovery,
+} from "./authValidation";
+*/
 
-  // convert empty fields to empty string for validator
-  data.firstName = !isEmpty(data.firstName) ? data.firstName : "";
-  data.lastName = !isEmpty(data.lastName) ? data.lastName : "";
-  data.username = !isEmpty(data.username) ? data.username : "";
-  data.email = !isEmpty(data.email) ? data.email : "";
-  data.password1 = !isEmpty(data.password1) ? data.password1 : "";
-  data.password2 = !isEmpty(data.password2) ? data.password2 : "";
+// File imports
+//import * as validateFunctions from "./authValidation";
 
-  // validate first name
-  if (Validator.isEmpty(data.firstName)) {
-    errors.firstName = "Required";
-  }
-
-  // validate last name
-  if (Validator.isEmpty(data.lastName)) {
-    errors.lastName = "Required";
-  }
-
-  // validate username
-  if (Validator.isEmpty(data.username)) {
-    errors.username = "Required";
-  }
-
-  // validate email
-  if (Validator.isEmpty(data.email)) {
-    errors.email = "Required";
-  } else if (!Validator.isEmail(data.email)) {
-    errors.email = "Invalid email";
-  }
-
-  // validate password
-  // regex for password
-  const regexNum = new RegExp("(?=.*[0-9])");
-  const regexLower = new RegExp("(?=.*[a-z])");
-  const regexUpper = new RegExp("(?=.*[A-Z])");
-
-  if (!Validator.isLength(data.password1, { min: 8 })) {
-    errors.password1 = "Password must be at least 8 characters";
-  } else if (
-    !regexNum.test(data.password1) ||
-    !regexLower.test(data.password1) ||
-    !regexUpper.test(data.password1)
-  ) {
-    // console.log(
-    //   !regexNum.test(data.password1),
-    //   !regexLower.test(data.password1),
-    //   !regexUpper.test(data.password1)
-    // );
-    errors.password1 =
-      "Password must contain at least one uppercase letter, one lowercase letter, and one number.";
-  } else if (data.password1 !== data.password2) {
-    errors.password2 = "Passwords must match";
-  }
-
-  return {
-    errors,
-    isValid: isEmpty(errors),
-  };
-}
+const {
+  validateSignup,
+  validateSignin,
+  validateRequestRecovery,
+} = require("./authValidation");
 
 // async function is the only change from the previous implementation.
 // async means we don't need an enormous nested mess.
@@ -154,32 +103,6 @@ exports.signup = async (req, res) => {
     .catch((err) => console.log(err));
 };
 
-// Validate the input to the sign in form.
-function validateSignin(data) {
-  let errors = {};
-
-  data.email = !isEmpty(data.email) ? data.email : "";
-  data.password = !isEmpty(data.password) ? data.password : "";
-
-  // email checks
-  if (Validator.isEmpty(data.email)) {
-    errors.email = "Email is required";
-  } else if (!Validator.isEmail(data.email)) {
-    errors.email = "Email is invalid";
-  }
-
-  // password
-  if (Validator.isEmpty(data.password)) {
-    errors.password = "Password is required";
-  }
-
-  return {
-    errors,
-    isValid: isEmpty(errors),
-  };
-}
-
-// Checks correct sign in details
 exports.signin = (req, res) => {
   // validate sign in data
   const { errors, isValid } = validateSignin(req.body);
@@ -312,26 +235,6 @@ exports.recoverPassword = (req, res) => {
   });
 };
 
-// Checks for email in database
-function validateRequestRecovery(data) {
-  let errors = {};
-
-  data.email = !isEmpty(data.email) ? data.email : "";
-
-  // email checks
-  if (Validator.isEmpty(data.email)) {
-    errors.recoveryemail = "Email is required";
-  } else if (!Validator.isEmail(data.email)) {
-    errors.recoveryemail = "Email is invalid";
-  }
-
-  return {
-    errors,
-    isValid: isEmpty(errors),
-  };
-}
-
-// Sends password recovery email
 exports.requestRecovery = (req, res) => {
   const { errors, isValid } = validateRequestRecovery(req.body);
 
