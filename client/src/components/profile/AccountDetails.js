@@ -73,7 +73,7 @@ class AccountDetails extends Component {
     formData.set("lastName", this.state.lastName);
     formData.set("email", this.state.email);
     formData.set("phoneNumber", this.state.phoneNumber);
-    formData.set("username", this.state.username);
+    // formData.set("username", this.state.username);
 
     // configururation for post request since we aren't just posting json
     const config = {
@@ -153,7 +153,7 @@ class AccountDetails extends Component {
                 />
               </Form.Group>
 
-              <Form.Group controlId="username">
+              {/* <Form.Group controlId="username">
                 <Form.Label>User Name</Form.Label>
                 <Form.Control
                   type="text"
@@ -165,7 +165,7 @@ class AccountDetails extends Component {
                   id="username switch"
                   label="Private"
                 />
-              </Form.Group>
+              </Form.Group> */}
 
               <Form.Group controlId="email">
                 <Form.Label>Email</Form.Label>
