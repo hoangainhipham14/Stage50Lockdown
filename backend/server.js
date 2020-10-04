@@ -28,9 +28,11 @@ mongoose
 
 const authRoutes = require("./routes/auth");
 const projectRoutes = require("./routes/project");
+const userRoutes = require("./routes/user");
 
 app.use("/api", authRoutes);
 app.use("/api", projectRoutes);
+app.use("/api", userRoutes);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../client/build")));

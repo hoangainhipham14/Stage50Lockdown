@@ -17,6 +17,7 @@ class SingleProject extends Component {
           project: data,
           projectId: projectId,
         });
+        // console.log("Project: " + this.state.project);
       }
     });
   };

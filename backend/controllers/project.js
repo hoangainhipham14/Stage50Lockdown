@@ -3,6 +3,7 @@ const Project = require("../models/project");
 const formidable = require("formidable");
 const fs = require("fs");
 
+// Creates the project
 exports.createProject = (req, res, next) => {
   let form = new formidable.IncomingForm();
   form.keepExtensions = true;
@@ -36,6 +37,7 @@ exports.createProject = (req, res, next) => {
   });
 };
 
+// Project parameter field, finds the project in the database
 exports.projectById = (req, res, next, id) => {
   Project.findById(id)
     .populate("postedBy", "_id name")
@@ -51,6 +53,7 @@ exports.projectById = (req, res, next, id) => {
     });
 };
 
+// Image Response
 exports.image = (req, res, next) => {
   res.set({
     "Content-Disposition": "inline; filename=" + req.project.image.fileName,
@@ -60,6 +63,7 @@ exports.image = (req, res, next) => {
   return res.send(req.project.image.data);
 };
 
+// Responds with the project containing the data inside
 exports.singleProject = (req, res) => {
   const data = {
     title: req.project.title,

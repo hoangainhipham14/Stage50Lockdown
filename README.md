@@ -16,7 +16,7 @@ Installs the dependancies for the client portion of the project, which are not i
 
 Installs the dependancies for the backend server portion of the project.
 
-### `npm run full-install'
+### `npm run full-install`
 
 Installs the dependancies for the whole project at once.
 
@@ -31,3 +31,7 @@ Run the client.
 ### `npm run dev`
 
 Run the client and server concurrently.
+
+### `npm run basic-auto-tests`
+
+Run the current suite of tests available, note that after every suite of tests pressing ^C will let you proceed to the next set
