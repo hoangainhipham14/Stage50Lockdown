@@ -6,25 +6,6 @@ import { logoutUser } from "../../actions/authActions";
 import { Navbar, Nav, Container } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 
-// function getUsernameId(userdetails) {
-//   console.log("User Id:" + userdetails.id);
-//   axios.get(`/api/userId/${userdetails.id}`).then((res) => {
-//     console.log("Response: " + res.data);
-//     userdetails.username = res.data;
-//     return res.json();
-//   });
-// }
-
-const getUsernameId = (id) => {
-  return fetch(`/api/userId/${id}`, {
-    method: "GET",
-  })
-    .then((response) => {
-      return response.json();
-    })
-    .catch((err) => console.log(err));
-};
-
 function NavbarAccountLoggedOut() {
   return (
     <>
@@ -41,8 +22,7 @@ function NavbarAccountLoggedOut() {
 }
 
 function NavbarAccountLoggedIn(props) {
-  console.log("Get Username ID: " + getUsernameId(props.user._id));
-  const username = getUsernameId(props.user._id);
+  // console.log("Props " + props.username);
   return (
     <>
       <Nav className="mr-auto">
@@ -55,7 +35,9 @@ function NavbarAccountLoggedIn(props) {
         </LinkContainer> */}
       </Nav>
       <Nav className="ml-auto">
-        <Nav.Link href={`/user/${username}/account`}>Account Details</Nav.Link>
+        <Nav.Link href={`/user/${props.username}/account`}>
+          Account Details
+        </Nav.Link>
         <Nav.Link onClick={props.onClickLogout}>Sign Out</Nav.Link>
       </Nav>
     </>
@@ -63,6 +45,36 @@ function NavbarAccountLoggedIn(props) {
 }
 
 class MyNavbar extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      username: "",
+    };
+  }
+
+  componentDidMount = () => {
+    // console.log("Component");
+    const id = this.props.auth.user._id;
+    this.getUsernameId(id).then((data) => {
+      // console.log("data: " + data);
+      this.setState({
+        username: data,
+      });
+      // console.log("Username: " + this.state.username);
+    });
+  };
+
+  getUsernameId = (id) => {
+    return fetch(`/api/userId/${id}`, {
+      method: "GET",
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .catch((err) => console.log(err));
+  };
+
   onClickLogout = (e) => {
     e.preventDefault();
     this.props.logoutUser();
@@ -81,6 +93,7 @@ class MyNavbar extends Component {
                 <NavbarAccountLoggedIn
                   onClickLogout={this.onClickLogout}
                   user={user}
+                  username={this.state.username}
                 />
               ) : (
                 <NavbarAccountLoggedOut />
