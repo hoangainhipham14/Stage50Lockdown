@@ -6,56 +6,25 @@ const RecoveryToken = require("../models/recoveryToken");
 
 // Library imports
 const crypto = require("crypto");
-const isEmpty = require("is-empty");
 const nodemailer = require("nodemailer");
-const Validator = require("validator");
 const expressJwt = require("express-jwt");
 const jwt = require("jsonwebtoken");
 
-// Validate the input to the sign up form.
-// Works in isolation - does not consider duplicate email etc.
-function validateSignup(data) {
-  let errors = {};
+/*import {
+  validateSignup,
+  validateSignin,
+  validateRequestRecovery,
+} from "./authValidation";
+*/
 
-  // convert empty fields to empty string for validator
-  data.firstName = !isEmpty(data.firstName) ? data.firstName : "";
-  data.lastName = !isEmpty(data.lastName) ? data.lastName : "";
-  data.username = !isEmpty(data.username) ? data.username : "";
-  data.email = !isEmpty(data.email) ? data.email : "";
-  data.password = !isEmpty(data.password) ? data.password : "";
+// File imports
+//import * as validateFunctions from "./authValidation";
 
-  // validate first name
-  if (Validator.isEmpty(data.firstName)) {
-    errors.firstName = "First name is required";
-  }
-
-  // validate last name
-  if (Validator.isEmpty(data.lastName)) {
-    errors.lastName = "Last name is required";
-  }
-
-  // validate username
-  if (Validator.isEmpty(data.username)) {
-    errors.username = "Username is required";
-  }
-
-  // validate email
-  if (Validator.isEmpty(data.email)) {
-    errors.email = "Email is required";
-  } else if (!Validator.isEmail(data.email)) {
-    errors.email = "Email is invalid";
-  }
-
-  // validate password
-  if (!Validator.isLength(data.password, { min: 6 })) {
-    errors.password = "Password must be at least 6 characters";
-  }
-
-  return {
-    errors,
-    isValid: isEmpty(errors),
-  };
-}
+const {
+  validateSignup,
+  validateSignin,
+  validateRequestRecovery,
+} = require("./authValidation");
 
 // async function is the only change from the previous implementation.
 // async means we don't need an enormous nested mess.
@@ -66,9 +35,10 @@ exports.signup = async (req, res) => {
     return res.status(400).json(errors);
   }
 
-  const { firstName, lastName, username, password } = req.body;
+  const { firstName, lastName, username } = req.body;
   const email = req.body.email.toLowerCase();
   const phoneNumber = "";
+  const password = req.body.password1;
 
   // check if email already exists
   const emailExists = await User.findOne({ email });
@@ -140,31 +110,6 @@ exports.signup = async (req, res) => {
     .catch((err) => console.log(err));
 };
 
-// Validate the input to the sign in form.
-function validateSignin(data) {
-  let errors = {};
-
-  data.email = !isEmpty(data.email) ? data.email : "";
-  data.password = !isEmpty(data.password) ? data.password : "";
-
-  // email checks
-  if (Validator.isEmpty(data.email)) {
-    errors.email = "Email is required";
-  } else if (!Validator.isEmail(data.email)) {
-    errors.email = "Email is invalid";
-  }
-
-  // password
-  if (Validator.isEmpty(data.password)) {
-    errors.password = "Password is required";
-  }
-
-  return {
-    errors,
-    isValid: isEmpty(errors),
-  };
-}
-
 exports.signin = (req, res) => {
   // validate sign in data
   const { errors, isValid } = validateSignin(req.body);
@@ -210,7 +155,7 @@ exports.signin = (req, res) => {
 
     // respond with token and also a subset of the user information
     const { _id, firstName, lastName, username, email } = user;
-    console.log("responding...");
+    // console.log("responding...");
     return res.json({
       token,
       user: { _id, firstName, lastName, username, email },
@@ -218,6 +163,7 @@ exports.signin = (req, res) => {
   });
 };
 
+// Password recovery
 exports.recoverPassword = (req, res) => {
   // With this recover password script, the user enters a new password, and the token is checked
   // at the conclusion of this program whilst saving the passwords
@@ -228,9 +174,27 @@ exports.recoverPassword = (req, res) => {
   const passwordNo1 = req.body.passwordNo1;
   const passwordNo2 = req.body.passwordNo2;
 
-  if (passwordNo1.length < 6) {
+  const regexNum = new RegExp("(?=.*[0-9])");
+  const regexLower = new RegExp("(?=.*[a-z])");
+  const regexUpper = new RegExp("(?=.*[A-Z])");
+
+  if (passwordNo1.length < 8) {
     return res.status(400).send({
-      msg: "Password must be at least 6 characters long",
+      msg: "Password must be at least 8 characters long",
+    });
+  } else if (
+    !regexNum.test(passwordNo1) ||
+    !regexLower.test(passwordNo1) ||
+    !regexUpper.test(passwordNo1)
+  ) {
+    // console.log(
+    //   !regexNum.test(passwordNo1),
+    //     !regexLower.test(passwordNo1),
+    //     !regexUpper.test(passwordNo1)
+    // );
+    return res.status(400).send({
+      msg:
+        "Password must contain at least one uppercase letter, one lowercase letter, and one number.",
     });
   }
 
@@ -277,24 +241,6 @@ exports.recoverPassword = (req, res) => {
     }
   });
 };
-
-function validateRequestRecovery(data) {
-  let errors = {};
-
-  data.email = !isEmpty(data.email) ? data.email : "";
-
-  // email checks
-  if (Validator.isEmpty(data.email)) {
-    errors.recoveryemail = "Email is required";
-  } else if (!Validator.isEmail(data.email)) {
-    errors.recoveryemail = "Email is invalid";
-  }
-
-  return {
-    errors,
-    isValid: isEmpty(errors),
-  };
-}
 
 exports.requestRecovery = (req, res) => {
   const { errors, isValid } = validateRequestRecovery(req.body);
@@ -368,6 +314,7 @@ exports.requestRecovery = (req, res) => {
   });
 };
 
+// Sends a new verification email
 exports.resendValidation = (req, res) => {
   // The email is passed as a json file with a single element to verify the user
   const userEmail = req.body.email;
@@ -441,6 +388,7 @@ exports.resendValidation = (req, res) => {
   });
 };
 
+// Signs user out of the app
 exports.signout = (req, res) => {
   UserSession.findOneAndUpdate(
     {
@@ -468,6 +416,7 @@ exports.signout = (req, res) => {
   });
 };
 
+// Checks for user's validation
 exports.validation = (req, res) => {
   // The token is passed as a json file with a single element to verify the user
   // In we get time hopefully we can change this to happen automatically once the hyperlink is selected
@@ -512,10 +461,12 @@ exports.validation = (req, res) => {
   });
 };
 
+// User verification
 exports.verify = (req, res) => {
   const { query } = req;
   const { token } = query;
 
+  // Searches database for user's token
   UserSession.find({
     _id: token,
     isDeleted: false,

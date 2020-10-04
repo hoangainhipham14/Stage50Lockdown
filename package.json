@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "bootstrap": "^4.5.2",
-    "concurrently": "^4.0.1",
+    "concurrently": "^5.3.0",
     "express-jwt": "^5.3.3",
     "formidable": "^1.2.2",
     "gridfs-stream": "^1.1.1",
@@ -25,7 +25,8 @@
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "build": "cd client && npm run build",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install && npm run client-install && npm run build && npm run server-install",
-    "start": "node backend/server.js"
+    "start": "node backend/server.js",
+    "basic-auto-tests": "cd client && npm test && cd .. && cd backend && npm test"
   },
   "eslintConfig": {
     "extends": "react-app"

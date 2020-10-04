@@ -20,6 +20,7 @@ import Dashboard from "./components/dashboard/dashboard";
 import CreateProject from "./components/project/CreateProject";
 import SingleProject from "./components/project/SingleProject";
 import AccountDetails from "./components/profile/AccountDetails";
+import RequestPasswordReset from "./components/auth/requestRecovery";
 
 // check for token to keep user logged in
 if (localStorage.token) {
@@ -57,6 +58,8 @@ class App extends Component {
               exact
               path="/user/:username/account"
               component={AccountDetails}
+              path="/forgot-password"
+              component={RequestPasswordReset}
             />
             <Route
               exact
