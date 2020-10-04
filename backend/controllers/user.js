@@ -11,6 +11,7 @@ exports.userById = (req, res, next, id) => {
       });
     }
     req.profile = user; //add
+    console.log(req.profile);
   });
 };
 
@@ -38,7 +39,24 @@ exports.userPhoto = (req, res, next) => {
 
 // get user from database
 exports.getUser = (req, res) => {
+  console.log(req.profile);
   return res.json(req.profile);
+};
+
+// get user from database
+exports.getUsernameId = (req, res) => {
+  console.log("Get Username Id");
+  // console.log(req);
+  User.findOne({ _id: req.params.id }, function (err, user) {
+    if (!user) {
+      return res.status(400).send({
+        msg: "This user does not exist",
+      });
+    } else {
+      console.log("Profile details: " + user);
+      return res.json(user.username);
+    }
+  });
 };
 
 // Update use information
