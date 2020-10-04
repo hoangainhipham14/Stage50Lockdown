@@ -35,8 +35,9 @@ exports.signup = async (req, res) => {
     return res.status(400).json(errors);
   }
 
-  const { firstName, lastName, username, password } = req.body;
+  const { firstName, lastName, username } = req.body;
   const email = req.body.email.toLowerCase();
+  const password = req.body.password1;
 
   // check if email already exists
   const emailExists = await User.findOne({ email });
@@ -147,7 +148,7 @@ exports.signin = (req, res) => {
 
     // respond with token and also a subset of the user information
     const { _id, firstName, lastName, username, email } = user;
-    console.log("responding...");
+    // console.log("responding...");
     return res.json({
       token,
       user: { _id, firstName, lastName, username, email },
@@ -155,6 +156,7 @@ exports.signin = (req, res) => {
   });
 };
 
+// Password recovery
 exports.recoverPassword = (req, res) => {
   // With this recover password script, the user enters a new password, and the token is checked
   // at the conclusion of this program whilst saving the passwords
@@ -165,9 +167,27 @@ exports.recoverPassword = (req, res) => {
   const passwordNo1 = req.body.passwordNo1;
   const passwordNo2 = req.body.passwordNo2;
 
-  if (passwordNo1.length < 6) {
+  const regexNum = new RegExp("(?=.*[0-9])");
+  const regexLower = new RegExp("(?=.*[a-z])");
+  const regexUpper = new RegExp("(?=.*[A-Z])");
+
+  if (passwordNo1.length < 8) {
     return res.status(400).send({
-      msg: "Password must be at least 6 characters long",
+      msg: "Password must be at least 8 characters long",
+    });
+  } else if (
+    !regexNum.test(passwordNo1) ||
+    !regexLower.test(passwordNo1) ||
+    !regexUpper.test(passwordNo1)
+  ) {
+    // console.log(
+    //   !regexNum.test(passwordNo1),
+    //     !regexLower.test(passwordNo1),
+    //     !regexUpper.test(passwordNo1)
+    // );
+    return res.status(400).send({
+      msg:
+        "Password must contain at least one uppercase letter, one lowercase letter, and one number.",
     });
   }
 
@@ -287,6 +307,7 @@ exports.requestRecovery = (req, res) => {
   });
 };
 
+// Sends a new verification email
 exports.resendValidation = (req, res) => {
   // The email is passed as a json file with a single element to verify the user
   const userEmail = req.body.email;
@@ -360,6 +381,7 @@ exports.resendValidation = (req, res) => {
   });
 };
 
+// Signs user out of the app
 exports.signout = (req, res) => {
   UserSession.findOneAndUpdate(
     {
@@ -387,6 +409,7 @@ exports.signout = (req, res) => {
   });
 };
 
+// Checks for user's validation
 exports.validation = (req, res) => {
   // The token is passed as a json file with a single element to verify the user
   // In we get time hopefully we can change this to happen automatically once the hyperlink is selected
@@ -431,10 +454,12 @@ exports.validation = (req, res) => {
   });
 };
 
+// User verification
 exports.verify = (req, res) => {
   const { query } = req;
   const { token } = query;
 
+  // Searches database for user's token
   UserSession.find({
     _id: token,
     isDeleted: false,
@@ -466,3 +491,18 @@ exports.requireAuthentication = expressJwt({
   secret: process.env.JWT_SECRET,
   userProperty: "auth",
 });
+
+exports.deleteUser = (req, res) => {
+  const userId = req.auth._id;
+  // console.log(userId);
+  User.findByIdAndDelete(userId, (err) => {
+    if (err) {
+      return res.send(err);
+    } else {
+      return res.status(200).send({
+        success: true,
+        message: "Account deleted: " + userId,
+      });
+    }
+  });
+};
