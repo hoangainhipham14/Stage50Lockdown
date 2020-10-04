@@ -22,33 +22,53 @@ function validateSignup(data) {
   data.lastName = !isEmpty(data.lastName) ? data.lastName : "";
   data.username = !isEmpty(data.username) ? data.username : "";
   data.email = !isEmpty(data.email) ? data.email : "";
-  data.password = !isEmpty(data.password) ? data.password : "";
+  data.password1 = !isEmpty(data.password1) ? data.password1 : "";
+  data.password2 = !isEmpty(data.password2) ? data.password2 : "";
 
   // validate first name
   if (Validator.isEmpty(data.firstName)) {
-    errors.firstName = "First name is required";
+    errors.firstName = "Required";
   }
 
   // validate last name
   if (Validator.isEmpty(data.lastName)) {
-    errors.lastName = "Last name is required";
+    errors.lastName = "Required";
   }
 
   // validate username
   if (Validator.isEmpty(data.username)) {
-    errors.username = "Username is required";
+    errors.username = "Required";
   }
 
   // validate email
   if (Validator.isEmpty(data.email)) {
-    errors.email = "Email is required";
+    errors.email = "Required";
   } else if (!Validator.isEmail(data.email)) {
-    errors.email = "Email is invalid";
+    errors.email = "Invalid email";
   }
 
   // validate password
-  if (!Validator.isLength(data.password, { min: 6 })) {
-    errors.password = "Password must be at least 6 characters";
+  // regex for password
+  const regexNum = new RegExp("(?=.*[0-9])");
+  const regexLower = new RegExp("(?=.*[a-z])");
+  const regexUpper = new RegExp("(?=.*[A-Z])");
+
+  if (!Validator.isLength(data.password1, { min: 8 })) {
+    errors.password1 = "Password must be at least 8 characters";
+  } else if (
+    !regexNum.test(data.password1) ||
+    !regexLower.test(data.password1) ||
+    !regexUpper.test(data.password1)
+  ) {
+    // console.log(
+    //   !regexNum.test(data.password1),
+    //   !regexLower.test(data.password1),
+    //   !regexUpper.test(data.password1)
+    // );
+    errors.password1 =
+      "Password must contain at least one uppercase letter, one lowercase letter, and one number.";
+  } else if (data.password1 !== data.password2) {
+    errors.password2 = "Passwords must match";
   }
 
   return {
@@ -66,8 +86,9 @@ exports.signup = async (req, res) => {
     return res.status(400).json(errors);
   }
 
-  const { firstName, lastName, username, password } = req.body;
+  const { firstName, lastName, username } = req.body;
   const email = req.body.email.toLowerCase();
+  const password = req.body.password1;
 
   // check if email already exists
   const emailExists = await User.findOne({ email });
@@ -158,6 +179,7 @@ function validateSignin(data) {
   };
 }
 
+// Checks correct sign in details
 exports.signin = (req, res) => {
   // validate sign in data
   const { errors, isValid } = validateSignin(req.body);
@@ -203,7 +225,7 @@ exports.signin = (req, res) => {
 
     // respond with token and also a subset of the user information
     const { _id, firstName, lastName, username, email } = user;
-    console.log("responding...");
+    // console.log("responding...");
     return res.json({
       token,
       user: { _id, firstName, lastName, username, email },
@@ -211,6 +233,7 @@ exports.signin = (req, res) => {
   });
 };
 
+// Password recovery
 exports.recoverPassword = (req, res) => {
   // With this recover password script, the user enters a new password, and the token is checked
   // at the conclusion of this program whilst saving the passwords
@@ -221,9 +244,27 @@ exports.recoverPassword = (req, res) => {
   const passwordNo1 = req.body.passwordNo1;
   const passwordNo2 = req.body.passwordNo2;
 
-  if (passwordNo1.length < 6) {
+  const regexNum = new RegExp("(?=.*[0-9])");
+  const regexLower = new RegExp("(?=.*[a-z])");
+  const regexUpper = new RegExp("(?=.*[A-Z])");
+
+  if (passwordNo1.length < 8) {
     return res.status(400).send({
-      msg: "Password must be at least 6 characters long",
+      msg: "Password must be at least 8 characters long",
+    });
+  } else if (
+    !regexNum.test(passwordNo1) ||
+    !regexLower.test(passwordNo1) ||
+    !regexUpper.test(passwordNo1)
+  ) {
+    // console.log(
+    //   !regexNum.test(passwordNo1),
+    //     !regexLower.test(passwordNo1),
+    //     !regexUpper.test(passwordNo1)
+    // );
+    return res.status(400).send({
+      msg:
+        "Password must contain at least one uppercase letter, one lowercase letter, and one number.",
     });
   }
 
@@ -271,6 +312,7 @@ exports.recoverPassword = (req, res) => {
   });
 };
 
+// Checks for email in database
 function validateRequestRecovery(data) {
   let errors = {};
 
@@ -289,6 +331,7 @@ function validateRequestRecovery(data) {
   };
 }
 
+// Sends password recovery email
 exports.requestRecovery = (req, res) => {
   const { errors, isValid } = validateRequestRecovery(req.body);
 
@@ -361,6 +404,7 @@ exports.requestRecovery = (req, res) => {
   });
 };
 
+// Sends a new verification email
 exports.resendValidation = (req, res) => {
   // The email is passed as a json file with a single element to verify the user
   const userEmail = req.body.email;
@@ -434,6 +478,7 @@ exports.resendValidation = (req, res) => {
   });
 };
 
+// Signs user out of the app
 exports.signout = (req, res) => {
   UserSession.findOneAndUpdate(
     {
@@ -461,6 +506,7 @@ exports.signout = (req, res) => {
   });
 };
 
+// Checks for user's validation
 exports.validation = (req, res) => {
   // The token is passed as a json file with a single element to verify the user
   // In we get time hopefully we can change this to happen automatically once the hyperlink is selected
@@ -505,10 +551,12 @@ exports.validation = (req, res) => {
   });
 };
 
+// User verification
 exports.verify = (req, res) => {
   const { query } = req;
   const { token } = query;
 
+  // Searches database for user's token
   UserSession.find({
     _id: token,
     isDeleted: false,
@@ -540,3 +588,18 @@ exports.requireAuthentication = expressJwt({
   secret: process.env.JWT_SECRET,
   userProperty: "auth",
 });
+
+exports.deleteUser = (req, res) => {
+  const userId = req.auth._id;
+  // console.log(userId);
+  User.findByIdAndDelete(userId, (err) => {
+    if (err) {
+      return res.send(err);
+    } else {
+      return res.status(200).send({
+        success: true,
+        message: "Account deleted: " + userId,
+      });
+    }
+  });
+};

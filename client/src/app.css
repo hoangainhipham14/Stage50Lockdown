@@ -8,3 +8,18 @@ hr {
   margin-top: 50px;
   margin-bottom: 50px;
 }
+
+.btn {
+  min-width: 10rem;
+  margin: 0.5rem;
+  max-width: calc(100% - 1rem);
+}
+
+.form-container {
+  max-width: 25rem;
+  margin: 1rem auto;
+}
+
+.form-container .alert {
+  padding: 0.375rem 0.75rem;
+}

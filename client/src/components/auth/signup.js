@@ -1,22 +1,19 @@
 import React, { Component } from "react";
 import { Form, Button, Alert, Container } from "react-bootstrap";
 import { Link, withRouter } from "react-router-dom";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { registerUser } from "../../actions/authActions";
 import isEmpty from "is-empty";
+import axios from "axios";
+
+// REDUX DEPRACATED FOR THIS MODULE
+// import PropTypes from "prop-types";
+// import { connect } from "react-redux";
+// import { registerUser } from "../../actions/authActions";
 
 class Signup extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      error: "",
-      firstName: "",
-      lastName: "",
-      username: "",
-      email: "",
-      password: "",
       errors: {},
     };
   }
@@ -31,7 +28,7 @@ class Signup extends Component {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.errors) {
       this.setState({
         errors: nextProps.errors,
@@ -53,10 +50,30 @@ class Signup extends Component {
       lastName: this.state.lastName,
       username: this.state.username,
       email: this.state.email,
-      password: this.state.password,
+      password1: this.state.password1,
+      password2: this.state.password2,
     };
 
-    this.props.registerUser(newUser, this.props.history);
+    // this.props.registerUser(newUser, this.props.history);
+
+    // post new user to backend
+    axios
+      .post("/api/signup", newUser)
+      .then((res) => {
+        // successful sign up! go to sign in page
+        console.log("Signup success with res.data =", res.data);
+        this.props.history.push("/signin");
+      })
+      .catch((err) => {
+        // sign in failed. receive errors and pass them to state for display.
+        console.log(
+          "Signup failure with err.response.data =",
+          err.response.data
+        );
+        this.setState({
+          errors: err.response.data,
+        });
+      });
   };
 
   render() {
@@ -64,7 +81,7 @@ class Signup extends Component {
 
     return (
       <Container>
-        <div style={{ maxWidth: "25rem", margin: "0 auto" }}>
+        <div className="form-container">
           <div className="formContainer">
             <h2 align="center">Sign Up</h2>
             <p align="center">
@@ -72,7 +89,7 @@ class Signup extends Component {
             </p>
             <Form onSubmit={this.onSubmit}>
               <Form.Group controlId="firstName">
-                <Form.Label>First Name</Form.Label>
+                <Form.Label>First name</Form.Label>
                 <Form.Control
                   type="text"
                   placeholder="First name"
@@ -85,7 +102,7 @@ class Signup extends Component {
               </Form.Group>
 
               <Form.Group controlId="lastName">
-                <Form.Label>Last Name</Form.Label>
+                <Form.Label>Last name</Form.Label>
                 <Form.Control
                   type="text"
                   placeholder="Last name"
@@ -123,21 +140,35 @@ class Signup extends Component {
                 </Alert>
               </Form.Group>
 
-              <Form.Group controlId="password">
+              <Form.Group controlId="password1">
                 <Form.Label>Password</Form.Label>
                 <Form.Control
                   type="password"
                   placeholder="Password"
                   onChange={this.onChange}
                 />
-                <Alert variant="danger" show={!isEmpty(errors.password)}>
-                  {errors.password}
+                <Alert variant="danger" show={!isEmpty(errors.password1)}>
+                  {errors.password1}
                 </Alert>
               </Form.Group>
 
-              <Button variant="primary" type="submit">
-                Sign Up
-              </Button>
+              <Form.Group controlId="password2">
+                <Form.Label>Re-type passworrd</Form.Label>
+                <Form.Control
+                  type="password"
+                  placeholder="Password"
+                  onChange={this.onChange}
+                />
+                <Alert variant="danger" show={!isEmpty(errors.password2)}>
+                  {errors.password2}
+                </Alert>
+              </Form.Group>
+
+              <div className="text-center">
+                <Button variant="primary" type="submit">
+                  Sign Up
+                </Button>
+              </div>
             </Form>
           </div>
         </div>
@@ -146,15 +177,17 @@ class Signup extends Component {
   }
 }
 
-Signup.propTypes = {
-  registerUser: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired,
-};
+// Signup.propTypes = {
+//   registerUser: PropTypes.func.isRequired,
+//   auth: PropTypes.object.isRequired,
+//   errors: PropTypes.object.isRequired,
+// };
 
-const mapStateToProps = (state) => ({
-  auth: state.auth,
-  errors: state.errors,
-});
+// const mapStateToProps = (state) => ({
+//   auth: state.auth,
+//   errors: state.errors,
+// });
 
-export default connect(mapStateToProps, { registerUser })(withRouter(Signup));
+// export default connect(mapStateToProps, { registerUser })(withRouter(Signup));
+
+export default withRouter(Signup);

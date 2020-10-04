@@ -16,7 +16,7 @@ Installs the dependancies for the client portion of the project, which are not i
 
 Installs the dependancies for the backend server portion of the project.
 
-### `npm run full-install'
+### `npm run full-install`
 
 Installs the dependancies for the whole project at once.
 
