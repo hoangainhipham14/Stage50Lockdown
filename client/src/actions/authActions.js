@@ -5,6 +5,7 @@ import jwt_decode from "jwt-decode";
 import { GET_ERRORS, SET_CURRENT_USER, USER_LOADING } from "./types";
 
 // Register user
+// DEPRACATED
 export const registerUser = (userData, history) => (dispatch) => {
   axios
     .post("/api/signup", userData)
