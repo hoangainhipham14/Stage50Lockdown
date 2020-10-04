@@ -55,7 +55,7 @@ class App extends Component {
             <Route exact path="/createProject" component={CreateProject} />
             <Route
               exact
-              path="/user/:username/projects/:projectId"
+              path="/projects/:projectId"
               component={SingleProject}
             />
             <Route
