@@ -60,11 +60,11 @@ function validateSignup(data) {
     !regexLower.test(data.password1) ||
     !regexUpper.test(data.password1)
   ) {
-    console.log(
-      !regexNum.test(data.password1),
-      !regexLower.test(data.password1),
-      !regexUpper.test(data.password1)
-    );
+    // console.log(
+    //   !regexNum.test(data.password1),
+    //   !regexLower.test(data.password1),
+    //   !regexUpper.test(data.password1)
+    // );
     errors.password1 =
       "Password must contain at least one uppercase letter, one lowercase letter, and one number.";
   } else if (data.password1 !== data.password2) {
@@ -257,11 +257,11 @@ exports.recoverPassword = (req, res) => {
     !regexLower.test(passwordNo1) ||
     !regexUpper.test(passwordNo1)
   ) {
-    console.log(
-      !regexNum.test(passwordNo1) +
-        !regexLower.test(passwordNo1) +
-        !regexUpper.test(passwordNo1)
-    );
+    // console.log(
+    //   !regexNum.test(passwordNo1),
+    //     !regexLower.test(passwordNo1),
+    //     !regexUpper.test(passwordNo1)
+    // );
     return res.status(400).send({
       msg:
         "Password must contain at least one uppercase letter, one lowercase letter, and one number.",
