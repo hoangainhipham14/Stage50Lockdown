@@ -49,7 +49,7 @@ function validateSignup(data) {
 
   // validate password
   // regex for password
-  const re = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)$");
+  const re = new RegExp("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])$");
   if (!Validator.isLength(data.password1, { min: 8 })) {
     errors.password1 = "Password must be at least 8 characters";
   } else if (!re.test(data.password1)) {
@@ -166,6 +166,7 @@ function validateSignin(data) {
   };
 }
 
+// Checks correct sign in details
 exports.signin = (req, res) => {
   // validate sign in data
   const { errors, isValid } = validateSignin(req.body);
@@ -211,7 +212,7 @@ exports.signin = (req, res) => {
 
     // respond with token and also a subset of the user information
     const { _id, firstName, lastName, username, email } = user;
-    console.log("responding...");
+    // console.log("responding...");
     return res.json({
       token,
       user: { _id, firstName, lastName, username, email },
@@ -219,6 +220,7 @@ exports.signin = (req, res) => {
   });
 };
 
+// Password recovery
 exports.recoverPassword = (req, res) => {
   // With this recover password script, the user enters a new password, and the token is checked
   // at the conclusion of this program whilst saving the passwords
@@ -229,9 +231,16 @@ exports.recoverPassword = (req, res) => {
   const passwordNo1 = req.body.passwordNo1;
   const passwordNo2 = req.body.passwordNo2;
 
-  if (passwordNo1.length < 6) {
+  const re = new RegExp("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])$");
+
+  if (passwordNo1.length < 8) {
     return res.status(400).send({
-      msg: "Password must be at least 6 characters long",
+      msg: "Password must be at least 8 characters long",
+    });
+  } else if (!re.test(passwordNo1)) {
+    return res.status(400).send({
+      msg:
+        "Password must contain at least one uppercase letter, one lowercase letter, and one number.",
     });
   }
 
@@ -279,6 +288,7 @@ exports.recoverPassword = (req, res) => {
   });
 };
 
+// Checks for email in database
 function validateRequestRecovery(data) {
   let errors = {};
 
@@ -297,6 +307,7 @@ function validateRequestRecovery(data) {
   };
 }
 
+// Sends password recovery email
 exports.requestRecovery = (req, res) => {
   const { errors, isValid } = validateRequestRecovery(req.body);
 
@@ -369,6 +380,7 @@ exports.requestRecovery = (req, res) => {
   });
 };
 
+// Sends a new verification email
 exports.resendValidation = (req, res) => {
   // The email is passed as a json file with a single element to verify the user
   const userEmail = req.body.email;
@@ -442,6 +454,7 @@ exports.resendValidation = (req, res) => {
   });
 };
 
+// Signs user out of the app
 exports.signout = (req, res) => {
   UserSession.findOneAndUpdate(
     {
@@ -469,6 +482,7 @@ exports.signout = (req, res) => {
   });
 };
 
+// Checks for user's validation
 exports.validation = (req, res) => {
   // The token is passed as a json file with a single element to verify the user
   // In we get time hopefully we can change this to happen automatically once the hyperlink is selected
@@ -513,10 +527,12 @@ exports.validation = (req, res) => {
   });
 };
 
+// User verification
 exports.verify = (req, res) => {
   const { query } = req;
   const { token } = query;
 
+  // Searches database for user's token
   UserSession.find({
     _id: token,
     isDeleted: false,
