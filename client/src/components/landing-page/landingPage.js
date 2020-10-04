@@ -116,11 +116,9 @@ class TopLeftText extends Component {
             <Card.Title style={{ textAlign: "center" }}>
               <h1>ePortfolio</h1>
             </Card.Title>
-            <Card.Text style={{ textAlign: "center" }}>
-              <h3>
-                ePortfolio offers a convienient and simple way to show off your
-                work. Perfect for artists, students and professionals.
-              </h3>
+            <Card.Text style={{ textAlign: "center", fontSize: "25px" }}>
+              ePortfolio offers a convienient and simple way to show off your
+              work. Perfect for artists, students and professionals.
             </Card.Text>
             <center>
               <a
