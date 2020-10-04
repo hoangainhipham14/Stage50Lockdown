@@ -49,10 +49,22 @@ function validateSignup(data) {
 
   // validate password
   // regex for password
-  const re = new RegExp("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])$");
+  const regexNum = new RegExp("(?=.*[0-9])");
+  const regexLower = new RegExp("(?=.*[a-z])");
+  const regexUpper = new RegExp("(?=.*[A-Z])");
+
   if (!Validator.isLength(data.password1, { min: 8 })) {
     errors.password1 = "Password must be at least 8 characters";
-  } else if (!re.test(data.password1)) {
+  } else if (
+    !regexNum.test(data.password1) ||
+    !regexLower.test(data.password1) ||
+    !regexUpper.test(data.password1)
+  ) {
+    console.log(
+      !regexNum.test(data.password1),
+      !regexLower.test(data.password1),
+      !regexUpper.test(data.password1)
+    );
     errors.password1 =
       "Password must contain at least one uppercase letter, one lowercase letter, and one number.";
   } else if (data.password1 !== data.password2) {
@@ -74,8 +86,9 @@ exports.signup = async (req, res) => {
     return res.status(400).json(errors);
   }
 
-  const { firstName, lastName, username, password } = req.body;
+  const { firstName, lastName, username } = req.body;
   const email = req.body.email.toLowerCase();
+  const password = req.body.password1;
 
   // check if email already exists
   const emailExists = await User.findOne({ email });
@@ -231,13 +244,24 @@ exports.recoverPassword = (req, res) => {
   const passwordNo1 = req.body.passwordNo1;
   const passwordNo2 = req.body.passwordNo2;
 
-  const re = new RegExp("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])$");
+  const regexNum = new RegExp("(?=.*[0-9])");
+  const regexLower = new RegExp("(?=.*[a-z])");
+  const regexUpper = new RegExp("(?=.*[A-Z])");
 
   if (passwordNo1.length < 8) {
     return res.status(400).send({
       msg: "Password must be at least 8 characters long",
     });
-  } else if (!re.test(passwordNo1)) {
+  } else if (
+    !regexNum.test(passwordNo1) ||
+    !regexLower.test(passwordNo1) ||
+    !regexUpper.test(passwordNo1)
+  ) {
+    console.log(
+      !regexNum.test(passwordNo1) +
+        !regexLower.test(passwordNo1) +
+        !regexUpper.test(passwordNo1)
+    );
     return res.status(400).send({
       msg:
         "Password must contain at least one uppercase letter, one lowercase letter, and one number.",
