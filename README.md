@@ -31,3 +31,7 @@ Run the client.
 ### `npm run dev`
 
 Run the client and server concurrently.
+
+### `npm run basic-auto-tests`
+
+Run the current suite of tests available, note that after every suite of tests pressing ^C will let you proceed to the next set
