@@ -20,12 +20,16 @@ class Signup extends Component {
 
   componentDidMount() {
     // Get props from landing page and map to state
-    this.setState({
-      email: this.props.location.state.email,
-      username: this.props.location.state.username,
-      firstName: this.props.location.state.firstName,
-      lastName: this.props.location.state.lastName,
-    });
+    try {
+      this.setState({
+        email: this.props.location.state.email,
+        username: this.props.location.state.username,
+        firstName: this.props.location.state.firstName,
+        lastName: this.props.location.state.lastName,
+      });
+    } catch (err) {
+      console.log("no state passed in");
+    }
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
