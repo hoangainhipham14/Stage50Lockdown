@@ -1,0 +1,31 @@
+.carousel-inner {
+  /* background-color: black !important; */
+  min-height: 300px !important;
+}
+
+.carousel-indicators li {
+  margin: 0 12px;
+  cursor: pointer;
+  filter: invert(50%);
+}
+
+.carousel-control-prev-icon {
+  filter: invert(50%);
+}
+
+.carousel-control-next-icon {
+  filter: invert(50%);
+}
+
+.carousel {
+  width: 80%;
+  display: block;
+  margin: auto;
+}
+
+img {
+  width: 100%;
+  height: 300px;
+  display: block;
+  margin: auto;
+}
