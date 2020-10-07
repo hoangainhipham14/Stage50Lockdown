@@ -34,9 +34,4 @@ class PrivacyToggleButton extends Component {
   }
 }
 
-/*
-PrivacyToggleButton.propTypes = {
-  auth: PropTypes.object.isRequired,
-};
-*/
 export default PrivacyToggleButton;

@@ -23,9 +23,7 @@ class SingleProject extends Component {
   };
 
   renderProject = (project) => {
-    console.log("Current Project Privacy Setting: " + JSON.stringify(project));
-    //if (project.itemIsPublic) {
-    if (true) {
+    if (project.itemIsPublic) {
       return (
         <Container>
           <Card bg="Light" border="secondary">
@@ -47,7 +45,6 @@ class SingleProject extends Component {
               </ListGroup.Item>
             </ListGroup>
           </Card>
-
           <Row className="justify-content-md-center">
             <Image
               src={`/api/project/img/${this.state.projectId}`}

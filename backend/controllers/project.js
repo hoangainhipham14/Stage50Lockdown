@@ -65,13 +65,26 @@ exports.image = (req, res, next) => {
 
 // Responds with the project containing the data inside
 exports.singleProject = (req, res) => {
-  const data = {
-    title: req.project.title,
-    about: req.project.about,
-    body: req.project.body,
-  };
-
-  return res.json(data);
+  /*
+Changed this so were not sending data to the front end that is private
+*/
+  if (req.project.itemIsPublic) {
+    const data = {
+      title: req.project.title,
+      about: req.project.about,
+      body: req.project.body,
+      itemIsPublic: req.project.itemIsPublic,
+    };
+    return res.json(data);
+  } else {
+    const falseData = {
+      title: "",
+      about: "",
+      body: "",
+      itemIsPublic: req.project.itemIsPublic,
+    };
+    return res.json(falseData);
+  }
 };
 
 // Returns an array of projects the user has made
@@ -101,18 +114,16 @@ exports.toggleProjectPrivacy = (req, res) => {
         error: err,
       });
     } else {
-      console.log(project);
-      console.log("===>" + project.itemIsPublic);
       if (project.itemIsPublic) {
-        console.log("Item is now private");
+        //console.log("Item is now private");
         project.itemIsPublic = false;
         project.save();
-        return res.status(200).json(project.itemIsPublic);
+        return res.status(200);
       } else if (!project.itemIsPublic) {
-        console.log("Item is now public");
+        //console.log("Item is now public");
         project.itemIsPublic = true;
         project.save();
-        return res.status(200).json(project.itemIsPublic);
+        return res.status(200);
       }
     }
   });
