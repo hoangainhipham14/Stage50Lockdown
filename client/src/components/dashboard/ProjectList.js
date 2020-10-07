@@ -7,15 +7,7 @@ import axios from "axios";
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import {
-  Card,
-  Container,
-  Image,
-  Row,
-  Col,
-  ListGroup,
-  Button,
-} from "react-bootstrap";
+import { Container, Row, Col, ListGroup } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 class ProjectList extends Component {
@@ -45,6 +37,26 @@ class ProjectList extends Component {
     });
   };
 
+  /*
+  onSubmit = (e) => {
+    e.preventDefault();
+    console.log("Button Clicked");
+    const projectId = this.props.match.params.projectId;
+    axios
+      .post(`/api/project/togglePrivacy/${projectId}`, { projectID: projectId })
+      .then((response) => {
+        if (response.error) {
+          console.log("failure");
+          console.log(response.error);
+        } else {
+          console.log("Button Clicked with id" + projectId);
+          //console.log("Project is now" + response.data);
+          //console.log(this.state.projects);
+        }
+      });
+  };
+  */
+
   render() {
     const projectCards = this.state.projects.map((project, idx) => (
       // project.linkRoute = "/projects/" + project._id;
@@ -66,7 +78,7 @@ class ProjectList extends Component {
 
     return (
       <Container>
-        project list
+        Project List (Will make nicer in the future)
         {projectCards}
       </Container>
     );
@@ -75,6 +87,9 @@ class ProjectList extends Component {
 
 /**
  * 
+ *         <Link to={`/projects/privacy/${project._id}`}>
+              <ListGroup.Item key={idx}>Change Privacy Setting</ListGroup.Item>
+            </Link>
  *    <Button onClick={this.onTogglePrivacyClick(project._id)}>Toggle Privacy Settings
         </Button>
  */

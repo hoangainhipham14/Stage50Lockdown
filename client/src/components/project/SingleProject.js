@@ -23,7 +23,9 @@ class SingleProject extends Component {
   };
 
   renderProject = (project) => {
-    if (project.isPublic) {
+    console.log("Current Project Privacy Setting: " + JSON.stringify(project));
+    //if (project.itemIsPublic) {
+    if (true) {
       return (
         <Container>
           <Card bg="Light" border="secondary">

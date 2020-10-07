@@ -21,6 +21,7 @@ import CreateProject from "./components/project/CreateProject";
 import SingleProject from "./components/project/SingleProject";
 import AccountDetails from "./components/profile/AccountDetails";
 import RequestPasswordReset from "./components/auth/requestRecovery";
+import PrivacyToggleButton from "./components/dashboard/PrivacyToggleButton";
 
 // check for token to keep user logged in
 if (localStorage.token) {
@@ -73,6 +74,12 @@ class App extends Component {
               path="/resetPassword/:token"
               component={ResetPassword}
             />
+            <Route
+              exact
+              path="/projects/privacy/:projectId"
+              component={PrivacyToggleButton}
+            />
+
             <Switch>
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
             </Switch>

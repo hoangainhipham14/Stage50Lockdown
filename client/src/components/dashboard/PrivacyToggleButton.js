@@ -1,20 +1,25 @@
 // The button that allows a user to toggle the privacy of a particular project
 
-const { Component } = require("react");
-const { Container } = require("react-bootstrap");
+import React, { Component } from "react";
+import axios from "axios";
 import { Container, Button } from "react-bootstrap";
 
 class PrivacyToggleButton extends Component {
-  onTogglePrivacyClick = (projectId) => {
+  componentDidMount = () => {};
+
+  onToggleClick = (e) => {
+    e.preventDefault();
+    const projectId = this.props.match.params.projectId;
+    //console.log("Button Clicked with id: " + projectId);
     axios
-      .post(`/api/project/togglePrivacy`, { projectID: projectId })
+      .post(`/api/project/togglePrivacy/${projectId}`, { projectID: projectId })
       .then((response) => {
         if (response.error) {
           console.log("failure");
           console.log(response.error);
         } else {
-          console.log("Button Clicked with id" + projectId);
-          //console.log("Project is now" + response.data);
+          //console.log("Button Clicked with id: " + projectId);
+          console.log("itemIsPublic is now " + response.data);
           //console.log(this.state.projects);
         }
       });
@@ -23,8 +28,15 @@ class PrivacyToggleButton extends Component {
   render() {
     return (
       <Container>
-        <Button type="submit">Toggle Privacy</Button>
+        <Button onClick={this.onToggleClick}>Toggle Privacy</Button>
       </Container>
     );
   }
 }
+
+/*
+PrivacyToggleButton.propTypes = {
+  auth: PropTypes.object.isRequired,
+};
+*/
+export default PrivacyToggleButton;

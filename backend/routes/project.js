@@ -21,7 +21,7 @@ router.get("/project/:projectId", singleProject);
 
 // this should post to exports.getProject
 router.post("/project/list", postProjectList);
-router.post("/project/togglePrivacy", toggleProjectPrivacy);
+router.post("/project/togglePrivacy/:projectId", toggleProjectPrivacy);
 
 // router.param("userId", userById);
 router.param("projectId", projectById);

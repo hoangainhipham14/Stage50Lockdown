@@ -101,14 +101,18 @@ exports.toggleProjectPrivacy = (req, res) => {
         error: err,
       });
     } else {
-      if (project.itemisPublic) {
+      console.log(project);
+      console.log("===>" + project.itemIsPublic);
+      if (project.itemIsPublic) {
         console.log("Item is now private");
-        project.itemisPublic = false;
-        return res.status(200).json(project.itemisPublic);
-      } else {
+        project.itemIsPublic = false;
+        project.save();
+        return res.status(200).json(project.itemIsPublic);
+      } else if (!project.itemIsPublic) {
         console.log("Item is now public");
-        project.itemisPublic = true;
-        return res.status(200).json(project.itemisPublic);
+        project.itemIsPublic = true;
+        project.save();
+        return res.status(200).json(project.itemIsPublic);
       }
     }
   });
