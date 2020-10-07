@@ -21,6 +21,7 @@ import CreateProject from "./components/project/CreateProject";
 import SingleProject from "./components/project/SingleProject";
 import AccountDetails from "./components/profile/AccountDetails";
 import RequestPasswordReset from "./components/auth/requestRecovery";
+import NoMatch from "./components/404/404";
 
 // check for token to keep user logged in
 if (localStorage.token) {
@@ -49,24 +50,29 @@ class App extends Component {
         <Router>
           <div className="app">
             <Navbar />
-            <Route exact path="/signin" component={Signin} />
-            <Route exact path="/signup" component={Signup} />
-            <Route exact path="/profile/:username" component={Profile} />
-            <Route exact path="/createProject" component={CreateProject} />
-            <Route exact path="/project/:projectId" component={SingleProject} />
-            <Route
-              exact
-              path="/user/:username/account"
-              component={AccountDetails}
-            />
-            <Route path="/forgot-password" component={RequestPasswordReset} />
-            <Route
-              exact
-              path="/resetPassword/:token"
-              component={ResetPassword}
-            />
             <Switch>
+              <Route exact path="/signin" component={Signin} />
+              <Route exact path="/signup" component={Signup} />
+              <Route exact path="/profile/:username" component={Profile} />
+              <Route exact path="/createProject" component={CreateProject} />
+              <Route
+                exact
+                path="/project/:projectId"
+                component={SingleProject}
+              />
+              <Route
+                exact
+                path="/user/:username/account"
+                component={AccountDetails}
+              />
+              <Route path="/forgot-password" component={RequestPasswordReset} />
+              <Route
+                exact
+                path="/resetPassword/:token"
+                component={ResetPassword}
+              />
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
+              <Route component={NoMatch} />
             </Switch>
           </div>
         </Router>
