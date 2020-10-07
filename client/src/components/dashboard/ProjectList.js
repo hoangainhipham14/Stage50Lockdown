@@ -45,44 +45,39 @@ class ProjectList extends Component {
     });
   };
 
-  onTogglePrivacyClick = (projectId) => {
-    axios
-      .post(`/api/project/togglePrivacy`, { projectID: projectId })
-      .then((response) => {
-        if (response.error) {
-          console.log("failure");
-          console.log(response.error);
-        } else {
-          console.log("Button Clicked with id" + projectId);
-          console.log("Project is now" + response.data);
-          //console.log(this.state.projects);
-        }
-      });
-  };
-
   render() {
     const projectCards = this.state.projects.map((project, idx) => (
       // project.linkRoute = "/projects/" + project._id;
       <Container>
-        <Link to={`/projects/${project._id}`}>
-          <ListGroup.Item key={idx}>{project.title}</ListGroup.Item>
-        </Link>
-
-        <Button onclick={this.onTogglePrivacyClick(project._id)}>
-          Toggle Privacy Settings
-        </Button>
+        <Row>
+          <Col>
+            <Link to={`/projects/${project._id}`}>
+              <ListGroup.Item key={idx}>{project.title}</ListGroup.Item>
+            </Link>
+          </Col>
+          <Col>
+            <Link to={`/projects/privacy/${project._id}`}>
+              <ListGroup.Item key={idx}>Change Privacy Setting</ListGroup.Item>
+            </Link>
+          </Col>
+        </Row>
       </Container>
     ));
 
     return (
       <Container>
         project list
-        <Row>{projectCards}</Row>
+        {projectCards}
       </Container>
     );
   }
 }
 
+/**
+ * 
+ *    <Button onClick={this.onTogglePrivacyClick(project._id)}>Toggle Privacy Settings
+        </Button>
+ */
 ProjectList.propTypes = {
   auth: PropTypes.object.isRequired,
 };
