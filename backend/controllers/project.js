@@ -73,3 +73,37 @@ exports.singleProject = (req, res) => {
 
   return res.json(data);
 };
+
+// Returns an array of projects the user has made
+exports.postProjectList = (req, res) => {
+  const userID = req.body.userID;
+  //console.log("entering getProjectList: " + userID);
+
+  Project.find({ _userId: userID }).exec((err, projects) => {
+    if (err) {
+      return res.status(400).json({
+        error: err,
+      });
+    } else {
+      //console.log(projects);
+      return res.status(200).json(projects);
+    }
+  });
+};
+
+// toggles the privacy setting of a particular project
+exports.toggleProjectPrivacy = (req, res) => {
+  const projectID = req.body.projectID;
+
+  Project.findById(projectID).exec((err, project) => {
+    if (err) {
+      return res.status(400).json({
+        error: err,
+      });
+    } else {
+      if (project.itemisPublic) {
+      } else {
+      }
+    }
+  });
+};

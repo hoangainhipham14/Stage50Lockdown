@@ -31,6 +31,18 @@ const projectSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+
+  // Added this to determine if the item is ready for public viewing
+  itemIsPublic: {
+    type: Boolean,
+    default: false,
+  },
+
+  // A way to connect the user to the project
+  _userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
 });
 
 module.exports = mongoose.model("Project", projectSchema);

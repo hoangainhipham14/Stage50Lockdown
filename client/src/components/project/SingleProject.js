@@ -23,44 +23,48 @@ class SingleProject extends Component {
   };
 
   renderProject = (project) => {
-    return (
-      <Container>
-        <Card bg="Light" border="secondary">
-          <Card.Header>{project.title}</Card.Header>
-          <ListGroup variant="flush">
-            <ListGroup.Item>{project.about}</ListGroup.Item>
-            <ListGroup.Item>
-              <Row>
-                <Col sm={20}>
-                  <Image
-                    src={`/api/project/img/${this.state.projectId}`}
-                    alt={project.title}
-                    rounded
-                    thumbnail
-                  />
-                </Col>
-                <Col lg={true}>{project.body}</Col>
-              </Row>
-            </ListGroup.Item>
-          </ListGroup>
-        </Card>
+    if (project.isPublic) {
+      return (
+        <Container>
+          <Card bg="Light" border="secondary">
+            <Card.Header>{project.title}</Card.Header>
+            <ListGroup variant="flush">
+              <ListGroup.Item>{project.about}</ListGroup.Item>
+              <ListGroup.Item>
+                <Row>
+                  <Col sm={20}>
+                    <Image
+                      src={`/api/project/img/${this.state.projectId}`}
+                      alt={project.title}
+                      rounded
+                      thumbnail
+                    />
+                  </Col>
+                  <Col lg={true}>{project.body}</Col>
+                </Row>
+              </ListGroup.Item>
+            </ListGroup>
+          </Card>
 
-        <Row className="justify-content-md-center">
-          <Image
-            src={`/api/project/img/${this.state.projectId}`}
-            alt={project.title}
-            rounded
-          />
-        </Row>
-        <Row className="justify-content-md-center">
-          <Image
-            src={`/api/project/img/${this.state.projectId}`}
-            alt={project.title}
-            rounded
-          />
-        </Row>
-      </Container>
-    );
+          <Row className="justify-content-md-center">
+            <Image
+              src={`/api/project/img/${this.state.projectId}`}
+              alt={project.title}
+              rounded
+            />
+          </Row>
+          <Row className="justify-content-md-center">
+            <Image
+              src={`/api/project/img/${this.state.projectId}`}
+              alt={project.title}
+              rounded
+            />
+          </Row>
+        </Container>
+      );
+    } else {
+      return <h1>Project Is Currently Private</h1>;
+    }
   };
 
   render() {
