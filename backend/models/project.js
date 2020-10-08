@@ -8,6 +8,10 @@ const projectSchema = new Schema({
     required: true,
   },
 
+  about: {
+    type: String,
+  },
+
   body: {
     type: String,
     required: true,
@@ -18,6 +22,14 @@ const projectSchema = new Schema({
     contentType: String,
     fileName: String,
   },
+
+  files: [
+    {
+      data: Buffer,
+      contentType: String,
+      fileName: String,
+    },
+  ],
 
   postedBy: {
     type: ObjectId,
