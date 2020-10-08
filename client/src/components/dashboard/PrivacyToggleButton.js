@@ -2,7 +2,8 @@
 
 import React, { Component } from "react";
 import axios from "axios";
-import { Container, Button } from "react-bootstrap";
+import { Container, Button, Form, FormCheck } from "react-bootstrap";
+import Switch from "react-bootstrap/esm/Switch";
 
 class PrivacyToggleButton extends Component {
   componentDidMount = () => {};
@@ -28,10 +29,24 @@ class PrivacyToggleButton extends Component {
   render() {
     return (
       <Container>
-        <Button onClick={this.onToggleClick}>Toggle Privacy</Button>
+        <Form.Group controlId="switch">
+          <Form.Label>Toggle Privacy Of Item Here</Form.Label>
+          <Form.Check
+            type="switch"
+            id="switch"
+            label="switch"
+            onChange={this.onToggleClick}
+          />
+        </Form.Group>
       </Container>
     );
   }
 }
+
+/* Use the button of the check is a bit too finicky
+      <Container>
+        <Button onClick={this.onToggleClick}>Toggle Privacy</Button>
+      </Container>
+      */
 
 export default PrivacyToggleButton;
