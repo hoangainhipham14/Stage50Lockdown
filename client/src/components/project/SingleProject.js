@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { singleProject } from "./APIProject";
 import { Link, Redirect } from "react-router-dom";
+import { Container, Image, Card, Row, Col } from "react-bootstrap";
 
 class SingleProject extends Component {
   state = {
@@ -56,18 +57,52 @@ class SingleProject extends Component {
     if (this.state.redirectToHome) {
       return <Redirect to={`/`} />;
     }
+
     const { project } = this.state;
+    if (!project) {
+      return <Container>Loading...</Container>;
+    }
+    const { title, about, body } = project;
+    // const posterId = project.postedBy ? `/user/${project.postedBy._id}` : "";
+    // const posterName = project.postedBy ? project.postedBy.name : "Unknown";
     return (
-      <div className="container">
-        <h2 className="display-2 mt-5 mb-5">Title: {project.title}</h2>
-        {!project ? (
-          <div className="jumbotron text-center">
-            <h2>Loading...</h2>
-          </div>
-        ) : (
-          this.renderProject(project)
-        )}
-      </div>
+      <Container>
+        <Card>
+          <Card.Header>
+            <div className="text-center">
+              <h1>{title}</h1>
+            </div>
+            <hr />
+            <div className="text-center">{about}</div>
+          </Card.Header>
+          <Row noGutters>
+            <Col lg={6}>
+              <Card.Body>
+                <Image
+                  src={`/api/project/img/${this.state.projectId}`}
+                  alt=""
+                  style={{ width: "100%" }}
+                  thumbnail
+                />
+              </Card.Body>
+            </Col>
+            <Col lg={6}>
+              <Card.Body style={{ whiteSpace: "pre-line" }}>{body}</Card.Body>
+            </Col>
+          </Row>
+          <hr />
+          <Card.Body>
+            <h2>Gallery</h2>
+          </Card.Body>
+          <hr />
+          <Card.Body>
+            <h2>Additional files</h2>
+          </Card.Body>
+          <Card.Footer className="text-muted">
+            Last updated at some point who knows really
+          </Card.Footer>
+        </Card>
+      </Container>
     );
   }
 }

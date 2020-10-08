@@ -28,12 +28,10 @@ function NavbarAccountLoggedIn(props) {
     <>
       <Nav className="mr-auto">
         <Nav.Link href="/dashboard">Dashboard</Nav.Link>
-        {/* <Nav.Link href="/upload">Upload</Nav.Link> */}
         <Nav.Link href="/createProject">Create Project</Nav.Link>
-        {/* <Nav.Link href="/project/projectId">My Projects</Nav.Link> */}
-        {/* <LinkContainer to="/dashboard">
-          <Nav.Link>{props.user.firstName}</Nav.Link>
-        </LinkContainer> */}
+        <Nav.Link href="/project/5f7ec1e78a285e4a1891d2aa">
+          Example Project
+        </Nav.Link>
       </Nav>
       <Nav className="ml-auto">
         <Nav.Link href={`/user/${props.username}/account`}>

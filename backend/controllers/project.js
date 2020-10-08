@@ -85,6 +85,7 @@ exports.image = (req, res, next) => {
 exports.singleProject = (req, res) => {
   const data = {
     title: req.project.title,
+    about: req.project.about,
     body: req.project.body,
   };
 
