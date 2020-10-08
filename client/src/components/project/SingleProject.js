@@ -62,7 +62,13 @@ class SingleProject extends Component {
         </Container>
       );
     } else {
-      return <h1>Project Is Currently Private</h1>;
+      return (
+        <Container>
+          <ListGroup.Item variant="warning">
+            Project Is Currently Private
+          </ListGroup.Item>
+        </Container>
+      );
     }
   };
 

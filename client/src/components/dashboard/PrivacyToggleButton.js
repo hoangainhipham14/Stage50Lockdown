@@ -2,12 +2,13 @@
 
 import React, { Component } from "react";
 import axios from "axios";
-import { Container, Button, Form, FormCheck } from "react-bootstrap";
-import Switch from "react-bootstrap/esm/Switch";
+import { Container, Form } from "react-bootstrap";
+//import Switch from "react-bootstrap/esm/Switch";
 
 class PrivacyToggleButton extends Component {
   componentDidMount = () => {};
 
+  // Send a request to the database to switch the itemIsPublic bool
   onToggleClick = (e) => {
     e.preventDefault();
     const projectId = this.props.match.params.projectId;
@@ -42,11 +43,5 @@ class PrivacyToggleButton extends Component {
     );
   }
 }
-
-/* Use the button of the check is a bit too finicky
-      <Container>
-        <Button onClick={this.onToggleClick}>Toggle Privacy</Button>
-      </Container>
-      */
 
 export default PrivacyToggleButton;

@@ -87,7 +87,7 @@ Changed this so were not sending data to the front end that is private
   }
 };
 
-// Returns an array of projects the user has made
+// Returns an array of projects the user has made (Provided it has the userId attached to it)
 exports.postProjectList = (req, res) => {
   const userID = req.body.userID;
   //console.log("entering getProjectList: " + userID);
