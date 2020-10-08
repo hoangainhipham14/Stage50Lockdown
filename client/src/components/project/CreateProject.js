@@ -10,29 +10,62 @@ import {
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
+function appearEqual(file1, file2) {
+  return (
+    file1.name === file2.name &&
+    file1.lastModified === file2.lastModified &&
+    file1.size === file2.size
+  );
+}
+
 class CreateProject extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       title: "",
+      about: "",
       body: "",
-      image: null,
+      mainImage: "",
+      files: [],
     };
   }
 
-  /*
-   * called whenever a value is changed in the form
-   */
+  // called whenever a value is changed in the form
   onChange = (e) => {
     // the name of field changed
     const name = e.target.id;
     // the value of the field changed
     var value;
     switch (name) {
-      case "image":
+      case "mainImage":
         // extract the image
         value = e.target.files[0];
+        break;
+      case "files":
+        // list of files selected on this click of "choose files"
+        const filesSelected = e.target.files;
+        // we'll only add files that aren't already selected
+        var filesToAdd = [];
+        for (var i = 0; i < filesSelected.length; i++) {
+          const file = filesSelected[i];
+          var alreadyAdded = false;
+          // search already selected files
+          for (var j in this.state.files) {
+            const f = this.state.files[j];
+            if (appearEqual(file, f)) {
+              // found a match!
+              // file already selected - we won't add it
+              alreadyAdded = true;
+              break;
+            }
+          }
+          if (!alreadyAdded) {
+            filesToAdd.push(file);
+          }
+        }
+        // new list of files is the old list plus files we've decided to add
+        value = this.state.files.concat(filesToAdd);
         break;
       default:
         // by default, the value is just the field value
@@ -42,6 +75,14 @@ class CreateProject extends Component {
     this.setState({
       [name]: value,
     });
+  };
+
+  // this guy deletes the ith file from the file list
+  // note this is a curried function - it takes a number (i) and produces a
+  // function that takes an event and deletes the ith file
+  deleteFile = (i) => (e) => {
+    this.state.files.splice(i, 1);
+    this.setState({});
   };
 
   goBack = () => {
@@ -56,8 +97,16 @@ class CreateProject extends Component {
     // we need to do this because JSON isn't sufficient for image sending
     const formData = new FormData();
     formData.set("title", this.state.title);
+    formData.set("about", this.state.about);
     formData.set("body", this.state.body);
-    formData.set("image", this.state.image);
+    formData.set("image", this.state.mainImage);
+    for (var i in this.state.files) {
+      const file = this.state.files[i];
+      // add file i with the key "file[i]"
+      // this seems hacky because it is
+      // i can't find a better way
+      formData.append(`file-${i}`, file, file.name);
+    }
 
     // configururation for post request since we aren't just posting json
     const config = {
@@ -93,6 +142,19 @@ class CreateProject extends Component {
       </Popover>
     );
 
+    var files = [];
+    for (var i = 0; i < this.state.files.length; i++) {
+      const file = this.state.files[i];
+      files.push(
+        <div key={i}>
+          <button type="button" className="close" onClick={this.deleteFile(i)}>
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <span>{file.name}</span>
+        </div>
+      );
+    }
+
     return (
       <Container>
         <div style={{ maxWidth: "30rem", margin: "0 auto" }}>
@@ -106,17 +168,39 @@ class CreateProject extends Component {
               <Form.Control type="text" onChange={this.onChange} />
             </Form.Group>
 
-            <Form.Group controlId="body">
-              <Form.Label>Body Text</Form.Label>
-              <Form.Control as="textarea" rows="5" onChange={this.onChange} />
-            </Form.Group>
-
-            <Form.Group controlId="image">
-              <Form.File
-                id="image"
-                label="Main Image"
+            <Form.Group controlId="about">
+              <Form.Label>About</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows="3"
+                placeholder="A short description of the project"
                 onChange={this.onChange}
               />
+            </Form.Group>
+
+            <Form.Group controlId="body">
+              <Form.Label>Body Text</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows="7"
+                placeholder="More information about your project"
+                onChange={this.onChange}
+              />
+            </Form.Group>
+
+            <Form.Group controlId="mainImage">
+              <Form.File label="Main Image" onChange={this.onChange} />
+            </Form.Group>
+
+            <Form.Group controlId="files">
+              <Form.Label>Additional files</Form.Label>
+              <Form.File
+                multiple
+                onChange={this.onChange}
+                style={{ color: "transparent" }}
+                value=""
+              />
+              {files}
             </Form.Group>
 
             <div className="text-center">
@@ -125,6 +209,7 @@ class CreateProject extends Component {
               </Button>
               <OverlayTrigger
                 trigger="click"
+                rootClose
                 placement="bottom"
                 overlay={popover}
               >
