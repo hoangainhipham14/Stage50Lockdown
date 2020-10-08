@@ -14,37 +14,42 @@ exports.createProject = (req, res, next) => {
       });
     }
 
-    console.log("Fields\n", fields);
-    console.log("Got", Object.keys(files).length, "files.");
-    console.log(Object.keys(files));
-
-    // number of additional files in the project
-    // all the files in the request are "additional files" except the main image
-    const numFiles = Object.keys(files).length - (files.image ? 1 : 0);
-    for (var i = 0; i < numFiles; i++) {
-      console.log(files[`file-${i}`]);
-    }
-
-    // NEED TO WORK OUT HOW TO SAVE THE FILES
-
     // create the new project
     let project = new Project(fields);
 
-    // add the image to the project
-
+    // add the main image to the project
     if (files.image) {
-      project.image.data = fs.readFileSync(files.image.path);
-      project.image.contentType = files.image.type;
-      project.image.fileName = files.image.name;
+      project.image = {
+        data: fs.readFileSync(files.image.path),
+        contentType: files.image.type,
+        fileName: files.image.name,
+      };
     }
 
+    // add the additional files to the project
+    const numAdditionalFiles =
+      Object.keys(files).length - (files.image ? 1 : 0);
+    const additionalFiles = [];
+    for (var i = 0; i < numAdditionalFiles; i++) {
+      const file = files[`file-${i}`];
+      additionalFiles.push({
+        data: fs.readFileSync(file.path),
+        contentType: file.type,
+        fileName: file.name,
+      });
+    }
+    project.additionalFiles = additionalFiles;
+
     // save the new project
+    console.log("Saving...");
     project.save((err, result) => {
       if (err) {
+        console.log("Saving error:", err);
         return res.status(500).json({
           image: "Image could not be saved",
         });
       } else {
+        console.log("Saving success:", result);
         res.json(result);
       }
     });

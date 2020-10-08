@@ -23,7 +23,7 @@ const projectSchema = new Schema({
     fileName: String,
   },
 
-  files: [
+  additionalFiles: [
     {
       data: Buffer,
       contentType: String,
