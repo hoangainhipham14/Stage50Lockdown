@@ -69,6 +69,7 @@ class App extends Component {
               path="/forgot-password"
               component={RequestPasswordReset}
             />
+            <Route path="/forgot-password" component={RequestPasswordReset} />
             <Route
               exact
               path="/resetPassword/:token"
