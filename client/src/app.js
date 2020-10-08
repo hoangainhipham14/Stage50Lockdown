@@ -72,6 +72,8 @@ class App extends Component {
                 component={ResetPassword}
               />
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
+
+              {/* This must stay at the bottom. Add any new routes above */}
               <Route component={NoMatch} />
             </Switch>
           </div>
