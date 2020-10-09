@@ -55,7 +55,11 @@ class App extends Component {
             <Route exact path="/profile/:username" component={Profile} />
             <Route exact path="/createProject" component={CreateProject} />
             <Route exact path="/project/:projectId" component={SingleProject} />
-            <Route exact path="/carousel" component={DisplayCarousel} />
+            <Route
+              exact
+              path="/carousel/:projectId"
+              component={DisplayCarousel}
+            />
             <Route
               exact
               path="/user/:username/account"

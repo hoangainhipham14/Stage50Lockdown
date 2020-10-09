@@ -50,7 +50,7 @@ exports.projectById = (req, res, next, id) => {
         });
       }
       req.project = project;
-
+      console.log("Image");
       next();
     });
 };
@@ -61,6 +61,7 @@ exports.image = (req, res, next) => {
     "Content-Disposition": "inline; filename=" + req.project.image.fileName,
     "Content-Type": req.project.image.contentType,
   });
+  console.log("Image");
   return res.send(req.project.image.data);
 };
 
