@@ -55,14 +55,17 @@ class App extends Component {
             <Route exact path="/signup" component={Signup} />
             <Route exact path="/profile/:username" component={Profile} />
             <Route exact path="/createProject" component={CreateProject} />
-            <Route exact path="/project/:projectId" component={SingleProject} />
+            <Route
+              exact
+              path="/projects/:projectId"
+              component={SingleProject}
+            />
             <Route
               exact
               path="/user/:username/account"
               component={AccountDetails}
-              path="/forgot-password"
-              component={RequestPasswordReset}
             />
+            <Route path="/forgot-password" component={RequestPasswordReset} />
             <Route
               exact
               path="/resetPassword/:token"

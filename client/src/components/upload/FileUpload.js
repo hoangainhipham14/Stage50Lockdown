@@ -2,6 +2,7 @@ import React, { Fragment, Component } from "react";
 import axios from "axios";
 // import { Alert } from "react-bootstrap";
 import Message from "./Message";
+import store from "../../store.js";
 
 class FileUpload extends Component {
   constructor(props) {
@@ -11,15 +12,18 @@ class FileUpload extends Component {
       fileName: "Choose File",
       message: "",
       isSubmitted: false,
+      username: "",
     };
   }
 
   onChange = (e) => {
+    const username = store.getState().auth.user.username;
     this.setState({
       file: e.target.files[0],
       fileName: e.target.files[0].name,
       message: "",
       isSubmitted: false,
+      username: username,
     });
   };
 
@@ -37,6 +41,7 @@ class FileUpload extends Component {
     const formData = new FormData();
     formData.append("file", this.state.file);
     formData.append("fileName", this.state.fileName);
+    formData.append("username", this.state.username);
 
     try {
       axios.post("/api/upload", formData, {

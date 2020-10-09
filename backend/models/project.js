@@ -8,6 +8,10 @@ const projectSchema = new Schema({
     required: true,
   },
 
+  about: {
+    type: String,
+  },
+
   body: {
     type: String,
     required: true,

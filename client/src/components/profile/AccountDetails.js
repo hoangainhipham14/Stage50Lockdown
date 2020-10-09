@@ -101,7 +101,6 @@ class AccountDetails extends Component {
   };
 
   render() {
-    console.log(this.state.user);
     if (this.state.username === this.state.user) {
       return (
         <Container>
