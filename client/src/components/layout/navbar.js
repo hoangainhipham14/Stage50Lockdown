@@ -10,6 +10,11 @@ import { LinkContainer } from "react-router-bootstrap";
 function NavbarAccountLoggedOut() {
   return (
     <>
+      <Nav className="mr-auto">
+        <LinkContainer to="/user/username/projects/5f76b981baff9a2f08be5e1f">
+          <Nav.Link>Featured Project</Nav.Link>
+        </LinkContainer>
+      </Nav>
       <Nav className="ml-auto">
         <LinkContainer to="/signin">
           <Nav.Link>Sign In</Nav.Link>

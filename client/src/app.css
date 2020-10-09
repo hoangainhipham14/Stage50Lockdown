@@ -4,6 +4,11 @@
   height: 1rem;
 }
 
+hr {
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
 .btn {
   min-width: 10rem;
   margin: 0.5rem;
