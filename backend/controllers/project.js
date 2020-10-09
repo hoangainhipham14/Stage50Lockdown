@@ -13,8 +13,6 @@ exports.createProject = (req, res, next) => {
         image: "Image could not be uploaded",
       });
     }
-
-    console.log(fields);
     // create the new project
     let project = new Project(fields);
 
@@ -61,6 +59,7 @@ exports.image = (req, res, next) => {
     "Content-Disposition": "inline; filename=" + req.project.image.fileName,
     "Content-Type": req.project.image.contentType,
   });
+
   return res.send(req.project.image.data);
 };
 
@@ -68,6 +67,7 @@ exports.image = (req, res, next) => {
 exports.singleProject = (req, res) => {
   const data = {
     title: req.project.title,
+    about: req.project.about,
     body: req.project.body,
   };
 
