@@ -19,6 +19,7 @@ import PrivateRoute from "./components/private-route/privateRoute";
 import Dashboard from "./components/dashboard/dashboard";
 import CreateProject from "./components/project/CreateProject";
 import SingleProject from "./components/project/SingleProject";
+import LandingPage from "./components/landing-page/landingPage";
 import AccountDetails from "./components/profile/AccountDetails";
 import RequestPasswordReset from "./components/auth/requestRecovery";
 
@@ -49,6 +50,7 @@ class App extends Component {
         <Router>
           <div className="app">
             <Navbar />
+            <Route exact path="/" component={LandingPage} />
             <Route exact path="/signin" component={Signin} />
             <Route exact path="/signup" component={Signup} />
             <Route exact path="/profile/:username" component={Profile} />
