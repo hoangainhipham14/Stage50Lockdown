@@ -5,6 +5,8 @@ const {
   singleProject,
   projectById,
   image,
+  postProjectList,
+  toggleProjectPrivacy,
 } = require("../controllers/project");
 
 const { userById } = require("../controllers/user");
@@ -16,6 +18,10 @@ router.post("/project/create/:userId", requireAuthentication, createProject);
 router.get("/project/img/:projectId", image);
 
 router.get("/project/:projectId", singleProject);
+
+// this should post to exports.getProject
+router.post("/project/list", postProjectList);
+router.post("/project/togglePrivacy/:projectId", toggleProjectPrivacy);
 
 // router.param("userId", userById);
 router.param("projectId", projectById);

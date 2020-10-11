@@ -43,6 +43,9 @@ class CreateProject extends Component {
     // prevent page from reloading
     e.preventDefault();
 
+    // get user id for post request and to save as a reference for the project
+    const _id = this.props.auth.user._id;
+
     // create the formdata object
     // we need to do this because JSON isn't sufficient for image sending
     const formData = new FormData();
@@ -50,6 +53,7 @@ class CreateProject extends Component {
     formData.set("about", this.state.about);
     formData.set("body", this.state.body);
     formData.set("image", this.state.image);
+    formData.set("_userId", _id);
 
     // configururation for post request since we aren't just posting json
     const config = {
@@ -57,9 +61,6 @@ class CreateProject extends Component {
         "content-type": "multipart/form-data",
       },
     };
-
-    // get user id for post request
-    const _id = this.props.auth.user._id;
 
     axios
       .post(`/api/project/create/${_id}`, formData, config)
