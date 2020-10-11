@@ -19,9 +19,12 @@ import PrivateRoute from "./components/private-route/privateRoute";
 import Dashboard from "./components/dashboard/dashboard";
 import CreateProject from "./components/project/CreateProject";
 import SingleProject from "./components/project/SingleProject";
+import LandingPage from "./components/landing-page/landingPage";
 import AccountDetails from "./components/profile/AccountDetails";
 import RequestPasswordReset from "./components/auth/requestRecovery";
 import PrivacyToggleButton from "./components/dashboard/PrivacyToggleButton";
+import NoMatch from "./components/404/404";
+
 
 // check for token to keep user logged in
 if (localStorage.token) {
@@ -50,39 +53,37 @@ class App extends Component {
         <Router>
           <div className="app">
             <Navbar />
-            <Route exact path="/signin" component={Signin} />
-            <Route exact path="/signup" component={Signup} />
-            <Route exact path="/profile/:username" component={Profile} />
-            <Route exact path="/createProject" component={CreateProject} />
-            <Route
-              exact
-              path="/projects/:projectId"
-              component={SingleProject}
-            />
-            <Route
-              exact
-              path="/user/:username/account"
-              component={AccountDetails}
-            />
-            <Route
-              exact
-              path="/forgot-password"
-              component={RequestPasswordReset}
-            />
-            <Route path="/forgot-password" component={RequestPasswordReset} />
-            <Route
-              exact
-              path="/resetPassword/:token"
-              component={ResetPassword}
-            />
-            <Route
+            <Switch>
+              <Route exact path="/" component={LandingPage} />
+              <Route exact path="/signin" component={Signin} />
+              <Route exact path="/signup" component={Signup} />
+              <Route exact path="/profile/:username" component={Profile} />
+              <Route exact path="/createProject" component={CreateProject} />
+              <Route
+                exact
+                path="/projects/:projectId"
+                component={SingleProject}
+              />
+              <Route
+                exact
+                path="/user/:username/account"
+                component={AccountDetails}
+              />
+              <Route path="/forgot-password" component={RequestPasswordReset} />
+              <Route
+                exact
+                path="/resetPassword/:token"
+                component={ResetPassword}
+              />
+              <Route
               exact
               path="/projects/privacy/:projectId"
               component={PrivacyToggleButton}
-            />
-
-            <Switch>
+              />
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
+
+              {/* This must stay at the bottom. Add any new routes above */}
+              <Route component={NoMatch} />
             </Switch>
           </div>
         </Router>
