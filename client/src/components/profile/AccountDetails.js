@@ -38,7 +38,6 @@ class AccountDetails extends Component {
         }
       });
     // Check user
-    console.log("Props: " + this.state);
     getUsernameId(this.props.auth.user._id).then((data) => {
       this.setState({
         user: data,

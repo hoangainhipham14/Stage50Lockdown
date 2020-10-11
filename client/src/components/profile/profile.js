@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { Card, Container, Col, Row } from "react-bootstrap";
+import axios from "axios";
 
 class Profile extends Component {
   constructor(props) {
@@ -10,19 +12,27 @@ class Profile extends Component {
       lastName: "",
       email: "",
       userExists: false,
+      phoneNumberExists: true,
     };
 
-    // Pull user details from backend API
-    fetch("/api/" + this.props.match.params.username)
-      .then((res) => res.json())
-      .then((json) => {
-        if (json.success) {
+    axios
+      .get(`/api/user/${this.props.match.params.username}`)
+      .then((response) => {
+        if (response.error) {
+          console.log(response.error);
+        } else {
           this.setState({
-            firstName: json.firstName,
-            lastName: json.lastName,
-            email: json.email,
+            firstName: response.data.firstName,
+            lastName: response.data.lastName,
+            email: response.data.email,
+            phoneNumber: response.data.phoneNumber,
             userExists: true,
           });
+          if (this.state.phoneNumber === "") {
+            this.setState({
+              phoneNumberExists: false,
+            });
+          }
         }
       });
   }
@@ -30,12 +40,44 @@ class Profile extends Component {
   render() {
     if (this.state.userExists) {
       return (
-        <div>
-          <h1>
-            This profile belongs to {this.state.firstName} {this.state.lastName}
-          </h1>
-          <p>Contact: {this.state.email}</p>
-        </div>
+        <Container>
+          <Row>
+            <Col>
+              <Card style={{ width: "20rem" }}>
+                <Card.Img variant="top" src="../../doraemon.png" />
+                <Card.Body>
+                  <Card.Title>
+                    {this.state.firstName} {this.state.lastName}
+                  </Card.Title>
+                  <Card.Text>
+                    <Card.Subtitle>Email</Card.Subtitle>
+                    <Card.Text>{this.state.email}</Card.Text>
+                    <Card.Subtitle>Phone</Card.Subtitle>
+                    <Card.Text>
+                      {this.state.phoneNumberExists
+                        ? this.state.phoneNumber
+                        : " None"}
+                    </Card.Text>
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col>
+              <Card style={{ width: "20rem" }}>
+                <Card.Header>About</Card.Header>
+                <Card.Body>
+                  Some quick example text to build on the card title and make up
+                  the bulk of the card's content.
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col>
+              <Card style={{ width: "20rem" }}>
+                <Card.Header>About</Card.Header>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
       );
     } else {
       return (
