@@ -35,7 +35,7 @@ class SingleProject extends Component {
                   <Col sm={20}>
                     <Image
                       src={`/api/project/img/${this.state.projectId}`}
-                      alt={project.title}
+                      alt=""
                       rounded
                       thumbnail
                     />
@@ -48,14 +48,14 @@ class SingleProject extends Component {
           <Row className="justify-content-md-center">
             <Image
               src={`/api/project/img/${this.state.projectId}`}
-              alt={project.title}
+              alt=""
               rounded
             />
           </Row>
           <Row className="justify-content-md-center">
             <Image
               src={`/api/project/img/${this.state.projectId}`}
-              alt={project.title}
+              alt=""
               rounded
             />
           </Row>
