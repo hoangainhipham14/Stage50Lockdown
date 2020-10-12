@@ -24,6 +24,7 @@ import AccountDetails from "./components/profile/AccountDetails";
 import RequestPasswordReset from "./components/auth/requestRecovery";
 import PrivacyToggleButton from "./components/dashboard/PrivacyToggleButton";
 import NoMatch from "./components/404/404";
+import CreateProfile from "./components/profile/CreateProfile";
 
 // check for token to keep user logged in
 if (localStorage.token) {
@@ -58,6 +59,7 @@ class App extends Component {
               <Route exact path="/signup" component={Signup} />
               <Route exact path="/profile/:username" component={Profile} />
               <Route exact path="/createProject" component={CreateProject} />
+              <Route exact path="/createProfile" component={CreateProfile} />
               <Route
                 exact
                 path="/projects/:projectId"
