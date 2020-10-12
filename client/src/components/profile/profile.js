@@ -1,6 +1,9 @@
 import React, { Component } from "react";
-import { Card, Container, Col, Row, ListGroup } from "react-bootstrap";
+
+import { Card, Container, Col, Row } from "react-bootstrap";
 import axios from "axios";
+
+import ProjectList from "../profile/ProjectList";
 
 class Profile extends Component {
   constructor(props) {
@@ -71,52 +74,7 @@ class Profile extends Component {
                 </Card.Body>
               </Card>
             </Col>
-            <Col className="col-sm d-flex mr-4">
-              <Card style={{ width: "45rem" }}>
-                <ListGroup variant="flush">
-                  <ListGroup.Item>
-                    <Card.Text style={{ textAlign: "right", fontSize: 13 }}>
-                      DD/MM/YEAR
-                    </Card.Text>
-                    <Card.Title>Card Title</Card.Title>
-                    <Card.Text>
-                      Some quick example text to build on the card title and
-                      make up the bulk of the card's content.
-                    </Card.Text>
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    <Card.Text style={{ textAlign: "right", fontSize: 13 }}>
-                      DD/MM/YEAR
-                    </Card.Text>
-                    <Card.Title>Card Title</Card.Title>
-                    <Card.Text>
-                      Some quick example text to build on the card title and
-                      make up the bulk of the card's content.
-                    </Card.Text>
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    <Card.Text style={{ textAlign: "right", fontSize: 13 }}>
-                      DD/MM/YEAR
-                    </Card.Text>
-                    <Card.Title>Card Title</Card.Title>
-                    <Card.Text>
-                      Some quick example text to build on the card title and
-                      make up the bulk of the card's content.
-                    </Card.Text>
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    <Card.Text style={{ textAlign: "right", fontSize: 13 }}>
-                      DD/MM/YEAR
-                    </Card.Text>
-                    <Card.Title>Card Title</Card.Title>
-                    <Card.Text>
-                      Some quick example text to build on the card title and
-                      make up the bulk of the card's content.
-                    </Card.Text>
-                  </ListGroup.Item>
-                </ListGroup>
-              </Card>
-            </Col>
+            <ProjectList></ProjectList>
           </Row>
         </Container>
       );

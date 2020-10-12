@@ -10,7 +10,7 @@ import store from "./store";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./app.css";
 
-import Profile from "./components/profile/profile";
+import Profile from "./components/profile/Profile";
 import ResetPassword from "./components/auth/passwordReset";
 import Signin from "./components/auth/signin";
 import Signup from "./components/auth/signup";
@@ -24,7 +24,6 @@ import AccountDetails from "./components/profile/AccountDetails";
 import RequestPasswordReset from "./components/auth/requestRecovery";
 import PrivacyToggleButton from "./components/dashboard/PrivacyToggleButton";
 import NoMatch from "./components/404/404";
-
 
 // check for token to keep user logged in
 if (localStorage.token) {
@@ -76,9 +75,9 @@ class App extends Component {
                 component={ResetPassword}
               />
               <Route
-              exact
-              path="/projects/privacy/:projectId"
-              component={PrivacyToggleButton}
+                exact
+                path="/projects/privacy/:projectId"
+                component={PrivacyToggleButton}
               />
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
 
