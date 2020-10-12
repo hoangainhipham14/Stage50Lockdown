@@ -1,5 +1,7 @@
 const Project = require("../models/project");
+const ProjectLink = require("../models/projectLink");
 
+const crypto = require("crypto");
 const formidable = require("formidable");
 const fs = require("fs");
 
@@ -128,3 +130,37 @@ exports.toggleProjectPrivacy = (req, res) => {
     }
   });
 };
+
+// Generate a link for the user to reference a project even if it is private
+exports.generateProjectLink= (req, res) => {
+  
+  /*Accepts parameters including:
+  The user id
+  The project id
+  The time that they want the link to work for 
+  */
+  const userID = req.body.userID;
+  const projectID = req.body.projectID;
+  const requiredTime = req.body.requiredTime;
+
+  // Generate a link
+  const projectLinkString =  "/Projects/Link/" + crypto.randomBytes(32).toString("hex");
+
+  // Check to make sure link hasnt been used before
+  if(ProjectLink.findOne({link: projectLinkString}) == true){
+    return res.status(400).json({msg: "Link generated was already used"});
+  }
+
+  // Create that link in the database
+  let newProjectLink = new ProjectLink({
+    _userId: userID,
+    _projectId: projectID,
+    link: projectLinkString,
+  });
+  newProjectLink.createdAt.expires = requiredTime;
+
+  // Save the Schema and return a link
+  newProjectLink.save();
+  return res.status(200);
+
+}
