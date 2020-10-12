@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Card, Container, Col, Row } from "react-bootstrap";
+import { Card, Container, Col, Row, ListGroup } from "react-bootstrap";
 import axios from "axios";
 
 class Profile extends Component {
@@ -40,9 +40,9 @@ class Profile extends Component {
   render() {
     if (this.state.userExists) {
       return (
-        <Container>
+        <Container fluid>
           <Row>
-            <Col>
+            <Col className="col-sm d-flex ml-4">
               <Card style={{ width: "20rem" }}>
                 <Card.Img variant="top" src="../../doraemon.png" />
                 <Card.Body>
@@ -62,7 +62,7 @@ class Profile extends Component {
                 </Card.Body>
               </Card>
             </Col>
-            <Col>
+            <Col className="col-sm d-flex">
               <Card style={{ width: "20rem" }}>
                 <Card.Header>About</Card.Header>
                 <Card.Body>
@@ -71,9 +71,50 @@ class Profile extends Component {
                 </Card.Body>
               </Card>
             </Col>
-            <Col>
-              <Card style={{ width: "20rem" }}>
-                <Card.Header>About</Card.Header>
+            <Col className="col-sm d-flex mr-4">
+              <Card style={{ width: "45rem" }}>
+                <ListGroup variant="flush">
+                  <ListGroup.Item>
+                    <Card.Text style={{ textAlign: "right", fontSize: 13 }}>
+                      DD/MM/YEAR
+                    </Card.Text>
+                    <Card.Title>Card Title</Card.Title>
+                    <Card.Text>
+                      Some quick example text to build on the card title and
+                      make up the bulk of the card's content.
+                    </Card.Text>
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    <Card.Text style={{ textAlign: "right", fontSize: 13 }}>
+                      DD/MM/YEAR
+                    </Card.Text>
+                    <Card.Title>Card Title</Card.Title>
+                    <Card.Text>
+                      Some quick example text to build on the card title and
+                      make up the bulk of the card's content.
+                    </Card.Text>
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    <Card.Text style={{ textAlign: "right", fontSize: 13 }}>
+                      DD/MM/YEAR
+                    </Card.Text>
+                    <Card.Title>Card Title</Card.Title>
+                    <Card.Text>
+                      Some quick example text to build on the card title and
+                      make up the bulk of the card's content.
+                    </Card.Text>
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    <Card.Text style={{ textAlign: "right", fontSize: 13 }}>
+                      DD/MM/YEAR
+                    </Card.Text>
+                    <Card.Title>Card Title</Card.Title>
+                    <Card.Text>
+                      Some quick example text to build on the card title and
+                      make up the bulk of the card's content.
+                    </Card.Text>
+                  </ListGroup.Item>
+                </ListGroup>
               </Card>
             </Col>
           </Row>
