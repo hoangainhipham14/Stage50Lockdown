@@ -64,6 +64,11 @@ class App extends Component {
                 path="/projects/:projectId"
                 component={SingleProject}
               />
+              <Route 
+              exact
+              path="/projects/link/:link"
+              component={SingleProject}
+              />
               <Route
                 exact
                 path="/user/:username/account"
