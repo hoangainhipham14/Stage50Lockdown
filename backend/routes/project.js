@@ -26,7 +26,7 @@ router.post("/project/list", postProjectList);
 router.post("/project/togglePrivacy/:projectId", toggleProjectPrivacy);
 
 // This should connect a link to a project for a user
-router.post("project/generateLink", generateProjectLink);
+router.post("/project/generateLink", generateProjectLink);
 router.get("/project/link/:link", connectLinkToProject);
 
 

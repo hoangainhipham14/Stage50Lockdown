@@ -151,7 +151,9 @@ exports.generateProjectLink= (req, res) => {
   const requiredTime = req.body.requiredTime;
 
   // Generate a link
+  console.log("Generate Link");
   const projectLinkString = req.headers.host + "/projects/link/" + crypto.randomBytes(32).toString("hex");
+  console.log("Link Generated");
 
   // Check to make sure link hasnt been used before
   if(ProjectLink.findOne({link: projectLinkString}) == true){
@@ -166,9 +168,10 @@ exports.generateProjectLink= (req, res) => {
   });
   newProjectLink.createdAt.expires = requiredTime;
 
+  console.log("Saving Link...");
   // Save the Schema and return a link
-  newProjectLink.save();
-  return res.status(200);
+  newProjectLink.save().catch((err) => console.log("Error saving user session:", err));
+  return res.status(200).json(projectLinkString);
 }
 
 // This accepts a link provided by a user and returns a project even if it is private
@@ -182,6 +185,7 @@ exports.connectLinkToProject = (req, res) => {
   // Provided the link is valid, pass on the link to the particular project
   ProjectLink.findOne({link: projectLink}).exec((err, link) => {
     
+    /*** Links are matching when they shouldnt ***/
     console.log("Matching link has been found");
     // Check for errors
     if(err){
