@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { Card, Container, Col, Row } from "react-bootstrap";
 import axios from "axios";
 
-import ProjectList from "../profile/ProjectList";
+import ProjectList from "./ProjectList";
 
 class Profile extends Component {
   constructor(props) {

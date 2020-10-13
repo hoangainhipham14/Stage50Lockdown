@@ -18,11 +18,10 @@ class ProjectList extends Component {
 
   componentDidMount = () => {
     const userId = this.props.auth.user._id;
-    console.log("Sending request with:" + userId);
+    // console.log("Sending request with:" + userId);
 
     // Gather all the projects in a post request with a userID
     axios.post(`/api/project/list`, { userID: userId }).then((response) => {
-      console.log(response);
       if (response.error) {
         console.log("failure");
         console.log(response.error);
@@ -31,7 +30,7 @@ class ProjectList extends Component {
           projectExists: false,
         });
       } else {
-        console.log("response:");
+        // console.log("response:");
         this.setState({
           projects: Array.from(response.data),
         });
@@ -53,7 +52,9 @@ class ProjectList extends Component {
       </ListGroup.Item>
     ));
 
+    // if projects exist
     if (this.state.projectExists) {
+      // if numbers of projects are smaller than 4, display list of them fully
       if (this.state.projects.length < 4) {
         return (
           <Col className="col-sm d-flex">
@@ -64,6 +65,7 @@ class ProjectList extends Component {
           </Col>
         );
       } else {
+        // display scrollable projects
         return (
           <Col className="col-sm d-flex">
             <Card style={{ width: "45rem" }}>
@@ -78,6 +80,7 @@ class ProjectList extends Component {
         );
       }
     } else {
+      // display no project
       return (
         <Col className="col-sm d-flex">
           <Card style={{ width: "45rem" }}>
