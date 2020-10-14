@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import { Card, Container, Col, Row } from "react-bootstrap";
+import { Card, Container, Col, Row, Alert } from "react-bootstrap";
 import axios from "axios";
 
 import ProjectList from "./ProjectList";
@@ -14,7 +14,7 @@ class Profile extends Component {
       firstName: "",
       lastName: "",
       email: "",
-      userExists: false,
+      userExists: true,
       phoneNumberExists: true,
     };
 
@@ -23,13 +23,16 @@ class Profile extends Component {
       .then((response) => {
         if (response.error) {
           console.log(response.error);
+        } else if (response.data.message === "Profile does not exist") {
+          this.setState({
+            userExists: false,
+          });
         } else {
           this.setState({
             firstName: response.data.firstName,
             lastName: response.data.lastName,
             email: response.data.email,
             phoneNumber: response.data.phoneNumber,
-            userExists: true,
           });
           if (this.state.phoneNumber === "") {
             this.setState({
@@ -79,13 +82,14 @@ class Profile extends Component {
         </Container>
       );
     } else {
+      console.log("Hello");
       return (
-        <div>
-          <h1>
-            This profile does not exist: {this.props.match.params.username}
-          </h1>
-          <a href="/">Go home</a>
-        </div>
+        <Container>
+          <Alert variant="warning">
+            <Alert.Heading>User doesn't exist</Alert.Heading>
+            <Alert.Link href="/">Go Home</Alert.Link>
+          </Alert>
+        </Container>
       );
     }
   }

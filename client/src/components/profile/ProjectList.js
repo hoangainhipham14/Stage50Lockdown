@@ -10,7 +10,6 @@ class ProjectList extends Component {
     super(props);
 
     this.state = {
-      username: this.props.auth.user.username,
       projects: [],
       projectExists: true,
     };
