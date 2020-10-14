@@ -21,7 +21,7 @@ const projectLinkSchema = Schema({
         required: true,
         default: Date.now,
     },
-    // Set this as a static expiry time wont work (In mins)
+    // expires doesnt work as the expiry has to be dynamic
     requiredTime: {
         type: Number,
         required: true,

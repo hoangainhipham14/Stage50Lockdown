@@ -194,7 +194,6 @@ exports.connectLinkToProject = (req, res) => {
 
     //console.log("validTill :" + validTill);
     //console.log("currTime: " + currTime);
-    
     if(validTill < currTime){
       console.log("error....");
       return res.status(400).json({
@@ -219,7 +218,7 @@ exports.connectLinkToProject = (req, res) => {
       Project.findById(projectId).exec((err, project) => {
         if(err){
           return res.status(400).json({
-          error: err,
+            error: err,
         })} else {
           //console.log("Project: " + project);
 

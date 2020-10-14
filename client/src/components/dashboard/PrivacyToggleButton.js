@@ -3,6 +3,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { Container, Form } from "react-bootstrap";
+import ProjectLink from "./ProjectLink";
 //import Switch from "react-bootstrap/esm/Switch";
 
 class PrivacyToggleButton extends Component {
@@ -39,9 +40,11 @@ class PrivacyToggleButton extends Component {
             onChange={this.onToggleClick}
           />
         </Form.Group>
+        <ProjectLink />
       </Container>
     );
   }
 }
+
 
 export default PrivacyToggleButton;
