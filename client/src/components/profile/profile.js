@@ -17,7 +17,9 @@ class Profile extends Component {
       userExists: true,
       phoneNumberExists: true,
     };
+  }
 
+  componentDidMount = () => {
     axios
       .get(`/api/user/${this.props.match.params.username}`)
       .then((response) => {
@@ -41,7 +43,7 @@ class Profile extends Component {
           }
         }
       });
-  }
+  };
 
   render() {
     if (this.state.userExists) {
@@ -55,15 +57,13 @@ class Profile extends Component {
                   <Card.Title>
                     {this.state.firstName} {this.state.lastName}
                   </Card.Title>
+                  <Card.Subtitle>Email</Card.Subtitle>
+                  <Card.Text>{this.state.email}</Card.Text>
+                  <Card.Subtitle>Phone</Card.Subtitle>
                   <Card.Text>
-                    <Card.Subtitle>Email</Card.Subtitle>
-                    <Card.Text>{this.state.email}</Card.Text>
-                    <Card.Subtitle>Phone</Card.Subtitle>
-                    <Card.Text>
-                      {this.state.phoneNumberExists
-                        ? this.state.phoneNumber
-                        : " None"}
-                    </Card.Text>
+                    {this.state.phoneNumberExists
+                      ? this.state.phoneNumber
+                      : " None"}
                   </Card.Text>
                 </Card.Body>
               </Card>
@@ -82,7 +82,6 @@ class Profile extends Component {
         </Container>
       );
     } else {
-      console.log("Hello");
       return (
         <Container>
           <Alert variant="warning">

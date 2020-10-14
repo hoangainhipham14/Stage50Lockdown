@@ -38,8 +38,8 @@ class ProjectList extends Component {
   };
 
   render() {
-    const projectCards = this.state.projects.map((project, idx) => (
-      <ListGroup.Item>
+    const projectCards = this.state.projects.map((project) => (
+      <ListGroup.Item key={project._id}>
         <Card.Text style={{ textAlign: "right", fontSize: 13 }}>
           {project.created}
         </Card.Text>
