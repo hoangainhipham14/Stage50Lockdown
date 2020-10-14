@@ -16,7 +16,8 @@ function validateSignup(data) {
   data.lastName = !isEmpty(data.lastName) ? data.lastName : "";
   data.username = !isEmpty(data.username) ? data.username : "";
   data.email = !isEmpty(data.email) ? data.email : "";
-  data.password = !isEmpty(data.password) ? data.password : "";
+  data.password1 = !isEmpty(data.password1) ? data.password1 : "";
+  data.password2 = !isEmpty(data.password1) ? data.password2 : "";
 
   // validate first name
   if (Validator.isEmpty(data.firstName)) {
@@ -40,10 +41,19 @@ function validateSignup(data) {
     errors.email = "Email is invalid";
   }
 
+  console.log("Checking: " + data.password);
+
   // validate password
-  if (!Validator.isLength(data.password, { min: 6 })) {
-    errors.password = "Password must be at least 6 characters";
+  if (!Validator.isLength(data.password1, { min: 7 })) {
+    errors.password1 = "Password must be at least 7 characters";
   }
+
+  // Check that they are the same
+  if (data.password1 != data.password2) {
+    errors.password1 = "Password are not the same";
+  }
+
+  //console.log("Current errors: " + errors);
 
   return {
     errors,
