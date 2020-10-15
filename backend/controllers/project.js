@@ -93,8 +93,7 @@ exports.singleProject = (req, res) => {
       itemIsPublic: req.project.itemIsPublic,
     };
     return res.json(data);
-  }
-  else {
+  } else {
     const falseData = {
       title: "",
       about: "",
@@ -146,8 +145,7 @@ exports.toggleProjectPrivacy = (req, res) => {
 };
 
 // Generate a link for the user to reference a project even if it is private
-exports.generateProjectLink= (req, res) => {
-  
+exports.generateProjectLink = (req, res) => {
   /*Accepts parameters including:
   The user id
   The project id
@@ -158,12 +156,15 @@ exports.generateProjectLink= (req, res) => {
 
   // Generate a link
   //console.log("Generate Link to project...");
-  const projectLinkString = req.headers.host + "/projects/link/" + crypto.randomBytes(10).toString("hex");
+  const projectLinkString =
+    req.headers.host +
+    "/projects/link/" +
+    crypto.randomBytes(10).toString("hex");
   //console.log("Link Generated...");
 
   // Check to make sure link hasnt been used before
-  if(ProjectLink.findOne({link: projectLinkString}) == true){
-    return res.status(400).json({msg: "Link generated was already used"});
+  if (ProjectLink.findOne({ link: projectLinkString }) == true) {
+    return res.status(400).json({ msg: "Link generated was already used" });
   }
 
   // Create that link in the database
@@ -175,14 +176,15 @@ exports.generateProjectLink= (req, res) => {
 
   //console.log("Saving Link With Details: " + newProjectLink);
   // Save the Schema and return a link
-  newProjectLink.save().catch((err) => console.log("Error saving user session:", err));
+  newProjectLink
+    .save()
+    .catch((err) => console.log("Error saving user session:", err));
   console.log("Link saved...");
   return res.status(200).json(newProjectLink);
-}
+};
 
 // This accepts a link provided by a user and returns a project even if it is private
 exports.connectLinkToProject = (req, res) => {
-
   // Extract the project link from the end of the line
   // Note here the req.headers.host will change weather it is local or public
   const projectLink = req.headers.host + "/projects/link/" + req.params.link;
@@ -190,18 +192,17 @@ exports.connectLinkToProject = (req, res) => {
   //console.log("Searching database with: " + projectLink);
 
   // Provided the link is valid, pass on the link to the particular project
-  ProjectLink.findOne({link: projectLink}).exec((err, link) => {
-
+  ProjectLink.findOne({ link: projectLink }).exec((err, link) => {
     //console.log("link: " + link);
 
     // Custom error for an expired link (To be tested)
     // Convert the minutes into miliseconds 1*60*1000
-    const validTill = link.createdAt.getTime() + (link.requiredTime * 60000);
+    const validTill = link.createdAt.getTime() + link.requiredTime * 60000;
     const currTime = Date.now();
 
     //console.log("validTill :" + validTill);
     //console.log("currTime: " + currTime);
-    if(validTill < currTime){
+    if (validTill < currTime) {
       console.log("Link has expired");
       const falseData = {
         title: "",
@@ -214,38 +215,37 @@ exports.connectLinkToProject = (req, res) => {
 
     /*** Links are matching when they shouldnt ***/
     // Check for errors
-    if(err){
+    if (err) {
       //console.log("error....");
       return res.status(400).json({
         error: err,
       });
-    }
-    else 
-    {
+    } else {
       const projectId = link._projectId;
       //console.log("Matching link has been found... Searching for project with id: " + projectId);
 
       // Find the project
       Project.findById(projectId).exec((err, project) => {
-        if(err){
+        if (err) {
           return res.status(400).json({
-          error: err,
-        })} else {
+            error: err,
+          });
+        } else {
           //console.log("Project: " + project);
           // Return the project values that are relevant
           const data = {
             title: project.title,
             about: project.about,
             body: project.body,
-          // Preset this value to true so that the item can be viewed by the person
-          // with the link **Note this doesnt change the value on the DB
+            // Preset this value to true so that the item can be viewed by the person
+            // with the link **Note this doesnt change the value on the DB
             itemIsPublic: true,
-          // Pass the id of the project through as well as it doesnt come through inately with the link
+            // Pass the id of the project through as well as it doesnt come through inately with the link
             _id: projectId,
           };
-         return res.json(data);
+          return res.json(data);
         }
       });
     }
   });
-}
+};
