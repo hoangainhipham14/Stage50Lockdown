@@ -23,8 +23,8 @@ import LandingPage from "./components/landing-page/landingPage";
 import AccountDetails from "./components/profile/AccountDetails";
 import RequestPasswordReset from "./components/auth/requestRecovery";
 import PrivacyToggleButton from "./components/dashboard/PrivacyToggleButton";
+import UserSearchResults from "./components/search/UserSearchResults";
 import NoMatch from "./components/404/404";
-
 
 // check for token to keep user logged in
 if (localStorage.token) {
@@ -76,11 +76,12 @@ class App extends Component {
                 component={ResetPassword}
               />
               <Route
-              exact
-              path="/projects/privacy/:projectId"
-              component={PrivacyToggleButton}
+                exact
+                path="/projects/privacy/:projectId"
+                component={PrivacyToggleButton}
               />
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
+              <Route exact path="/search" component={UserSearchResults} />
 
               {/* This must stay at the bottom. Add any new routes above */}
               <Route component={NoMatch} />

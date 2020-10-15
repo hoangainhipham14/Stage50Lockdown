@@ -12,7 +12,9 @@ import {
   FormControl,
   Button,
 } from "react-bootstrap";
+
 import { LinkContainer } from "react-router-bootstrap";
+import { withRouter } from "react-router-dom";
 
 function NavbarAccountLoggedOut() {
   return (
@@ -23,7 +25,6 @@ function NavbarAccountLoggedOut() {
         </LinkContainer>
       </Nav>
       <Nav className="ml-auto">
-        <NavbarUserSearch />
         <LinkContainer to="/signin">
           <Nav.Link>Sign In</Nav.Link>
         </LinkContainer>
@@ -49,7 +50,6 @@ function NavbarAccountLoggedIn(props) {
         </LinkContainer> */}
       </Nav>
       <Nav className="ml-auto">
-        <NavbarUserSearch />
         <Nav.Link href={`/user/${props.username}/account`}>
           Account Details
         </Nav.Link>
@@ -59,24 +59,64 @@ function NavbarAccountLoggedIn(props) {
   );
 }
 
-function NavbarUserSearch() {
-  return (
-    <>
+class NavbarUserSearch extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      searchphrase: "",
+      submitted: false,
+    };
+  }
+
+  onChange = (e) => {
+    this.setState({
+      [e.target.id]: e.target.value,
+    });
+    console.log(e.target.value);
+  };
+
+  onSearchSubmit = (e) => {
+    e.preventDefault();
+    // this.props.history.action("POP");
+    // this.props.history.go(-1);
+    this.props.history.push({
+      pathname: "/search",
+      state: {
+        searchphrase: this.state.searchphrase,
+      },
+    });
+  };
+
+  render() {
+    return (
       <Nav className="mr-auto">
-        <Form inline>
-          <FormControl
-            type="text"
-            placeholder="Search for a user"
-            className="mr-sm-1"
-            size="sm"
-          />
-          <Button variant="outline-secondary" size="sm">
-            Search
-          </Button>
+        <Form inline onSubmit={this.onSearchSubmit}>
+          <Form.Group controlId="searchphrase">
+            <FormControl
+              type="text"
+              placeholder="Search for a user"
+              className="mr-sm-1"
+              size="sm"
+              onChange={this.onChange}
+            />
+            {/* <Link
+              to={{
+                pathname: "/search",
+                state: {
+                  searchphrase: this.state.searchphrase,
+                },
+              }}
+            > */}
+            <Button variant="outline-secondary" size="sm" type="submit">
+              Search
+            </Button>
+            {/* </Link> */}
+          </Form.Group>
         </Form>
       </Nav>
-    </>
-  );
+    );
+  }
 }
 
 class MyNavbar extends Component {
@@ -85,6 +125,7 @@ class MyNavbar extends Component {
 
     this.state = {
       username: "",
+      searchphrase: "",
     };
   }
 
@@ -111,6 +152,7 @@ class MyNavbar extends Component {
             <Navbar.Brand href="/">ePortfolio</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
+              <NavbarUserSearch history={this.props.history} />
               {isAuthenticated ? (
                 <NavbarAccountLoggedIn
                   onClickLogout={this.onClickLogout}
@@ -137,4 +179,4 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
 });
 
-export default connect(mapStateToProps, { logoutUser })(MyNavbar);
+export default withRouter(connect(mapStateToProps, { logoutUser })(MyNavbar));

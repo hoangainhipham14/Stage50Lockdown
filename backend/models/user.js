@@ -48,7 +48,12 @@ const userSchema = new Schema({
 });
 
 // Add secondary indexes to userSchema. Allows searching
-userSchema.index({ firstName: "text", lastName: "text", username: "text" });
+userSchema.index({
+  firstName: "text",
+  lastName: "text",
+  username: "text",
+  email: "text",
+});
 
 userSchema.methods.generateHash = function (password) {
   return bcrypt.hashSync(password, bcrypt.genSaltSync(8));

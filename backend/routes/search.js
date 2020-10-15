@@ -6,6 +6,6 @@ const router = express.Router();
 const { userSearch } = require("../controllers/search");
 
 // Search for a user
-router.get("/usersearch", userSearch);
+router.post("/usersearch", userSearch);
 
 module.exports = router;
