@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { Container, Form, Card, Badge, Col, Button } from "react-bootstrap";
-
+import { Container, Form, Card, Badge, Col, Button} from "react-bootstrap";
 
 // Just Change The Component it inherits to something that also passes down the project
 // id as a parameter
@@ -22,6 +21,7 @@ class ProjectLink extends Component {
         [e.target.id]: e.target.value,
       });
     };
+
     // Send a request to the database to switch the itemIsPublic bool
     onSubmit = (e) => {
       e.preventDefault();
@@ -29,7 +29,6 @@ class ProjectLink extends Component {
       const projectID = this.props.projectId
 
       // Prefill the default time if nothing has been inputed
-  
       console.log("Button Clicked with id: " + projectID + "And time " + this.state.requiredTime);
       axios
         .post(`/api/project/generateLink/`, { projectID: projectID, requiredTime: this.state.requiredTime})

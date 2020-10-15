@@ -91,7 +91,7 @@ exports.singleProject = (req, res) => {
       title: "",
       about: "",
       body: "",
-      itemIsPublic: req.project.itemIsPublic,
+      itemIsPublic: false,
     };
     return res.json(falseData);
   }
@@ -152,7 +152,7 @@ exports.generateProjectLink= (req, res) => {
 
   // Generate a link
   //console.log("Generate Link to project...");
-  const projectLinkString = req.headers.host + "/projects/link/" + crypto.randomBytes(32).toString("hex");
+  const projectLinkString = req.headers.host + "/projects/link/" + crypto.randomBytes(10).toString("hex");
   //console.log("Link Generated...");
 
   // Check to make sure link hasnt been used before
@@ -196,10 +196,14 @@ exports.connectLinkToProject = (req, res) => {
     //console.log("validTill :" + validTill);
     //console.log("currTime: " + currTime);
     if(validTill < currTime){
-      console.log("error....");
-      return res.status(400).json({
-        error: "Link has expired",
-      });
+      console.log("Link has expired");
+      const falseData = {
+        title: "",
+        about: "",
+        body: "",
+        itemIsPublic: false,
+      };
+      return res.json(falseData);
     }
 
     /*** Links are matching when they shouldnt ***/
