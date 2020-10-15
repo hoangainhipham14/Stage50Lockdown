@@ -10,7 +10,7 @@ import store from "./store";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./app.css";
 
-import Profile from "./components/profile/Profile";
+import Profile from "./components/profile/profile";
 import ResetPassword from "./components/auth/passwordReset";
 import Signin from "./components/auth/signin";
 import Signup from "./components/auth/signup";
@@ -59,7 +59,11 @@ class App extends Component {
               <Route exact path="/signup" component={Signup} />
               <Route exact path="/profile/:username" component={Profile} />
               <Route exact path="/createProject" component={CreateProject} />
-              <Route exact path="/createProfile" component={CreateProfile} />
+              <Route
+                exact
+                path="/createProfile/:username"
+                component={CreateProfile}
+              />
               <Route
                 exact
                 path="/projects/:projectId"

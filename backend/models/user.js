@@ -9,23 +9,28 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+
   lastName: {
     type: String,
     required: true,
   },
+
   username: {
     type: String,
     required: true,
     unique: true,
   },
+
   email: {
     type: String,
     required: true,
     unique: true,
   },
+
   phoneNumber: {
     type: String,
   },
+
   password: {
     type: String,
     // required: true,
@@ -41,9 +46,15 @@ const userSchema = new Schema({
     type: Boolean,
     default: false,
   },
+
   isValidated: {
     type: Boolean,
     default: false,
+  },
+
+  aboutUser: {
+    type: String,
+    default: "",
   },
 });
 
