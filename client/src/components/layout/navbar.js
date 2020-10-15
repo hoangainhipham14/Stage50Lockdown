@@ -14,7 +14,7 @@ import {
 } from "react-bootstrap";
 
 import { LinkContainer } from "react-router-bootstrap";
-import { withRouter } from "react-router-dom";
+import { Redirect, withRouter } from "react-router-dom";
 
 function NavbarAccountLoggedOut() {
   return (
@@ -73,22 +73,37 @@ class NavbarUserSearch extends Component {
     this.setState({
       [e.target.id]: e.target.value,
     });
-    console.log(e.target.value);
   };
+
+  componentDidUpdate() {
+    // Resets search submitted status to default
+    if (this.state.submitted) {
+      this.setState({
+        submitted: false,
+      });
+    }
+  }
 
   onSearchSubmit = (e) => {
     e.preventDefault();
-    // this.props.history.action("POP");
-    // this.props.history.go(-1);
-    this.props.history.push({
-      pathname: "/search",
-      state: {
-        searchphrase: this.state.searchphrase,
-      },
-    });
+
+    this.setState(() => ({
+      submitted: true,
+    }));
   };
 
   render() {
+    // Redirect to results page when submitted
+    if (this.state.submitted) {
+      return (
+        <Redirect
+          to={{
+            pathname: "/search",
+            state: { searchphrase: this.state.searchphrase },
+          }}
+        />
+      );
+    }
     return (
       <Nav className="mr-auto">
         <Form inline onSubmit={this.onSearchSubmit}>
@@ -100,18 +115,9 @@ class NavbarUserSearch extends Component {
               size="sm"
               onChange={this.onChange}
             />
-            {/* <Link
-              to={{
-                pathname: "/search",
-                state: {
-                  searchphrase: this.state.searchphrase,
-                },
-              }}
-            > */}
             <Button variant="outline-secondary" size="sm" type="submit">
               Search
             </Button>
-            {/* </Link> */}
           </Form.Group>
         </Form>
       </Nav>
@@ -152,7 +158,7 @@ class MyNavbar extends Component {
             <Navbar.Brand href="/">ePortfolio</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
-              <NavbarUserSearch history={this.props.history} />
+              <NavbarUserSearch />
               {isAuthenticated ? (
                 <NavbarAccountLoggedIn
                   onClickLogout={this.onClickLogout}

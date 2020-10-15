@@ -11,25 +11,48 @@ class UserSearchResults extends Component {
       searchphrase: "",
       results: [],
     };
-
-    try {
-      this.state.searchphrase = this.props.location.state.searchphrase;
-    } catch (err) {
-      console.log("No searchphrase passed in");
-    }
   }
 
   componentDidMount() {
-    const query = { searchphrase: this.state.searchphrase };
+    // Get the initial searchphrase
+    try {
+      this.setState({ searchphrase: this.props.location.state.searchphrase });
+    } catch (err) {
+      console.log(err);
+    }
 
+    let query = { searchphrase: this.state.searchphrase };
+
+    // Query database for results
     axios.post(`/api/usersearch`, query).then((res) => {
       if (res.data.error) {
         console.log("Error searching for users: ", res.data.error);
       } else {
         this.setState({ results: res.data.results });
-        console.log("Here", res.data.results);
       }
     });
+  }
+
+  componentDidUpdate(prevProps) {
+    try {
+      this.setState({ searchphrase: this.props.location.state.searchphrase });
+    } catch (err) {
+      console.log(err);
+    }
+
+    // Fetch the new results if the page is redirected to itself This allows
+    // us to search for a different person when on the results page
+    if (prevProps.location.key !== this.props.location.key) {
+      let query = { searchphrase: this.state.searchphrase };
+
+      axios.post(`/api/usersearch`, query).then((res) => {
+        if (res.data.error) {
+          console.log("Error searching for users: ", res.data.error);
+        } else {
+          this.setState({ results: res.data.results });
+        }
+      });
+    }
   }
 
   render() {
