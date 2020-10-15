@@ -28,8 +28,7 @@ const projectSchema = new Schema({
   },
 
   created: {
-    type: Date,
-    default: Date.now,
+    type: String,
   },
 
   // Added this to determine if the item is ready for public viewing

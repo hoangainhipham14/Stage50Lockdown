@@ -1,5 +1,6 @@
 const Project = require("../models/project");
-
+const _ = require("lodash");
+const moment = require("moment");
 const formidable = require("formidable");
 const fs = require("fs");
 
@@ -23,6 +24,12 @@ exports.createProject = (req, res, next) => {
       project.image.contentType = files.image.type;
       project.image.fileName = files.image.name;
     }
+
+    project = _.extend(project, fields);
+
+    // add MM/DD/YYYY
+    today = Date.now();
+    project.created = moment(today).utc().format("MM/DD/YYYY");
 
     // save the new project
     project.save((err, result) => {
@@ -88,19 +95,17 @@ Changed this so were not sending data to the front end that is private
 };
 
 // Returns an array of projects the user has made (Provided it has the userId attached to it)
-exports.postProjectList = (req, res) => {
+exports.ProjectList = (req, res) => {
   const userID = req.body.userID;
-  //console.log("entering getProjectList: " + userID);
 
   Project.find({ _userId: userID }).exec((err, projects) => {
-    if (err) {
-      return res.status(400).json({
-        error: err,
+    if (err || projects.length === 0) {
+      return res.send({
+        message: "Projects do not exist",
       });
-    } else {
-      //console.log(projects);
-      return res.status(200).json(projects);
     }
+    req.projects = projects; //add
+    return res.json(req.projects);
   });
 };
 
