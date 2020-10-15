@@ -5,7 +5,7 @@ const {
   singleProject,
   projectById,
   image,
-  postProjectList,
+  ProjectList,
   toggleProjectPrivacy,
   generateProjectLink,
   connectLinkToProject,
@@ -22,7 +22,7 @@ router.get("/project/img/:projectId", image);
 router.get("/project/:projectId", singleProject);
 
 // this should post to exports.getProject
-router.post("/project/list", postProjectList);
+router.post("/project/list", ProjectList);
 router.post("/project/togglePrivacy/:projectId", toggleProjectPrivacy);
 
 // This should connect a link to a project for a user

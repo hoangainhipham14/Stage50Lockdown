@@ -1,5 +1,10 @@
 import React, { Component } from "react";
 
+import { Card, Container, Col, Row, Alert } from "react-bootstrap";
+import axios from "axios";
+
+import ProjectList from "./ProjectList";
+
 class Profile extends Component {
   constructor(props) {
     super(props);
@@ -9,42 +14,81 @@ class Profile extends Component {
       firstName: "",
       lastName: "",
       email: "",
-      userExists: false,
+      userExists: true,
+      phoneNumberExists: true,
     };
+  }
 
-    // Pull user details from backend API
-    fetch("/api/" + this.props.match.params.username)
-      .then((res) => res.json())
-      .then((json) => {
-        if (json.success) {
+  componentDidMount = () => {
+    axios
+      .get(`/api/user/${this.props.match.params.username}`)
+      .then((response) => {
+        if (response.error) {
+          console.log(response.error);
+        } else if (response.data.message === "Profile does not exist") {
           this.setState({
-            firstName: json.firstName,
-            lastName: json.lastName,
-            email: json.email,
-            userExists: true,
+            userExists: false,
           });
+        } else {
+          this.setState({
+            firstName: response.data.firstName,
+            lastName: response.data.lastName,
+            email: response.data.email,
+            phoneNumber: response.data.phoneNumber,
+          });
+          if (this.state.phoneNumber === "") {
+            this.setState({
+              phoneNumberExists: false,
+            });
+          }
         }
       });
-  }
+  };
 
   render() {
     if (this.state.userExists) {
       return (
-        <div>
-          <h1>
-            This profile belongs to {this.state.firstName} {this.state.lastName}
-          </h1>
-          <p>Contact: {this.state.email}</p>
-        </div>
+        <Container fluid>
+          <Row>
+            <Col className="col-sm d-flex ml-4">
+              <Card style={{ width: "20rem" }}>
+                <Card.Img variant="top" src="../../doraemon.png" />
+                <Card.Body>
+                  <Card.Title>
+                    {this.state.firstName} {this.state.lastName}
+                  </Card.Title>
+                  <Card.Subtitle>Email</Card.Subtitle>
+                  <Card.Text>{this.state.email}</Card.Text>
+                  <Card.Subtitle>Phone</Card.Subtitle>
+                  <Card.Text>
+                    {this.state.phoneNumberExists
+                      ? this.state.phoneNumber
+                      : " None"}
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col className="col-sm d-flex">
+              <Card style={{ width: "20rem" }}>
+                <Card.Header>About</Card.Header>
+                <Card.Body>
+                  Some quick example text to build on the card title and make up
+                  the bulk of the card's content.
+                </Card.Body>
+              </Card>
+            </Col>
+            <ProjectList></ProjectList>
+          </Row>
+        </Container>
       );
     } else {
       return (
-        <div>
-          <h1>
-            This profile does not exist: {this.props.match.params.username}
-          </h1>
-          <a href="/">Go home</a>
-        </div>
+        <Container>
+          <Alert variant="warning">
+            <Alert.Heading>User doesn't exist</Alert.Heading>
+            <Alert.Link href="/">Go Home</Alert.Link>
+          </Alert>
+        </Container>
       );
     }
   }

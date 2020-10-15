@@ -25,7 +25,6 @@ import RequestPasswordReset from "./components/auth/requestRecovery";
 import PrivacyToggleButton from "./components/dashboard/PrivacyToggleButton";
 import NoMatch from "./components/404/404";
 
-
 // check for token to keep user logged in
 if (localStorage.token) {
   // set authentication token to header
@@ -81,9 +80,9 @@ class App extends Component {
                 component={ResetPassword}
               />
               <Route
-              exact
-              path="/projects/privacy/:projectId"
-              component= {PrivacyToggleButton}
+                exact
+                path="/projects/privacy/:projectId"
+                component={PrivacyToggleButton}
               />
               
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
