@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import { Card, Container, Col, Row, Alert } from "react-bootstrap";
 import axios from "axios";
 
@@ -16,6 +17,9 @@ class Profile extends Component {
       email: "",
       userExists: true,
       phoneNumberExists: true,
+      userId: this.props.auth.user._id,
+      projects: [],
+      projectExists: true,
     };
   }
 
@@ -41,6 +45,24 @@ class Profile extends Component {
               phoneNumberExists: false,
             });
           }
+        }
+      });
+
+    axios
+      .post(`/api/project/list`, { userID: this.state.userId })
+      .then((response) => {
+        if (response.error) {
+          console.log("failure");
+          console.log(response.error);
+        } else if (response.data.message === "Projects do not exist") {
+          this.setState({
+            projectExists: false,
+          });
+        } else {
+          // console.log("response:");
+          this.setState({
+            projects: Array.from(response.data),
+          });
         }
       });
   };
@@ -77,7 +99,10 @@ class Profile extends Component {
                 </Card.Body>
               </Card>
             </Col>
-            <ProjectList></ProjectList>
+            <ProjectList
+              projects={this.state.projects}
+              projectExists={this.state.projectExists}
+            ></ProjectList>
           </Row>
         </Container>
       );
@@ -94,4 +119,12 @@ class Profile extends Component {
   }
 }
 
-export default Profile;
+Profile.propTypes = {
+  auth: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+
+export default connect(mapStateToProps)(Profile);
