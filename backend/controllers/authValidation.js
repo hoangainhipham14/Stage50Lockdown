@@ -16,7 +16,13 @@ function validateSignup(data) {
   data.lastName = !isEmpty(data.lastName) ? data.lastName : "";
   data.username = !isEmpty(data.username) ? data.username : "";
   data.email = !isEmpty(data.email) ? data.email : "";
-  data.password = !isEmpty(data.password) ? data.password : "";
+  data.password1 = !isEmpty(data.password1) ? data.password1 : "";
+  data.password2 = !isEmpty(data.password2) ? data.password2 : "";
+
+  // Regular Expression requirements
+  const regexNum = new RegExp("(?=.*[0-9])");
+  const regexLower = new RegExp("(?=.*[a-z])");
+  const regexUpper = new RegExp("(?=.*[A-Z])");
 
   // validate first name
   if (Validator.isEmpty(data.firstName)) {
@@ -41,10 +47,21 @@ function validateSignup(data) {
   }
 
   // validate password
-  if (!Validator.isLength(data.password, { min: 6 })) {
-    errors.password = "Password must be at least 6 characters";
+  if (!Validator.isLength(data.password1, { min: 8 })) {
+    errors.password1 = "Password must be at least 8 characters";
+  } else if (
+    !regexNum.test(data.password1) ||
+    !regexLower.test(data.password1) ||
+    !regexUpper.test(data.password1)
+  ) {
+    errors.password1 = "Password must contain at least one uppercase letter, one lowercase letter, and one number.";
   }
 
+  // Check they are the same password
+  if (data.password1 != data.password2) {
+    errors.password2 = "Passwords are not the same";
+  }
+  
   return {
     errors,
     isValid: isEmpty(errors),

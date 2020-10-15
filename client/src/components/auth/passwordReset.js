@@ -1,103 +1,96 @@
-import axios from "axios";
+// The goal of this page is to host a page that will accept two passwords and then save them back to the database of the user that requested the change
+
 import React, { Component } from "react";
+import { changePassword } from "../../actions/passwordResetActions";
+import { Form, Button, Alert } from "react-bootstrap";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { ListGroup, Button, Card, Col, Container } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import isEmpty from "is-empty";
 
-class ProjectList extends Component {
+class ResetPassword extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      username: this.props.auth.user.username,
-      projects: [],
-      projectExists: true,
+      token: this.props.match.params.token,
+      passwordNo1: "",
+      passwordNo2: "",
+      errors: {},
     };
   }
 
-  componentDidMount = () => {
-    const userId = this.props.auth.user._id;
-    console.log("Sending request with:" + userId);
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.errors) {
+      this.setState({
+        errors: nextProps.errors,
+      });
+    }
+  }
 
-    // Gather all the projects in a post request with a userID
-    axios.post(`/api/project/list`, { userID: userId }).then((response) => {
-      console.log(response);
-      if (response.error) {
-        console.log("failure");
-        console.log(response.error);
-      } else if (response.data.message === "Projects do not exist") {
-        this.setState({
-          projectExists: false,
-        });
-      } else {
-        console.log("response:");
-        this.setState({
-          projects: Array.from(response.data),
-        });
-      }
+  onChange = (e) => {
+    this.setState({
+      [e.target.id]: e.target.value,
     });
   };
 
-  render() {
-    const projectCards = this.state.projects.map((project, idx) => (
-      <ListGroup.Item>
-        <Card.Text style={{ textAlign: "right", fontSize: 13 }}>
-          {project.created}
-        </Card.Text>
-        <Card.Title>{project.title}</Card.Title>
-        <Card.Text>{project.about}</Card.Text>
-        <Link to={`/projects/privacy/${project._id}`}>
-          <Button>Change Privacy Settings</Button>
-        </Link>
-      </ListGroup.Item>
-    ));
+  onSubmit = (e) => {
+    e.preventDefault();
 
-    if (this.state.projectExists) {
-      if (this.state.projects.length < 4) {
-        return (
-          <Col className="col-sm d-flex">
-            <Card style={{ width: "45rem" }}>
-              <Card.Header>Projects</Card.Header>
-              <ListGroup className="list-group-flush">{projectCards}</ListGroup>
-            </Card>
-          </Col>
-        );
-      } else {
-        return (
-          <Col className="col-sm d-flex">
-            <Card style={{ width: "45rem" }}>
-              <Card.Header>Projects</Card.Header>
-              <Container style={{ overflowY: "scroll", maxHeight: 300 }}>
-                <ListGroup className="list-group-flush">
-                  {projectCards}
-                </ListGroup>
-              </Container>
-            </Card>
-          </Col>
-        );
-      }
-    } else {
-      return (
-        <Col className="col-sm d-flex">
-          <Card style={{ width: "45rem" }}>
-            <Card.Header>Projects</Card.Header>
-            <Card.Body>
-              <Card.Title>No project</Card.Title>
-            </Card.Body>
-          </Card>
-        </Col>
-      );
-    }
+    const userData = {
+      token: this.props.match.params.token,
+      passwordNo1: this.state.passwordNo1,
+      passwordNo2: this.state.passwordNo2,
+    };
+
+    this.props.changePassword(userData, this.props.history);
+  };
+
+  render() {
+    const { errors } = this.state;
+    return (
+      <div
+        className="container"
+        style={{ maxwidth: "30rem", margin: "0 auto" }}
+      >
+        <h2 align="center">Password Reset</h2>
+        <p align="center">Change Your Password Here:</p>
+        <Form onSubmit={this.onSubmit}>
+          <Form.Group controlId="passwordNo1">
+            <Form.Label>Enter Password</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Enter Password"
+              onChange={this.onChange}
+            />
+          </Form.Group>
+          <Form.Group controlId="passwordNo2">
+            <Form.Label>Re-Enter Password</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Re-Enter Password"
+              onChange={this.onChange}
+            />
+            <Alert variant="danger" show={!isEmpty(errors)}>
+              {errors.msg}
+            </Alert>
+          </Form.Group>
+          <Button variant="primary" type="submit">
+            Reset Password
+          </Button>
+        </Form>
+      </div>
+    );
   }
 }
 
-ProjectList.propTypes = {
-  auth: PropTypes.object.isRequired,
+ResetPassword.propTypes = {
+  changePassword: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  auth: state.auth,
+  passwordNo1: state.passwordNo1,
+  passwordNo2: state.passwordNo2,
+  errors: state.errors,
 });
-
-export default connect(mapStateToProps)(ProjectList);
+//test
+export default connect(mapStateToProps, { changePassword })(ResetPassword);
