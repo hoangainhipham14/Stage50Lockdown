@@ -24,7 +24,6 @@ import AccountDetails from "./components/profile/AccountDetails";
 import RequestPasswordReset from "./components/auth/requestRecovery";
 import PrivacyToggleButton from "./components/dashboard/PrivacyToggleButton";
 import NoMatch from "./components/404/404";
-import ProjectLink from "./components/dashboard/ProjectLink";
 
 
 // check for token to keep user logged in
@@ -84,7 +83,7 @@ class App extends Component {
               <Route
               exact
               path="/projects/privacy/:projectId"
-              component= {ProjectLink}
+              component= {PrivacyToggleButton}
               />
               
               <PrivateRoute exact path="/dashboard" component={Dashboard} />

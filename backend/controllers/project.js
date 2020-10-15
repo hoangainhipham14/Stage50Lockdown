@@ -170,6 +170,7 @@ exports.generateProjectLink= (req, res) => {
   //console.log("Saving Link With Details: " + newProjectLink);
   // Save the Schema and return a link
   newProjectLink.save().catch((err) => console.log("Error saving user session:", err));
+  console.log("Link saved...");
   return res.status(200).json(newProjectLink);
 }
 
@@ -218,22 +219,20 @@ exports.connectLinkToProject = (req, res) => {
       Project.findById(projectId).exec((err, project) => {
         if(err){
           return res.status(400).json({
-            error: err,
+          error: err,
         })} else {
           //console.log("Project: " + project);
-
           // Return the project values that are relevant
           const data = {
-          title: project.title,
-          about: project.about,
-          body: project.body,
+            title: project.title,
+            about: project.about,
+            body: project.body,
           // Preset this value to true so that the item can be viewed by the person
           // with the link **Note this doesnt change the value on the DB
-          itemIsPublic: true,
+            itemIsPublic: true,
           // Pass the id of the project through as well as it doesnt come through inately with the link
-          _id: projectId,
-         };
-         // Pass the id of the project through as well as it doesnt come through inately with the link
+            _id: projectId,
+          };
          return res.json(data);
         }
       });
