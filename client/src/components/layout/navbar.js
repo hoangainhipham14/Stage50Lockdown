@@ -4,7 +4,14 @@ import { connect } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
 import { getUsernameId } from "../layout/GetUsername";
 
-import { Navbar, Nav, Container } from "react-bootstrap";
+import {
+  Navbar,
+  Nav,
+  Container,
+  Form,
+  FormControl,
+  Button,
+} from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 
 function NavbarAccountLoggedOut() {
@@ -16,6 +23,7 @@ function NavbarAccountLoggedOut() {
         </LinkContainer>
       </Nav>
       <Nav className="ml-auto">
+        <NavbarUserSearch />
         <LinkContainer to="/signin">
           <Nav.Link>Sign In</Nav.Link>
         </LinkContainer>
@@ -41,10 +49,31 @@ function NavbarAccountLoggedIn(props) {
         </LinkContainer> */}
       </Nav>
       <Nav className="ml-auto">
+        <NavbarUserSearch />
         <Nav.Link href={`/user/${props.username}/account`}>
           Account Details
         </Nav.Link>
         <Nav.Link onClick={props.onClickLogout}>Sign Out</Nav.Link>
+      </Nav>
+    </>
+  );
+}
+
+function NavbarUserSearch() {
+  return (
+    <>
+      <Nav className="mr-auto">
+        <Form inline>
+          <FormControl
+            type="text"
+            placeholder="Search for a user"
+            className="mr-sm-1"
+            size="sm"
+          />
+          <Button variant="outline-secondary" size="sm">
+            Search
+          </Button>
+        </Form>
       </Nav>
     </>
   );
