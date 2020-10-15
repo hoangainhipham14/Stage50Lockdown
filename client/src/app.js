@@ -27,21 +27,30 @@ import NoMatch from "./components/404/404";
 
 // check for token to keep user logged in
 if (localStorage.token) {
-  // set authentication token to header
-  const token = localStorage.token;
-  setAuthToken(token);
-  // decode token and get user info and expiry
-  const decoded = jwt_decode(token);
-  // set user
-  store.dispatch(setCurrentUser(decoded));
-  // check for expired token
-  const currentTime = Date.now() / 1000;
-  if (decoded.exp < currentTime) {
-    // log user out
-    store.dispatch(logoutUser());
+  try {
+    // set authentication token to header
+    const token = localStorage.token;
+    // decode token and get user info and expiry
+    const decoded = jwt_decode(token);
 
-    // redirect to login
-    window.location.href = "./";
+    setAuthToken(token);
+
+    // set user
+    store.dispatch(setCurrentUser(decoded));
+    // check for expired token
+    const currentTime = Date.now() / 1000;
+    if (decoded.exp < currentTime) {
+      // log user out
+      store.dispatch(logoutUser());
+
+      // redirect to login
+      window.location.href = "./";
+    }
+  }
+  catch (err) {
+    console.log("Invalid token");
+    setAuthToken(false);
+    localStorage.removeItem("token");
   }
 }
 
