@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { logoutUser, deleteUser } from "../../actions/authActions";
 import { getUsernameId } from "../layout/GetUsername";
-import ProjectList from "./ProjectList";
 
 import {
   Modal,
@@ -82,7 +81,6 @@ class Dashboard extends Component {
             </Button>
           </Modal.Footer>
         </Modal.Dialog>
-        <ProjectList></ProjectList>
       </Container>
     );
   }

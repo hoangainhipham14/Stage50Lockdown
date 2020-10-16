@@ -53,6 +53,7 @@ function NavbarAccountLoggedIn(props) {
         <Nav.Link href={`/user/${props.username}/account`}>
           Account Details
         </Nav.Link>
+        <Nav.Link href={`/profile/${props.username}`}>My Profile</Nav.Link>
         <Nav.Link onClick={props.onClickLogout}>Sign Out</Nav.Link>
       </Nav>
     </>

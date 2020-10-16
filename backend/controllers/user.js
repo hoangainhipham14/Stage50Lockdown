@@ -31,7 +31,10 @@ exports.userByUsername = (req, res, next, username) => {
 
 exports.userPhoto = (req, res, next) => {
   if (req.profile.image.data) {
-    res.set(("Content-Type", req.profile.image.contentType));
+    res.set({
+      "Content-Disposition": "inline; filename=" + req.project.image.fileName,
+      "Content-Type": req.project.image.contentType,
+    });
     return res.send(req.profile.image.data);
   }
   next();

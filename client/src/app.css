@@ -1,3 +1,8 @@
+html {
+  overflow-x: hidden;
+  margin-right: calc(-1 * (100vw - 100%));
+}
+
 .error-text {
   color: red;
   font-size: small;
