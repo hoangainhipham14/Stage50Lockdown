@@ -9,27 +9,55 @@ export class Facebook extends Component {
     name: "",
     email: "",
     picture: "",
+    accessToken: "",
   };
 
-  componentClicked = () => {
-    console.log("clicked");
+  componentClicked = (data) => {
+    console.log("clicked\n", data);
   };
 
   responseFacebook = (response) => {
     console.log(response);
+    this.setState({
+      isLoggedIn: true,
+      userID: response.userID,
+      name: response.name,
+      email: response.email,
+      picture: response.picture.data.url,
+      accessToken: response.accessToken,
+    });
   };
 
   render() {
     let fbContent;
 
     if (this.state.isLoggedIn) {
-      fbContent = null;
+      fbContent = (
+        <div
+          style={{
+            width: "400px",
+            margin: "auto",
+            background: "#f4f4f4",
+            padding: "20px",
+          }}
+        >
+          <img src={this.state.picture} alt={this.state.name} />
+          <h2>Welcome {this.state.name}</h2>
+          Email: {this.state.email}
+          <br />
+          User Short-Lived Access Token: {this.state.accessToken}
+          <br />
+          UserID: {this.state.userID}
+          <br />
+        </div>
+      );
     } else {
       fbContent = (
         <FacebookLogin
           appId="820137652056192"
           autoLoad={true}
           fields="name,email,picture"
+          scope="public_profile"
           onClick={this.componentClicked}
           callback={this.responseFacebook}
         />
