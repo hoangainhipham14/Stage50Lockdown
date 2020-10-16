@@ -1,9 +1,25 @@
 import React from "react";
 
 export function Center(props) {
-  return <div style={{ border: "1px red solid" }}>{props.children}</div>;
+  console.log(props);
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+      className="h-100"
+    >
+      <div {...props}>{props.children}</div>
+    </div>
+  );
 }
 
 export function HCenter(props) {
-  return <div className="text-center">{props.children}</div>;
+  return (
+    <div className="text-center">
+      <div {...props}>{props.children}</div>
+    </div>
+  );
 }
