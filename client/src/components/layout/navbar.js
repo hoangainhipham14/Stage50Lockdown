@@ -78,7 +78,7 @@ class MyNavbar extends Component {
     const { isAuthenticated, user } = this.props.auth;
     return (
       <div style={{ marginBottom: "1rem" }}>
-        <Navbar bg="dark" variant="dark" expand="sm">
+        <Navbar bg="dark" variant="dark" expand="md">
           <Container>
             <Navbar.Brand href="/">ePortfolio</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
