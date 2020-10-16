@@ -62,11 +62,13 @@ class MyNavbar extends Component {
 
   componentDidMount = () => {
     const id = this.props.auth.user._id;
-    getUsernameId(id).then((data) => {
-      this.setState({
-        username: data,
+    if (id) {
+      getUsernameId(id).then((data) => {
+        this.setState({
+          username: data,
+        });
       });
-    });
+    }
   };
 
   onClickLogout = (e) => {
