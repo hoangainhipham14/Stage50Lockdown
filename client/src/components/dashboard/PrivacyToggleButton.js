@@ -3,18 +3,29 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { Container, Form } from "react-bootstrap";
+import ProjectLink from "./ProjectLink";
 //import Switch from "react-bootstrap/esm/Switch";
 
 class PrivacyToggleButton extends Component {
-  componentDidMount = () => {};
+  constructor(props) {
+    super(props);
+    this.state = {
+      projectId: this.props.match.params.projectId,
+    };
+    console.log("State of Toggle Button" + JSON.stringify(this.state));
+  }
 
   // Send a request to the database to switch the itemIsPublic bool
   onToggleClick = (e) => {
     e.preventDefault();
-    const projectId = this.props.match.params.projectId;
+
+    console.log(JSON.stringify(this.state));
+
     //console.log("Button Clicked with id: " + projectId);
     axios
-      .post(`/api/project/togglePrivacy/${projectId}`, { projectID: projectId })
+      .post(`/api/project/togglePrivacy/${this.state.projectId}`, {
+        projectID: this.state.projectId,
+      })
       .then((response) => {
         if (response.error) {
           console.log("failure");
@@ -39,6 +50,7 @@ class PrivacyToggleButton extends Component {
             onChange={this.onToggleClick}
           />
         </Form.Group>
+        <ProjectLink {...this.state} />
       </Container>
     );
   }
