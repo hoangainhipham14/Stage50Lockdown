@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { singleProject } from "./APIProject";
+import { singleProject,  connectLinkToProject} from "./APIProject";
 import { Card, Container, Image, Row, Col, ListGroup } from "react-bootstrap";
 class SingleProject extends Component {
   state = {
@@ -8,18 +8,39 @@ class SingleProject extends Component {
   };
 
   componentDidMount = () => {
-    const projectId = this.props.match.params.projectId;
-    singleProject(projectId).then((data) => {
-      if (data.error) {
-        console.log(data.error);
-      } else {
-        this.setState({
-          project: data,
-          projectId: projectId,
-        });
+
+    const possibleLink = this.props.match.params.link;
+
+    // Check to see if this was directed from a link and 
+    // go though connecting the link to the data
+    if(possibleLink){
+      console.log("trying to access with a link");
+      connectLinkToProject(possibleLink).then((data) => {
+        if (data.error) {
+          console.log(data.error);
+        } else {
+          this.setState({
+            project: data,
+            // This could possibly break lol
+            projectId: data._id,
+          })
+        }
+      })
+    } else { 
+      // Otherwise go through the standard procedure
+      const projectId = this.props.match.params.projectId;
+      singleProject(projectId).then((data) => {
+        if (data.error) {
+          console.log(data.error);
+        } else {
+          this.setState({
+            project: data,
+            projectId: projectId,
+          });
         // console.log("Project: " + this.state.project);
-      }
-    });
+        } 
+      });
+    }
   };
 
   renderProject = (project) => {

@@ -4,8 +4,17 @@ import { connect } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
 import { getUsernameId } from "../layout/GetUsername";
 
-import { Navbar, Nav, Container } from "react-bootstrap";
+import {
+  Navbar,
+  Nav,
+  Container,
+  Form,
+  FormControl,
+  Button,
+} from "react-bootstrap";
+
 import { LinkContainer } from "react-router-bootstrap";
+import { Redirect, withRouter } from "react-router-dom";
 
 function NavbarAccountLoggedOut() {
   return (
@@ -51,12 +60,79 @@ function NavbarAccountLoggedIn(props) {
   );
 }
 
+class NavbarUserSearch extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      searchphrase: "",
+      submitted: false,
+    };
+  }
+
+  onChange = (e) => {
+    this.setState({
+      [e.target.id]: e.target.value,
+    });
+  };
+
+  componentDidUpdate() {
+    // Resets search submitted status to default
+    if (this.state.submitted) {
+      this.setState({
+        submitted: false,
+      });
+    }
+  }
+
+  onSearchSubmit = (e) => {
+    e.preventDefault();
+
+    this.setState(() => ({
+      submitted: true,
+    }));
+  };
+
+  render() {
+    // Redirect to results page when submitted
+    if (this.state.submitted) {
+      return (
+        <Redirect
+          to={{
+            pathname: "/search",
+            state: { searchphrase: this.state.searchphrase },
+          }}
+        />
+      );
+    }
+    return (
+      <Nav className="mr-auto">
+        <Form inline onSubmit={this.onSearchSubmit}>
+          <Form.Group controlId="searchphrase">
+            <FormControl
+              type="text"
+              placeholder="Search for a user"
+              className="mr-sm-1"
+              size="sm"
+              onChange={this.onChange}
+            />
+            <Button variant="outline-secondary" size="sm" type="submit">
+              Search
+            </Button>
+          </Form.Group>
+        </Form>
+      </Nav>
+    );
+  }
+}
+
 class MyNavbar extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       username: "",
+      searchphrase: "",
     };
   }
 
@@ -77,12 +153,13 @@ class MyNavbar extends Component {
   render() {
     const { isAuthenticated, user } = this.props.auth;
     return (
-      <div style={{ marginBottom: "1rem" }}>
-        <Navbar bg="dark" variant="dark" expand="sm">
+      <div className="mb-4">
+        <Navbar bg="dark" variant="dark" expand="md">
           <Container>
             <Navbar.Brand href="/">ePortfolio</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
+              <NavbarUserSearch />
               {isAuthenticated ? (
                 <NavbarAccountLoggedIn
                   onClickLogout={this.onClickLogout}
@@ -109,4 +186,4 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
 });
 
-export default connect(mapStateToProps, { logoutUser })(MyNavbar);
+export default withRouter(connect(mapStateToProps, { logoutUser })(MyNavbar));
