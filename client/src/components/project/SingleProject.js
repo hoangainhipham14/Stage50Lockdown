@@ -3,6 +3,13 @@ import { Redirect } from "react-router-dom";
 import { singleProject, connectLinkToProject } from "./APIProject";
 import { Card, Container, Image, Row, Col, ListGroup } from "react-bootstrap";
 import { HCenter } from "../layout";
+
+// sanitizer so we can safely render the body text as html after conversion
+const createDOMPurify = require("dompurify");
+const { JSDOM } = require("jsdom");
+const window = new JSDOM("").window;
+const DOMPurify = createDOMPurify(window);
+
 class SingleProject extends Component {
   state = {
     project: "",
@@ -31,7 +38,6 @@ class SingleProject extends Component {
       // Otherwise go through the standard procedure
       const projectId = this.props.match.params.projectId;
       singleProject(projectId).then((data) => {
-        console.log(data);
         if (data.error) {
           console.log(data.error);
         } else {
@@ -39,7 +45,6 @@ class SingleProject extends Component {
             project: data,
             projectId: projectId,
           });
-          // console.log("Project: " + this.state.project);
         }
       });
     }
@@ -115,7 +120,7 @@ class SingleProject extends Component {
       return <Container>Loading...</Container>;
     }
     const { title, about, body, additionalFiles } = project;
-    const formattedBody = this.convertRTFtoHTML(body);
+    const formattedBody = DOMPurify.sanitize(this.convertRTFtoHTML(body));
     // const posterId = project.postedBy ? `/user/${project.postedBy._id}` : "";
     // const posterName = project.postedBy ? project.postedBy.name : "Unknown";
 
