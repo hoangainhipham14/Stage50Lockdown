@@ -14,6 +14,8 @@ import { HCenter } from "../layout";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
+const acceptedImageTypes = [".jpg", ".png", ".jpeg"];
+
 function appearEqual(file1, file2) {
   return (
     file1.name === file2.name &&
@@ -30,14 +32,14 @@ class CreateProject extends Component {
       title: "",
       about: "",
       body: "",
-      mainImage: "",
+      mainImage: undefined,
       files: [],
     };
   }
 
   // called whenever a value is changed in the form
   onChange = (e) => {
-    const maxBytes = 50 * 1024;
+    const maxBytes = 10 * 1024 * 1024;
 
     // the name of field changed
     const name = e.target.id;
@@ -45,13 +47,23 @@ class CreateProject extends Component {
       case "mainImage":
         // extract the image
         const image = e.target.files[0];
-        if (image.size > maxBytes) {
-          alert("The selected image is too large (over 10MB).");
-        } else {
-          this.setState({
-            mainImage: image,
-          });
+        if (image) {
+          // check file type
+          const filetype = image.type.replace("image/", ".");
+          if (!acceptedImageTypes.includes(filetype)) {
+            alert(`Invalid file type. ${acceptedImageTypes.join("/")} only.`);
+            break;
+          }
+          // check file size
+          if (image.size > maxBytes) {
+            alert("The selected image is too large (over 10MB).");
+            break;
+          }
         }
+        // tests passed (for now...)
+        this.setState({
+          mainImage: image,
+        });
         break;
       case "additionalFiles":
         // list of files selected on this click of "choose files"
@@ -103,7 +115,9 @@ class CreateProject extends Component {
         break;
       default:
         // by default, the value is just the field value
-        console.log("Unrecognised");
+        this.setState({
+          [name]: e.target.value,
+        });
     }
   };
 
@@ -135,9 +149,9 @@ class CreateProject extends Component {
     formData.set("image", this.state.mainImage);
     for (var i in this.state.files) {
       const file = this.state.files[i];
-      // add file i with the key "file[i]"
-      // this seems hacky because it is
-      // i can't find a better way
+      /*
+      Add the ith file with the key file-i to the formData. Why not an array? Because I can't figure out how to get formidable to show me the full array on the other end. I hate it. I hate it so much.
+      */
       formData.append(`file-${i}`, file, file.name);
     }
     formData.set("_userId", _id);
@@ -283,6 +297,7 @@ class CreateProject extends Component {
                   <div className="custom-file">
                     <input
                       type="file"
+                      accept={acceptedImageTypes.join(",")}
                       className="custom-file-input"
                       id="mainImage"
                       onChange={this.onChange}
@@ -315,7 +330,7 @@ class CreateProject extends Component {
                       Choose files
                     </label>
                   </div>
-                  {files}
+                  <div className="mt-2">{files}</div>
                 </Form.Group>
               </Col>
             </Row>
