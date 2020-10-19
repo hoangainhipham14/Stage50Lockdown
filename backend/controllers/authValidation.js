@@ -46,6 +46,8 @@ function validateSignup(data) {
     errors.email = "Email is invalid";
   }
 
+  console.log("Checking: " + data.password);
+
   // validate password
   if (!Validator.isLength(data.password1, { min: 8 })) {
     errors.password1 = "Password must be at least 8 characters";

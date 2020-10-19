@@ -20,6 +20,8 @@ class Profile extends Component {
       userId: this.props.auth.user._id,
       projects: [],
       projectExists: true,
+      aboutUserExists: true,
+      aboutUser: "",
     };
   }
 
@@ -39,10 +41,16 @@ class Profile extends Component {
             lastName: response.data.lastName,
             email: response.data.email,
             phoneNumber: response.data.phoneNumber,
+            aboutUser: response.data.aboutUser,
           });
+
           if (this.state.phoneNumber === "") {
             this.setState({
               phoneNumberExists: false,
+            });
+          } else if (this.state.aboutUser === "") {
+            this.setState({
+              aboutUser: false,
             });
           }
         }
@@ -94,8 +102,7 @@ class Profile extends Component {
               <Card style={{ width: "20rem" }}>
                 <Card.Header>About</Card.Header>
                 <Card.Body>
-                  Some quick example text to build on the card title and make up
-                  the bulk of the card's content.
+                  {this.state.aboutUserExists ? this.state.aboutUser : " None"}
                 </Card.Body>
               </Card>
             </Col>

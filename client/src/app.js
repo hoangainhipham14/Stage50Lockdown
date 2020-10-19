@@ -10,7 +10,7 @@ import store from "./store";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./app.css";
 
-import Profile from "./components/profile/Profile";
+import Profile from "./components/profile/profile";
 import ResetPassword from "./components/auth/passwordReset";
 import Signin from "./components/auth/signin";
 import Signup from "./components/auth/signup";
@@ -23,25 +23,36 @@ import LandingPage from "./components/landing-page/landingPage";
 import AccountDetails from "./components/profile/AccountDetails";
 import RequestPasswordReset from "./components/auth/requestRecovery";
 import PrivacyToggleButton from "./components/dashboard/PrivacyToggleButton";
+import UserSearchResults from "./components/search/UserSearchResults";
 import NoMatch from "./components/404/404";
+import CreateProfile from "./components/profile/CreateProfile";
 
 // check for token to keep user logged in
 if (localStorage.token) {
-  // set authentication token to header
-  const token = localStorage.token;
-  setAuthToken(token);
-  // decode token and get user info and expiry
-  const decoded = jwt_decode(token);
-  // set user
-  store.dispatch(setCurrentUser(decoded));
-  // check for expired token
-  const currentTime = Date.now() / 1000;
-  if (decoded.exp < currentTime) {
-    // log user out
-    store.dispatch(logoutUser());
+  try {
+    // set authentication token to header
+    const token = localStorage.token;
+    // decode token and get user info and expiry
+    const decoded = jwt_decode(token);
 
-    // redirect to login
-    window.location.href = "./";
+    setAuthToken(token);
+
+    // set user
+    store.dispatch(setCurrentUser(decoded));
+    // check for expired token
+    const currentTime = Date.now() / 1000;
+    if (decoded.exp < currentTime) {
+      // log user out
+      store.dispatch(logoutUser());
+
+      // redirect to login
+      window.location.href = "./";
+    }
+  }
+  catch (err) {
+    console.log("Invalid token");
+    setAuthToken(false);
+    localStorage.removeItem("token");
   }
 }
 
@@ -60,8 +71,18 @@ class App extends Component {
               <Route exact path="/createProject" component={CreateProject} />
               <Route
                 exact
+                path="/createProfile/:username"
+                component={CreateProfile}
+              />
+              <Route
+                exact
                 path="/projects/:projectId"
                 component={SingleProject}
+              />
+              <Route 
+              exact
+              path="/projects/link/:link"
+              component={SingleProject}
               />
               <Route
                 exact
@@ -79,7 +100,9 @@ class App extends Component {
                 path="/projects/privacy/:projectId"
                 component={PrivacyToggleButton}
               />
+              
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
+              <Route exact path="/search" component={UserSearchResults} />
 
               {/* This must stay at the bottom. Add any new routes above */}
               <Route component={NoMatch} />
