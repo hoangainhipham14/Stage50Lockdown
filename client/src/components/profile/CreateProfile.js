@@ -1,6 +1,14 @@
 import axios from "axios";
 import React, { Component } from "react";
-import { Container, Form, Button, Col, Card } from "react-bootstrap";
+import {
+  Container,
+  Form,
+  Button,
+  Col,
+  Card,
+  Image,
+  Row,
+} from "react-bootstrap";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
@@ -11,6 +19,9 @@ class CreateProfile extends Component {
     this.state = {
       aboutUser: "",
       username: this.props.match.params.username,
+      userPhoto: null,
+      updated: false,
+      fileName: "",
     };
   }
 
@@ -29,20 +40,29 @@ class CreateProfile extends Component {
       });
   }
 
-  onChange = (e) => {
+  onChangeText = (e) => {
     this.setState({
       aboutUser: e.target.value,
+      updated: true,
+    });
+  };
+
+  onChangePhoto = (e) => {
+    this.setState({
+      userPhoto: e.target.files[0],
+      updated: true,
+      fileName: e.target.files[0].name,
     });
   };
 
   onSubmit = (e) => {
     // prevent page from reloading
     e.preventDefault();
-
     // create the formdata object
     // we need to do this because JSON isn't sufficient for image sending
     const formData = new FormData();
     formData.set("aboutUser", this.state.aboutUser);
+    formData.set("userPhoto", this.state.userPhoto);
 
     // configuration for post request since we aren't just posting json
     const config = {
@@ -53,43 +73,75 @@ class CreateProfile extends Component {
 
     axios
       .post(`/api/user/${this.state.username}`, formData, config)
-      .then((data) => {
-        console.log(data);
-        if (data.error) {
-          console.log(data.error);
-        } else {
-          this.setState({
-            aboutUser: data.aboutUser,
-          });
-        }
+      .then((response) => {
+        console.log("Success!");
+        console.log(response.data);
+      })
+      .catch((err) => {
+        console.log("Failure!");
+        console.log(err);
       });
+    window.location.reload();
   };
 
   render() {
     return (
       <Container>
-        <Col className="col-sm d-flex">
-          <Card style={{ width: "50rem" }}>
-            <Card.Header>About Me</Card.Header>
-            <Card.Body>
-              <Form onSubmit={this.onSubmit}>
-                <Form.Group controlId="aboutUser">
+        <Row>
+          <Col className="col-sm d-flex">
+            <Card style={{ width: "30rem" }}>
+              <Card.Header>Profile Image</Card.Header>
+              <Card.Body>
+                <Card.Subtitle>Current Image</Card.Subtitle>
+                <Container className="d-flex justify-content-center">
+                  <Image
+                    src={`/api/user/${this.state.username}/photo`}
+                    className="mt-3"
+                    thumbnail
+                    fluid
+                  />
+                </Container>
+                <Card.Subtitle className="mt-3">Upload New Image</Card.Subtitle>
+
+                <Form onSubmit={this.onSubmit} className="mt-3">
+                  <Form.File
+                    id="image"
+                    label={this.state.fileName}
+                    onChange={this.onChangePhoto}
+                    custom
+                  />
+                  <Container className="d-flex justify-content-center mt-3">
+                    <Button variant="success" type="submit">
+                      Update
+                    </Button>
+                  </Container>
+                </Form>
+              </Card.Body>
+            </Card>
+          </Col>
+
+          <Col className="col-sm d-flex">
+            <Card style={{ width: "30rem" }}>
+              <Card.Header>About Me</Card.Header>
+              <Card.Body>
+                <Form onSubmit={this.onSubmit} className="mt-5">
                   <Form.Control
                     as="textarea"
+                    rows="10"
                     placeholder={this.state.aboutUser}
-                    onChange={this.onChange}
+                    onChange={this.onChangeText}
                   />
-                </Form.Group>
 
-                <Container className="d-flex justify-content-center">
-                  <Button variant="success" type="submit">
-                    Update
-                  </Button>
-                </Container>
-              </Form>
-            </Card.Body>
-          </Card>
-        </Col>
+                  <Container className="d-flex justify-content-center mt-3">
+                    <Button variant="success" type="submit">
+                      Update
+                    </Button>
+                  </Container>
+                </Form>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
       </Container>
     );
   }
