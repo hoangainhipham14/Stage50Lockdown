@@ -6,7 +6,10 @@ import {
   Button,
   OverlayTrigger,
   Popover,
+  Row,
+  Col,
 } from "react-bootstrap";
+import { HCenter } from "../layout";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
@@ -158,65 +161,75 @@ class CreateProject extends Component {
 
     return (
       <Container>
-        <div style={{ maxWidth: "30rem", margin: "0 auto" }}>
+        <div style={{ margin: "0 auto" }}>
           <div className="text-center">
             <h2>Create New Project</h2>
           </div>
 
-          <Form onSubmit={this.onSubmit}>
-            <Form.Group controlId="title">
-              <Form.Label>Title</Form.Label>
-              <Form.Control type="text" onChange={this.onChange} />
-            </Form.Group>
+          <Form onSubmit={this.onSubmit} style={{ marginTop: "1rem" }}>
+            <Row>
+              <Col>
+                <Form.Group controlId="title">
+                  <Form.Label>Title</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Give your project a title"
+                    onChange={this.onChange}
+                  />
+                </Form.Group>
 
-            <Form.Group controlId="about">
-              <Form.Label>About</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows="3"
-                placeholder="A short description of the project"
-                onChange={this.onChange}
-              />
-            </Form.Group>
+                <Form.Group controlId="about">
+                  <Form.Label>About</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    rows="3"
+                    placeholder="A short description of the project"
+                    onChange={this.onChange}
+                  />
+                </Form.Group>
 
-            <Form.Group controlId="body">
-              <Form.Label>Body Text</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows="7"
-                placeholder="More information about your project"
-                onChange={this.onChange}
-              />
-            </Form.Group>
+                <Form.Group controlId="body">
+                  <Form.Label>Body Text</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    rows="7"
+                    placeholder="More information about your project"
+                    onChange={this.onChange}
+                  />
+                </Form.Group>
+              </Col>
+              <Col>
+                <Form.Group controlId="mainImage">
+                  <Form.File label="Main Image" onChange={this.onChange} />
+                </Form.Group>
 
-            <Form.Group controlId="mainImage">
-              <Form.File label="Main Image" onChange={this.onChange} />
-            </Form.Group>
-
-            <Form.Group controlId="files">
-              <Form.Label>Additional files</Form.Label>
-              <Form.File
-                multiple
-                onChange={this.onChange}
-                style={{ color: "transparent" }}
-                value=""
-              />
-              {files}
-            </Form.Group>
-
-            <div className="text-center">
-              <Button variant="success" type="submit">
-                Create Project
-              </Button>
-              <OverlayTrigger
-                trigger="click"
-                rootClose
-                placement="bottom"
-                overlay={popover}
-              >
-                <Button variant="secondary">Discard Project</Button>
-              </OverlayTrigger>
-            </div>
+                <Form.Group controlId="files">
+                  <Form.Label>Additional files</Form.Label>
+                  <Form.File
+                    multiple
+                    onChange={this.onChange}
+                    style={{ color: "transparent" }}
+                    value=""
+                  />
+                  {files}
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <HCenter>
+                <Button variant="success" type="submit">
+                  Create Project
+                </Button>
+                <OverlayTrigger
+                  trigger="click"
+                  rootClose
+                  placement="bottom"
+                  overlay={popover}
+                >
+                  <Button variant="secondary">Discard Project</Button>
+                </OverlayTrigger>
+              </HCenter>
+            </Row>
           </Form>
         </div>
       </Container>
