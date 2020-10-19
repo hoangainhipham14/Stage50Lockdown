@@ -50,7 +50,8 @@ exports.createProject = (req, res, next) => {
     project.additionalFiles = additionalFiles;
     console.log(`Added ${project.additionalFiles.length} additional files`);
 
-    project = _.extend(project, fields);
+    // TALK TO NHI ABOUT THIS
+    // project = _.extend(project, fields);
 
     // add MM/DD/YYYY
     today = Date.now();
