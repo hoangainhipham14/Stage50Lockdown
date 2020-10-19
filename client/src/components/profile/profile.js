@@ -1,27 +1,18 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import {
-  Card,
-  Container,
-  Col,
-  Row,
-  Alert,
-  Button,
-  Image,
-  CardImg,
-} from "react-bootstrap";
+import { Card, Container, Col, Row, Alert } from "react-bootstrap";
 import axios from "axios";
 
 import ProjectList from "./ProjectList";
-// import { getUsernameId } from "../layout/GetUsername";
+import { getUsernameId } from "../layout/GetUsername";
 
 class Profile extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      username: this.props.match.params.username,
+      profileUserName: this.props.match.params.username,
       firstName: "",
       lastName: "",
       email: "",
@@ -33,10 +24,20 @@ class Profile extends Component {
       aboutUserExists: true,
       aboutUser: "",
       photoExist: false,
+      isAuth: false,
     };
   }
 
   componentDidMount = () => {
+    getUsernameId(this.state.userId).then((data) => {
+      console.log(data);
+      console.log(this.state.profileUserName);
+      if (data === this.state.profileUserName)
+        this.setState({
+          isAuth: true,
+        });
+    });
+
     axios
       .get(`/api/user/${this.props.match.params.username}`)
       .then((response) => {
@@ -96,13 +97,13 @@ class Profile extends Component {
             <Col className="col-sm d-flex ml-4">
               <Card style={{ width: "20rem" }}>
                 {this.state.photoExist ? (
-                  <CardImg
-                    src={`/api/user/${this.state.username}/photo`}
+                  <Card.Img
+                    src={`/api/user/${this.state.profileUserName}/photo`}
                     thumbnail
                     fluid
                   />
                 ) : (
-                  <CardImg src="../../default_photo.png" fluid thumbnail />
+                  <Card.Img src="../../default_photo.png" fluid thumbnail />
                 )}
 
                 <Card.Body>
@@ -131,7 +132,8 @@ class Profile extends Component {
             <ProjectList
               projects={this.state.projects}
               projectExists={this.state.projectExists}
-              username={this.state.username}
+              username={this.state.profileUserName}
+              isAuth={this.state.isAuth}
             ></ProjectList>
           </Row>
         </Container>

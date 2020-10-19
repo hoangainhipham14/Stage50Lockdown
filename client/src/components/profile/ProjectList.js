@@ -31,9 +31,11 @@ class ProjectList extends Component {
                   {projectCards}
                 </ListGroup>
               </Card>
-              <Button href={`/createProfile/${this.props.username}`}>
-                Edit Profile
-              </Button>
+              {this.props.isAuth && (
+                <Button href={`/createProfile/${this.props.username}`}>
+                  Edit Profile
+                </Button>
+              )}
             </Container>
           </Col>
         );
@@ -50,9 +52,11 @@ class ProjectList extends Component {
                   </ListGroup>
                 </Container>
               </Card>
-              <Button href={`/createProfile/${this.props.username}`}>
-                Edit Profile
-              </Button>
+              {this.props.isAuth && (
+                <Button href={`/createProfile/${this.props.username}`}>
+                  Edit Profile
+                </Button>
+              )}
             </Container>
           </Col>
         );
@@ -68,9 +72,11 @@ class ProjectList extends Component {
                 <Card.Title>No project</Card.Title>
               </Card.Body>
             </Card>
-            <Button href={`/createProfile/${this.props.username}`}>
-              Edit Profile
-            </Button>
+            {this.props.isAuth && (
+              <Button href={`/createProfile/${this.props.username}`}>
+                Edit Profile
+              </Button>
+            )}
           </Container>
         </Col>
       );

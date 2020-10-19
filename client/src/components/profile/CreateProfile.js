@@ -31,7 +31,6 @@ class CreateProfile extends Component {
     axios
       .get(`/api/user/${this.props.match.params.username}`)
       .then((response) => {
-        console.log(response);
         if (response.error) {
           console.log(response.error);
         } else {
@@ -57,6 +56,7 @@ class CreateProfile extends Component {
       fileName: e.target.files[0].name,
       photoExist: true,
     });
+    // console.log(this.state.photoExist);
   };
 
   onSubmit = (e) => {
@@ -67,7 +67,7 @@ class CreateProfile extends Component {
     const formData = new FormData();
     formData.set("aboutUser", this.state.aboutUser);
     formData.set("userPhoto", this.state.userPhoto);
-    formData.set("userPhoto", this.state.photoExist);
+    formData.set("photoExist", this.state.photoExist);
 
     // configuration for post request since we aren't just posting json
     const config = {
