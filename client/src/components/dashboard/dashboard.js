@@ -4,7 +4,13 @@ import { connect } from "react-redux";
 import { logoutUser, deleteUser } from "../../actions/authActions";
 import { getUsernameId } from "../layout/GetUsername";
 
-import { Modal, Button, OverlayTrigger, Popover } from "react-bootstrap";
+import {
+  Modal,
+  Button,
+  OverlayTrigger,
+  Popover,
+  Container,
+} from "react-bootstrap";
 
 class Dashboard extends Component {
   constructor(props) {
@@ -52,24 +58,30 @@ class Dashboard extends Component {
       </Popover>
     );
     return (
-      <Modal.Dialog>
-        <Modal.Header closeButton>
-          <Modal.Title>Hello, {this.state.username}!</Modal.Title>
-        </Modal.Header>
+      <Container>
+        <Modal.Dialog>
+          <Modal.Header closeButton>
+            <Modal.Title>Hello, {this.state.username}!</Modal.Title>
+          </Modal.Header>
 
-        <Modal.Body>
-          <p>This is your ePortfolio Dashboard.</p>
-        </Modal.Body>
+          <Modal.Body>
+            <p>This is your ePortfolio Dashboard.</p>
+          </Modal.Body>
 
-        <Modal.Footer>
-          <OverlayTrigger trigger="click" placement="bottom" overlay={popover}>
-            <Button variant="danger">Delete Account</Button>
-          </OverlayTrigger>
-          <Button variant="secondary" onClick={this.onLogoutClick}>
-            Sign Out
-          </Button>
-        </Modal.Footer>
-      </Modal.Dialog>
+          <Modal.Footer>
+            <OverlayTrigger
+              trigger="click"
+              placement="bottom"
+              overlay={popover}
+            >
+              <Button variant="danger">Delete Account</Button>
+            </OverlayTrigger>
+            <Button variant="secondary" onClick={this.onLogoutClick}>
+              Sign Out
+            </Button>
+          </Modal.Footer>
+        </Modal.Dialog>
+      </Container>
     );
   }
 }
