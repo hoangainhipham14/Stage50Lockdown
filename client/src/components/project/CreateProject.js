@@ -8,6 +8,7 @@ import {
   Popover,
   Row,
   Col,
+  Table,
 } from "react-bootstrap";
 import { HCenter } from "../layout";
 import PropTypes from "prop-types";
@@ -36,22 +37,43 @@ class CreateProject extends Component {
 
   // called whenever a value is changed in the form
   onChange = (e) => {
+    const maxBytes = 50 * 1024;
+
     // the name of field changed
     const name = e.target.id;
-    // the value of the field changed
-    var value;
     switch (name) {
       case "mainImage":
         // extract the image
-        value = e.target.files[0];
+        const image = e.target.files[0];
+        if (image.size > maxBytes) {
+          alert("The selected image is too large (over 10MB).");
+        } else {
+          this.setState({
+            mainImage: image,
+          });
+        }
         break;
-      case "files":
+      case "additionalFiles":
         // list of files selected on this click of "choose files"
         const filesSelected = e.target.files;
-        // we'll only add files that aren't already selected
+
         var filesToAdd = [];
+        var filesTooLarge = [];
         for (var i = 0; i < filesSelected.length; i++) {
           const file = filesSelected[i];
+
+          /* Check that the file is not too large. Note this should also be 
+          done on the backend, but it's good to do it here because the user
+          doesn't have to wait for their large file to be sent to the server
+          before being told it's too large to store. */
+          console.log(file.size);
+          if (file.size > maxBytes) {
+            // bigger than 10MB
+            filesTooLarge.push(file.name);
+            continue;
+          }
+
+          // next we need to check that the file isn't already added
           var alreadyAdded = false;
           // search already selected files
           for (var j in this.state.files) {
@@ -67,17 +89,22 @@ class CreateProject extends Component {
             filesToAdd.push(file);
           }
         }
+        // alert the user of files that were too large
+        if (filesTooLarge.length > 0) {
+          alert(
+            `The following files were too large (over 10MB) and were not added:\n${filesTooLarge.join(
+              "\n"
+            )}`
+          );
+        }
+
         // new list of files is the old list plus files we've decided to add
-        value = this.state.files.concat(filesToAdd);
+        this.setState({ files: this.state.files.concat(filesToAdd) });
         break;
       default:
         // by default, the value is just the field value
-        value = e.target.value;
+        console.log("Unrecognised");
     }
-
-    this.setState({
-      [name]: value,
-    });
   };
 
   // this guy deletes the ith file from the file list
@@ -135,13 +162,49 @@ class CreateProject extends Component {
   };
 
   render() {
-    const popover = (
+    const discardPopover = (
       <Popover id="popover-basic">
         <Popover.Title as="h3">Are you sure?</Popover.Title>
         <Popover.Content>
           <Button variant="danger" onClick={this.goBack}>
             Discard project
           </Button>
+        </Popover.Content>
+      </Popover>
+    );
+
+    const formattingPopover = (
+      <Popover style={{ maxWidth: "none" }}>
+        <Popover.Title as="h3">Formatting help</Popover.Title>
+        <Popover.Content className="py-0 px-1">
+          <Table size="sm">
+            <thead>
+              <tr>
+                <th>You type:</th>
+                <th>You see:</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>*italics*</td>
+                <td>
+                  <i>italics</i>
+                </td>
+              </tr>
+              <tr>
+                <td>**bold**</td>
+                <td>
+                  <strong>bold</strong>
+                </td>
+              </tr>
+              <tr>
+                <td>[Google](https://google.com)</td>
+                <td>
+                  <a href="https://google.com">Google</a>
+                </td>
+              </tr>
+            </tbody>
+          </Table>
         </Popover.Content>
       </Popover>
     );
@@ -196,38 +259,81 @@ class CreateProject extends Component {
                     placeholder="More information about your project"
                     onChange={this.onChange}
                   />
+                  <OverlayTrigger
+                    trigger="click"
+                    rootClose
+                    placement="bottom"
+                    overlay={formattingPopover}
+                  >
+                    <span
+                      style={{
+                        fontSize: "0.8rem",
+                        color: "blue",
+                        cursor: "pointer",
+                      }}
+                    >
+                      formatting help
+                    </span>
+                  </OverlayTrigger>
                 </Form.Group>
               </Col>
               <Col>
                 <Form.Group controlId="mainImage">
-                  <Form.File label="Main Image" onChange={this.onChange} />
+                  <Form.Label>Main image</Form.Label>
+                  <div className="custom-file">
+                    <input
+                      type="file"
+                      className="custom-file-input"
+                      id="mainImage"
+                      onChange={this.onChange}
+                    />
+                    <label className="custom-file-label" htmlFor="mainImage">
+                      {this.state.mainImage
+                        ? this.state.mainImage.name
+                        : "Choose file"}
+                    </label>
+                    <div className="invalid-feedback">
+                      Example invalid custom file feedback
+                    </div>
+                  </div>
                 </Form.Group>
 
-                <Form.Group controlId="files">
+                <Form.Group controlId="additionalFiles">
                   <Form.Label>Additional files</Form.Label>
-                  <Form.File
-                    multiple
-                    onChange={this.onChange}
-                    style={{ color: "transparent" }}
-                    value=""
-                  />
+                  <div className="custom-file">
+                    <input
+                      type="file"
+                      multiple
+                      className="custom-file-input"
+                      id="additionalFiles"
+                      onChange={this.onChange}
+                    />
+                    <label
+                      className="custom-file-label"
+                      htmlFor="additionalFiles"
+                    >
+                      Choose files
+                    </label>
+                  </div>
                   {files}
                 </Form.Group>
               </Col>
             </Row>
             <Row>
               <HCenter>
-                <Button variant="success" type="submit">
-                  Create Project
-                </Button>
-                <OverlayTrigger
-                  trigger="click"
-                  rootClose
-                  placement="bottom"
-                  overlay={popover}
-                >
-                  <Button variant="secondary">Discard Project</Button>
-                </OverlayTrigger>
+                <div className="button-row">
+                  <Button variant="success" type="submit">
+                    Create Project
+                  </Button>
+                  <OverlayTrigger
+                    trigger="click"
+                    rootClose
+                    placement="bottom"
+                    overlay={discardPopover}
+                  >
+                    <Button variant="secondary">Discard Project</Button>
+                  </OverlayTrigger>
+                </div>
               </HCenter>
             </Row>
           </Form>
