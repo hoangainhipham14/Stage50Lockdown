@@ -82,7 +82,10 @@ class Profile extends Component {
           <Row>
             <Col className="col-sm d-flex ml-4">
               <Card style={{ width: "20rem" }}>
-                <Card.Img variant="top" src="../../doraemon.png" />
+                <Card.Img
+                  variant="top"
+                  src={`/api/user/${this.state.username}/photo`}
+                />
                 <Card.Body>
                   <Card.Title>
                     {this.state.firstName} {this.state.lastName}
