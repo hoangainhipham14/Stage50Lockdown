@@ -14,7 +14,8 @@ const projectSchema = new Schema({
 
   body: {
     type: String,
-    required: true,
+    // let the user create body-less project, e.g. title + image + files idk
+    // required: true,
   },
 
   image: {
