@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { ListGroup, Button, Card, Col, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import CreateProfile from "./CreateProfile";
 
 class ProjectList extends Component {
   render() {
@@ -23,24 +24,36 @@ class ProjectList extends Component {
       if (this.props.projects.length < 4) {
         return (
           <Col className="col-sm d-flex">
-            <Card style={{ width: "45rem" }}>
-              <Card.Header>Projects</Card.Header>
-              <ListGroup className="list-group-flush">{projectCards}</ListGroup>
-            </Card>
+            <Container>
+              <Card style={{ width: "45rem" }}>
+                <Card.Header>Projects</Card.Header>
+                <ListGroup className="list-group-flush">
+                  {projectCards}
+                </ListGroup>
+              </Card>
+              <Button href={`/createProfile/${this.props.username}`}>
+                Edit Profile
+              </Button>
+            </Container>
           </Col>
         );
       } else {
         // display scrollable projects
         return (
           <Col className="col-sm d-flex">
-            <Card style={{ width: "45rem" }}>
-              <Card.Header>Projects</Card.Header>
-              <Container style={{ overflowY: "scroll", maxHeight: 300 }}>
-                <ListGroup className="list-group-flush">
-                  {projectCards}
-                </ListGroup>
-              </Container>
-            </Card>
+            <Container>
+              <Card style={{ width: "45rem" }}>
+                <Card.Header>Projects</Card.Header>
+                <Container style={{ overflowY: "scroll", maxHeight: 300 }}>
+                  <ListGroup className="list-group-flush">
+                    {projectCards}
+                  </ListGroup>
+                </Container>
+              </Card>
+              <Button href={`/createProfile/${this.props.username}`}>
+                Edit Profile
+              </Button>
+            </Container>
           </Col>
         );
       }
@@ -48,12 +61,17 @@ class ProjectList extends Component {
       // display no project
       return (
         <Col className="col-sm d-flex">
-          <Card style={{ width: "45rem" }}>
-            <Card.Header>Projects</Card.Header>
-            <Card.Body>
-              <Card.Title>No project</Card.Title>
-            </Card.Body>
-          </Card>
+          <Container>
+            <Card style={{ width: "45rem" }}>
+              <Card.Header>Projects</Card.Header>
+              <Card.Body>
+                <Card.Title>No project</Card.Title>
+              </Card.Body>
+            </Card>
+            <Button href={`/createProfile/${this.props.username}`}>
+              Edit Profile
+            </Button>
+          </Container>
         </Col>
       );
     }

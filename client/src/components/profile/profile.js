@@ -1,10 +1,20 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Card, Container, Col, Row, Alert } from "react-bootstrap";
+import {
+  Card,
+  Container,
+  Col,
+  Row,
+  Alert,
+  Button,
+  Image,
+  CardImg,
+} from "react-bootstrap";
 import axios from "axios";
 
 import ProjectList from "./ProjectList";
+// import { getUsernameId } from "../layout/GetUsername";
 
 class Profile extends Component {
   constructor(props) {
@@ -22,6 +32,7 @@ class Profile extends Component {
       projectExists: true,
       aboutUserExists: true,
       aboutUser: "",
+      photoExist: false,
     };
   }
 
@@ -34,6 +45,7 @@ class Profile extends Component {
         } else if (response.data.message === "Profile does not exist") {
           this.setState({
             userExists: false,
+            photoExist: response.data.photoExist,
           });
         } else {
           this.setState({
@@ -42,6 +54,7 @@ class Profile extends Component {
             email: response.data.email,
             phoneNumber: response.data.phoneNumber,
             aboutUser: response.data.aboutUser,
+            photoExist: response.data.photoExist,
           });
 
           if (this.state.phoneNumber === "") {
@@ -82,7 +95,16 @@ class Profile extends Component {
           <Row>
             <Col className="col-sm d-flex ml-4">
               <Card style={{ width: "20rem" }}>
-                <Card.Img variant="top" src="../../doraemon.png" />
+                {this.state.photoExist ? (
+                  <CardImg
+                    src={`/api/user/${this.state.username}/photo`}
+                    thumbnail
+                    fluid
+                  />
+                ) : (
+                  <CardImg src="../../default_photo.png" fluid thumbnail />
+                )}
+
                 <Card.Body>
                   <Card.Title>
                     {this.state.firstName} {this.state.lastName}
@@ -109,6 +131,7 @@ class Profile extends Component {
             <ProjectList
               projects={this.state.projects}
               projectExists={this.state.projectExists}
+              username={this.state.username}
             ></ProjectList>
           </Row>
         </Container>

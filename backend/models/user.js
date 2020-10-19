@@ -42,6 +42,11 @@ const userSchema = new Schema({
     fileName: String,
   },
 
+  photoExist: {
+    type: Boolean,
+    default: false,
+  },
+
   isDeleted: {
     type: Boolean,
     default: false,

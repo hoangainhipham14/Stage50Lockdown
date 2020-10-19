@@ -22,6 +22,7 @@ class CreateProfile extends Component {
       userPhoto: null,
       updated: false,
       fileName: "",
+      photoExist: false,
     };
   }
 
@@ -30,11 +31,13 @@ class CreateProfile extends Component {
     axios
       .get(`/api/user/${this.props.match.params.username}`)
       .then((response) => {
+        console.log(response);
         if (response.error) {
           console.log(response.error);
         } else {
           this.setState({
             aboutUser: response.data.aboutUser,
+            photoExist: response.data.photoExist,
           });
         }
       });
@@ -52,6 +55,7 @@ class CreateProfile extends Component {
       userPhoto: e.target.files[0],
       updated: true,
       fileName: e.target.files[0].name,
+      photoExist: true,
     });
   };
 
@@ -63,6 +67,7 @@ class CreateProfile extends Component {
     const formData = new FormData();
     formData.set("aboutUser", this.state.aboutUser);
     formData.set("userPhoto", this.state.userPhoto);
+    formData.set("userPhoto", this.state.photoExist);
 
     // configuration for post request since we aren't just posting json
     const config = {
@@ -94,12 +99,21 @@ class CreateProfile extends Component {
               <Card.Body>
                 <Card.Subtitle>Current Image</Card.Subtitle>
                 <Container className="d-flex justify-content-center">
-                  <Image
-                    src={`/api/user/${this.state.username}/photo`}
-                    className="mt-3"
-                    thumbnail
-                    fluid
-                  />
+                  {this.state.photoExist ? (
+                    <Image
+                      className="mt-3"
+                      src={`/api/user/${this.state.username}/photo`}
+                      thumbnail
+                      fluid
+                    />
+                  ) : (
+                    <Image
+                      src="../../default_photo.png"
+                      className="mt-3"
+                      thumbnail
+                      fluid
+                    />
+                  )}
                 </Container>
                 <Card.Subtitle className="mt-3">Upload New Image</Card.Subtitle>
 
