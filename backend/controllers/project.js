@@ -13,11 +13,16 @@ exports.createProject = (req, res, next) => {
   let form = new formidable.IncomingForm();
   form.keepExtensions = true;
   form.parse(req, (err, fields, files) => {
+    console.log("===================================");
+    console.log(fields);
+    for (i in files) console.log(i, files[i].name);
+    console.log("===================================");
     if (err) {
       return res.status(400).json({
         image: "There was a problem creating your project",
       });
     }
+
     // create the new project
     let project = new Project(fields);
 
@@ -43,12 +48,15 @@ exports.createProject = (req, res, next) => {
       });
     }
     project.additionalFiles = additionalFiles;
+    console.log(`Added ${project.additionalFiles.length} additional files`);
 
     project = _.extend(project, fields);
 
     // add MM/DD/YYYY
     today = Date.now();
     project.created = moment(today).utc().format("MM/DD/YYYY");
+
+    // return res.json({ success: "true" });
 
     // save the new project
     console.log("Saving...");
@@ -85,11 +93,26 @@ exports.projectById = (req, res, next, id) => {
 // Image Response
 exports.image = (req, res, next) => {
   res.set({
-    "Content-Disposition": "inline; filename=" + req.project.image.fileName,
+    // this line was causing an error
+    // "Content-Disposition": "inline; filename=" + req.project.image.fileName,
     "Content-Type": req.project.image.contentType,
   });
 
   return res.send(req.project.image.data);
+};
+
+// Send the ith additional file as an attachment
+exports.singleFile = (req, res, next) => {
+  console.log("singleFile");
+  console.log(req.params.index);
+  const file = req.project.additionalFiles[parseInt(req.params.index)];
+  console.log(file);
+
+  res.set({
+    "Content-Disposition": `attachment; filename="${file.fileName}"`,
+    "Content-Type": file.contentType,
+  });
+  return res.send(file.data);
 };
 
 // Responds with the project containing the data inside
@@ -108,6 +131,7 @@ exports.singleProject = (req, res) => {
       title: req.project.title,
       about: req.project.about,
       body: req.project.body,
+      additionalFiles: req.project.additionalFiles.map((file) => file.fileName),
       itemIsPublic: req.project.itemIsPublic,
     };
     return res.json(data);
