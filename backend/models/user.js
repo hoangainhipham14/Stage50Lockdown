@@ -47,6 +47,14 @@ const userSchema = new Schema({
   },
 });
 
+// Add secondary indexes to userSchema. Allows searching
+userSchema.index({
+  firstName: "text",
+  lastName: "text",
+  username: "text",
+  email: "text",
+});
+
 userSchema.methods.generateHash = function (password) {
   return bcrypt.hashSync(password, bcrypt.genSaltSync(8));
 };
@@ -54,6 +62,14 @@ userSchema.methods.generateHash = function (password) {
 userSchema.methods.validPassword = function (password) {
   return bcrypt.compareSync(password, this.password);
 };
+
+userSchema.on("index", function (err) {
+  if (err) {
+    console.error("User index error: %s", err);
+  } else {
+    console.info("User indexing complete");
+  }
+});
 
 const User = mongoose.model("User", userSchema);
 

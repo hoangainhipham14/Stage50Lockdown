@@ -30,6 +30,8 @@ const {
 // async means we don't need an enormous nested mess.
 exports.signup = async (req, res) => {
   // validate sign up data
+
+  console.log("Validating: " + JSON.stringify(req.body));
   const { errors, isValid } = validateSignup(req.body);
   if (!isValid) {
     return res.status(400).json(errors);
