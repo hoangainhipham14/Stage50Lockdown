@@ -13,6 +13,7 @@ import {
 import { HCenter } from "../layout";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
 
 const acceptedImageTypes = [".jpg", ".png", ".jpeg"];
 
@@ -34,6 +35,8 @@ class CreateProject extends Component {
       body: "",
       mainImage: undefined,
       files: [],
+      submitSuccess: false,
+      projectId: null,
     };
   }
 
@@ -78,7 +81,6 @@ class CreateProject extends Component {
           done on the backend, but it's good to do it here because the user
           doesn't have to wait for their large file to be sent to the server
           before being told it's too large to store. */
-          console.log(file.size);
           if (file.size > maxBytes) {
             // bigger than 10MB
             filesTooLarge.push(file.name);
@@ -168,6 +170,7 @@ class CreateProject extends Component {
       .then((response) => {
         console.log("Success!");
         console.log(response.data);
+        this.setState({ submitSuccess: true, projectId: response.data._id });
       })
       .catch((err) => {
         console.log("Failure!");
@@ -176,6 +179,10 @@ class CreateProject extends Component {
   };
 
   render() {
+    if (this.state.submitSuccess) {
+      return <Redirect to={`/projects/${this.state.projectId}`} />;
+    }
+
     const discardPopover = (
       <Popover id="popover-basic">
         <Popover.Title as="h3">Are you sure?</Popover.Title>
@@ -252,6 +259,7 @@ class CreateProject extends Component {
                     type="text"
                     placeholder="Give your project a title"
                     onChange={this.onChange}
+                    required
                   />
                 </Form.Group>
 

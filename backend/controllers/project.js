@@ -1,5 +1,6 @@
 const Project = require("../models/project");
 const ProjectLink = require("../models/projectLink");
+const User = require("../models/user");
 const crypto = require("crypto");
 const _ = require("lodash");
 const moment = require("moment");
@@ -127,6 +128,7 @@ exports.singleProject = (req, res) => {
   /*
   Changed this so were not sending data to the front end that is private
   */
+  console.log("project", req.project);
   if (req.project.itemIsPublic) {
     const data = {
       title: req.project.title,
@@ -149,16 +151,27 @@ exports.singleProject = (req, res) => {
 
 // Returns an array of projects the user has made (Provided it has the userId attached to it)
 exports.ProjectList = (req, res) => {
-  const userID = req.body.userID;
+  const username = req.body.username;
+  console.log("username", username);
 
-  Project.find({ _userId: userID }).exec((err, projects) => {
-    if (err || projects.length === 0) {
+  User.findOne({ username: username }).exec((err, user) => {
+    if (err) {
       return res.send({
-        message: "Projects do not exist",
+        message: "Server error don't ask",
       });
     }
-    req.projects = projects; //add
-    return res.json(req.projects);
+    Project.find({ _userId: user._id }, "_id title about created").exec(
+      (err, projects) => {
+        if (err || projects.length === 0) {
+          return res.send({
+            message: "Projects do not exist",
+          });
+        }
+        console.log(projects);
+        req.projects = projects; //add
+        return res.json(req.projects);
+      }
+    );
   });
 };
 
@@ -283,9 +296,13 @@ exports.connectLinkToProject = (req, res) => {
             // Preset this value to true so that the item can be viewed by the person
             // with the link **Note this doesnt change the value on the DB
             itemIsPublic: true,
+            additionalFiles: project.additionalFiles.map(
+              (file) => file.fileName
+            ),
             // Pass the id of the project through as well as it doesnt come through inately with the link
             _id: projectId,
           };
+          console.log(data);
           return res.json(data);
         }
       });

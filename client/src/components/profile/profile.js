@@ -49,17 +49,19 @@ class Profile extends Component {
       });
 
     axios
-      .post(`/api/project/list`, { userID: this.state.userId })
+      .post(`/api/project/list`, { username: this.props.match.params.username })
       .then((response) => {
+        console.log(response);
         if (response.error) {
           console.log("failure");
           console.log(response.error);
         } else if (response.data.message === "Projects do not exist") {
+          console.log("response:", response);
           this.setState({
             projectExists: false,
           });
         } else {
-          // console.log("response:");
+          console.log("response:", response);
           this.setState({
             projects: Array.from(response.data),
           });

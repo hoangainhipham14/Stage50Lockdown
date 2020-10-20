@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import { singleProject, connectLinkToProject } from "./APIProject";
-import { Card, Container, Image, Row, Col, ListGroup } from "react-bootstrap";
+import { Card, Container, Image, Row, Col } from "react-bootstrap";
 import { HCenter } from "../layout";
 
 // sanitizer so we can safely render the body text as html after conversion
@@ -24,6 +24,7 @@ class SingleProject extends Component {
     if (possibleLink) {
       console.log("trying to access with a link");
       connectLinkToProject(possibleLink).then((data) => {
+        console.log(data);
         if (data.error) {
           console.log(data.error);
         } else {
@@ -38,6 +39,7 @@ class SingleProject extends Component {
       // Otherwise go through the standard procedure
       const projectId = this.props.match.params.projectId;
       singleProject(projectId).then((data) => {
+        console.log(data);
         if (data.error) {
           console.log(data.error);
         } else {
@@ -161,7 +163,7 @@ class SingleProject extends Component {
             <Col lg={6}>
               <Card.Body>
                 <Image
-                  src={`/api/project/${this.state.projectId}/img`}
+                  src={`http://localhost:5000/api/project/${this.state.projectId}/img`}
                   alt=""
                   style={{ width: "100%" }}
                   thumbnail

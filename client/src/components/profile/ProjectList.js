@@ -4,18 +4,23 @@ import { Link } from "react-router-dom";
 
 class ProjectList extends Component {
   render() {
-    const projectCards = this.props.projects.map((project) => (
-      <ListGroup.Item key={project._id}>
-        <Card.Text style={{ textAlign: "right", fontSize: 13 }}>
-          {project.created}
-        </Card.Text>
-        <Card.Title>{project.title}</Card.Title>
-        <Card.Text>{project.about}</Card.Text>
-        <Link to={`/projects/privacy/${project._id}`}>
-          <Button>Change Privacy Settings</Button>
-        </Link>
-      </ListGroup.Item>
-    ));
+    const projectCards = this.props.projects.map((project) => {
+      console.log(project);
+      return (
+        <ListGroup.Item key={project._id}>
+          <Card.Text style={{ textAlign: "right", fontSize: 13 }}>
+            {project.created}
+          </Card.Text>
+          <Link to={`/projects/${project._id}`}>
+            <Card.Title>{project.title}</Card.Title>
+          </Link>
+          <Card.Text>{project.about}</Card.Text>
+          <Link to={`/projects/privacy/${project._id}`}>
+            <Button>Change Privacy Settings</Button>
+          </Link>
+        </ListGroup.Item>
+      );
+    });
 
     // if projects exist
     if (this.props.projectExists) {
