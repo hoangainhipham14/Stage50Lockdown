@@ -34,9 +34,9 @@ class ProjectList extends Component {
       return (
         <Col className="col-sm d-flex">
           <Container>
-            <Card style={{ width: "45rem" }}>
+            <Card style={{ width: "45rem", height: maxHeight }}>
               <Card.Header>Projects</Card.Header>
-              <Container style={{ overflowY: "scroll", height: maxHeight }}>
+              <Container style={{ overflowY: "scroll", height: 301 }}>
                 <ListGroup className="list-group-flush">
                   {projectCards}
                 </ListGroup>
