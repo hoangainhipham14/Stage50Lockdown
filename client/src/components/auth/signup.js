@@ -60,6 +60,9 @@ class Signup extends Component {
       email: this.state.email,
       password1: this.state.password1,
       password2: this.state.password2,
+      fbUserID: this.state.fbUserID,
+      image: this.state.fbPicture,
+      fbAccessToken: this.state.fbAccessToken,
     };
 
     // this.props.registerUser(newUser, this.props.history);
