@@ -30,8 +30,6 @@ class Profile extends Component {
 
   componentDidMount = () => {
     getUsernameId(this.state.userId).then((data) => {
-      console.log(data);
-      console.log(this.state.profileUserName);
       if (data === this.state.profileUserName)
         this.setState({
           isAuth: true,
@@ -95,39 +93,43 @@ class Profile extends Component {
         <Container fluid>
           <Row>
             <Col className="col-sm d-flex ml-4">
-              <Card style={{ width: "20rem" }}>
-                {this.state.photoExist ? (
-                  <Card.Img
-                    src={`/api/user/${this.state.profileUserName}/photo`}
-                    thumbnail
-                    fluid
-                  />
-                ) : (
-                  <Card.Img src="../../default_photo.png" fluid thumbnail />
-                )}
+              <div>
+                <Card style={{ width: "20rem" }}>
+                  {this.state.photoExist ? (
+                    <Card.Img
+                      src={`/api/user/${this.state.profileUserName}/photo`}
+                    />
+                  ) : (
+                    <Card.Img src="../../default_photo.png" />
+                  )}
 
-                <Card.Body>
-                  <Card.Title>
-                    {this.state.firstName} {this.state.lastName}
-                  </Card.Title>
-                  <Card.Subtitle>Email</Card.Subtitle>
-                  <Card.Text>{this.state.email}</Card.Text>
-                  <Card.Subtitle>Phone</Card.Subtitle>
-                  <Card.Text>
-                    {this.state.phoneNumberExists
-                      ? this.state.phoneNumber
-                      : " None"}
-                  </Card.Text>
-                </Card.Body>
-              </Card>
+                  <Card.Body>
+                    <Card.Title>
+                      {this.state.firstName} {this.state.lastName}
+                    </Card.Title>
+                    <Card.Subtitle>Email</Card.Subtitle>
+                    <Card.Text>{this.state.email}</Card.Text>
+                    <Card.Subtitle>Phone</Card.Subtitle>
+                    <Card.Text>
+                      {this.state.phoneNumberExists
+                        ? this.state.phoneNumber
+                        : " None"}
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
+              </div>
             </Col>
             <Col className="col-sm d-flex">
-              <Card style={{ width: "20rem" }}>
-                <Card.Header>About</Card.Header>
-                <Card.Body>
-                  {this.state.aboutUserExists ? this.state.aboutUser : " None"}
-                </Card.Body>
-              </Card>
+              <div>
+                <Card style={{ width: "20rem" }}>
+                  <Card.Header>About</Card.Header>
+                  <Card.Body style={{ overflowY: "scroll", maxHeight: 286 }}>
+                    {this.state.aboutUserExists
+                      ? this.state.aboutUser
+                      : " None"}
+                  </Card.Body>
+                </Card>
+              </div>
             </Col>
             <ProjectList
               projects={this.state.projects}

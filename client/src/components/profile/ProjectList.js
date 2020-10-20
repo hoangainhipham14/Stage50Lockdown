@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { ListGroup, Button, Card, Col, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import CreateProfile from "./CreateProfile";
+// import CreateProfile from "./CreateProfile";
 
 class ProjectList extends Component {
   render() {
@@ -39,6 +39,11 @@ class ProjectList extends Component {
                   Edit Profile
                 </Button>
               )}
+              {this.props.isAuth && (
+                <Button href={`/user/${this.props.username}/account`}>
+                  Edit Account Details
+                </Button>
+              )}
             </Container>
           </Col>
         );
@@ -49,7 +54,7 @@ class ProjectList extends Component {
             <Container>
               <Card style={{ width: "45rem" }}>
                 <Card.Header>Projects</Card.Header>
-                <Container style={{ overflowY: "scroll", maxHeight: 300 }}>
+                <Container style={{ overflowY: "scroll", maxHeight: 240 }}>
                   <ListGroup className="list-group-flush">
                     {projectCards}
                   </ListGroup>
@@ -58,6 +63,11 @@ class ProjectList extends Component {
               {this.props.isAuth && (
                 <Button href={`/createProfile/${this.props.username}`}>
                   Edit Profile
+                </Button>
+              )}
+              {this.props.isAuth && (
+                <Button href={`/user/${this.props.username}/account`}>
+                  Edit Account Details
                 </Button>
               )}
             </Container>
@@ -78,6 +88,11 @@ class ProjectList extends Component {
             {this.props.isAuth && (
               <Button href={`/createProfile/${this.props.username}`}>
                 Edit Profile
+              </Button>
+            )}
+            {this.props.isAuth && (
+              <Button href={`/user/${this.props.username}/account`}>
+                Edit Account Details
               </Button>
             )}
           </Container>

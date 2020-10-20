@@ -68,7 +68,7 @@ exports.updateUser = (req, res, next) => {
   form.keepExtensions = true;
 
   form.parse(req, (err, fields, files) => {
-    if (files) {
+    if (files.length > 0) {
       let imageObject = {
         image: {
           data: fs.readFileSync(files.userPhoto.path),
