@@ -56,9 +56,13 @@ class CreateProfile extends Component {
       fileName: e.target.files[0].name,
       photoExist: true,
     });
-    // console.log(this.state.photoExist);
   };
 
+  onDiscard = (e) => {
+    this.setState({
+      photoExist: false,
+    });
+  };
   onSubmit = (e) => {
     // prevent page from reloading
     e.preventDefault();
@@ -86,6 +90,7 @@ class CreateProfile extends Component {
         console.log("Failure!");
         console.log(err);
       });
+
     window.location.reload();
   };
 
@@ -124,9 +129,19 @@ class CreateProfile extends Component {
                     onChange={this.onChangePhoto}
                     custom
                   />
+
                   <Container className="d-flex justify-content-center mt-3">
-                    <Button variant="success" type="submit">
+                    <Button variant="success" type="submit" value="Update">
                       Update
+                    </Button>
+
+                    <Button
+                      variant="success"
+                      type="submit"
+                      value="Delete"
+                      onClick={this.onDiscard}
+                    >
+                      Delete
                     </Button>
                   </Container>
                 </Form>

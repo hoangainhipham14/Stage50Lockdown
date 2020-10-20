@@ -25,6 +25,7 @@ exports.userByUsername = (req, res, next, username) => {
     }
     req.profile = user; //add
     req.username = username;
+
     next();
   });
 };
@@ -68,7 +69,7 @@ exports.updateUser = (req, res, next) => {
   form.keepExtensions = true;
 
   form.parse(req, (err, fields, files) => {
-    if (files.length > 0) {
+    if (files.userPhoto) {
       let imageObject = {
         image: {
           data: fs.readFileSync(files.userPhoto.path),

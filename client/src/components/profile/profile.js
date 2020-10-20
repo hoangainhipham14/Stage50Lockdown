@@ -69,7 +69,7 @@ class Profile extends Component {
       });
 
     axios
-      .post(`/api/project/list`, { userID: this.state.userId })
+      .post(`/api/project/list`, { username: this.state.profileUserName })
       .then((response) => {
         if (response.error) {
           console.log("failure");
@@ -94,7 +94,7 @@ class Profile extends Component {
           <Row>
             <Col className="col-sm d-flex ml-4">
               <div>
-                <Card style={{ width: "20rem" }}>
+                <Card style={{ width: "20rem", height: 350 }}>
                   {this.state.photoExist ? (
                     <Card.Img
                       src={`/api/user/${this.state.profileUserName}/photo`}
@@ -123,7 +123,7 @@ class Profile extends Component {
               <div>
                 <Card style={{ width: "20rem" }}>
                   <Card.Header>About</Card.Header>
-                  <Card.Body style={{ overflowY: "scroll", maxHeight: 286 }}>
+                  <Card.Body style={{ overflowY: "scroll", height: 299 }}>
                     {this.state.aboutUserExists
                       ? this.state.aboutUser
                       : " None"}

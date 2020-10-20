@@ -45,6 +45,7 @@ class CreateProject extends Component {
 
     // get user id for post request and to save as a reference for the project
     const _id = this.props.auth.user._id;
+    const username = this.props.match.params.username;
 
     // create the formdata object
     // we need to do this because JSON isn't sufficient for image sending
@@ -54,6 +55,7 @@ class CreateProject extends Component {
     formData.set("body", this.state.body);
     formData.set("image", this.state.image);
     formData.set("_userId", _id);
+    formData.set("username", username);
 
     // configururation for post request since we aren't just posting json
     const config = {
