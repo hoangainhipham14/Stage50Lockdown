@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import FacebookLogin from "react-facebook-login";
 import {
   Card,
@@ -32,6 +32,8 @@ class LandingPage extends Component {
   }
 }
 
+// Home page sign up form
+// Will redirect to signup page with filled out form
 class DummySignUpForm extends Component {
   constructor(props) {
     super(props);
@@ -42,10 +44,8 @@ class DummySignUpForm extends Component {
       firstName: "",
       lastName: "",
       // Facebook state
-      fbisLoggedIn: false,
+      fbIsLoggedIn: false,
       fbUserID: "",
-      fbName: "",
-      fbEmail: "",
       fbPicture: "",
       fbAccessToken: "",
     };
@@ -65,6 +65,7 @@ class DummySignUpForm extends Component {
     console.log("failure");
   };
 
+  // Response from facebook recorded
   responseFacebook = (response) => {
     console.log(response);
     this.setState({
@@ -76,9 +77,11 @@ class DummySignUpForm extends Component {
       firstName: response.first_name,
       lastName: response.last_name,
     });
+    // this.props.history.push("/fbsignup");
   };
 
   render() {
+    // Renders facebook button
     let fbContent;
 
     if (this.state.fbIsLoggedIn) {
@@ -86,6 +89,7 @@ class DummySignUpForm extends Component {
     } else {
       fbContent = (
         <FacebookLogin
+          // appId of ePortfolio
           appId="820137652056192"
           autoLoad={false}
           fields="name,first_name, last_name,email,picture"
@@ -134,7 +138,6 @@ class DummySignUpForm extends Component {
                 onChange={this.onChange}
               />
             </Form.Group>
-            {fbContent}
             <Link
               to={{
                 pathname: "/signup",
@@ -152,6 +155,7 @@ class DummySignUpForm extends Component {
             >
               <Button variant="primary">Sign Up</Button>
             </Link>
+            {fbContent}
           </Form>
         </Card.Body>
       </Card>
@@ -243,4 +247,4 @@ class BottomText extends Component {
   }
 }
 
-export default LandingPage;
+export default withRouter(LandingPage);

@@ -26,6 +26,7 @@ import PrivacyToggleButton from "./components/dashboard/PrivacyToggleButton";
 import UserSearchResults from "./components/search/UserSearchResults";
 import NoMatch from "./components/404/404";
 import Facebook from "./components/facebook/Facebook";
+import FacebookSignup from "./components/auth/fbsignup";
 
 // check for token to keep user logged in
 if (localStorage.token) {
@@ -48,8 +49,7 @@ if (localStorage.token) {
       // redirect to login
       window.location.href = "./";
     }
-  }
-  catch (err) {
+  } catch (err) {
     console.log("Invalid token");
     setAuthToken(false);
     localStorage.removeItem("token");
@@ -67,6 +67,7 @@ class App extends Component {
               <Route exact path="/" component={LandingPage} />
               <Route exact path="/signin" component={Signin} />
               <Route exact path="/signup" component={Signup} />
+              <Route exact path="/fbsignup" component={FacebookSignup} />
               <Route exact path="/facebook" component={Facebook} />
               <Route exact path="/profile/:username" component={Profile} />
               <Route exact path="/createProject" component={CreateProject} />
@@ -75,10 +76,10 @@ class App extends Component {
                 path="/projects/:projectId"
                 component={SingleProject}
               />
-              <Route 
-              exact
-              path="/projects/link/:link"
-              component={SingleProject}
+              <Route
+                exact
+                path="/projects/link/:link"
+                component={SingleProject}
               />
               <Route
                 exact
@@ -96,7 +97,7 @@ class App extends Component {
                 path="/projects/privacy/:projectId"
                 component={PrivacyToggleButton}
               />
-              
+
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
               <Route exact path="/search" component={UserSearchResults} />
 
