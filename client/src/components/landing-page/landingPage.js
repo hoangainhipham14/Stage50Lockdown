@@ -77,7 +77,6 @@ class DummySignUpForm extends Component {
       firstName: response.first_name,
       lastName: response.last_name,
     });
-    // this.props.history.push("/fbsignup");
   };
 
   render() {
@@ -112,6 +111,7 @@ class DummySignUpForm extends Component {
                 type="email"
                 placeholder="Enter email"
                 onChange={this.onChange}
+                defaultValue={this.state.email}
               />
             </Form.Group>
             <Form.Group controlId="username">
@@ -120,6 +120,7 @@ class DummySignUpForm extends Component {
                 type="tex"
                 placeholder="Username"
                 onChange={this.onChange}
+                defaultValue={this.state.username}
               />
             </Form.Group>
             <Form.Group controlId="firstName">
@@ -128,6 +129,7 @@ class DummySignUpForm extends Component {
                 type="text"
                 placeholder="First name"
                 onChange={this.onChange}
+                defaultValue={this.state.firstName}
               />
             </Form.Group>
             <Form.Group controlId="lastName">
@@ -136,6 +138,7 @@ class DummySignUpForm extends Component {
                 type="text"
                 placeholder="Last name"
                 onChange={this.onChange}
+                defaultValue={this.state.lastName}
               />
             </Form.Group>
             <Link

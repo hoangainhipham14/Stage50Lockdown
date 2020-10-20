@@ -26,7 +26,6 @@ import PrivacyToggleButton from "./components/dashboard/PrivacyToggleButton";
 import UserSearchResults from "./components/search/UserSearchResults";
 import NoMatch from "./components/404/404";
 import Facebook from "./components/facebook/Facebook";
-import FacebookSignup from "./components/auth/fbsignup";
 
 // check for token to keep user logged in
 if (localStorage.token) {
@@ -67,7 +66,6 @@ class App extends Component {
               <Route exact path="/" component={LandingPage} />
               <Route exact path="/signin" component={Signin} />
               <Route exact path="/signup" component={Signup} />
-              <Route exact path="/fbsignup" component={FacebookSignup} />
               <Route exact path="/facebook" component={Facebook} />
               <Route exact path="/profile/:username" component={Profile} />
               <Route exact path="/createProject" component={CreateProject} />
