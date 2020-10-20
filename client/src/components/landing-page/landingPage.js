@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import FacebookLogin from "react-facebook-login";
 import {
   Card,
   Form,
@@ -40,6 +41,13 @@ class DummySignUpForm extends Component {
       username: "",
       firstName: "",
       lastName: "",
+      // Facebook state
+      fbisLoggedIn: false,
+      fbUserID: "",
+      fbName: "",
+      fbEmail: "",
+      fbPicture: "",
+      fbAccessToken: "",
     };
   }
 
@@ -49,7 +57,46 @@ class DummySignUpForm extends Component {
     });
   };
 
+  componentClicked = () => {
+    console.log("clicked");
+  };
+
+  handleFailure = () => {
+    console.log("failure");
+  };
+
+  responseFacebook = (response) => {
+    console.log(response);
+    this.setState({
+      fbIsLoggedIn: true,
+      fbUserID: response.userID,
+      fbPicture: response.picture.data.url,
+      fbAccessToken: response.accessToken,
+      email: response.email,
+      firstName: response.first_name,
+      lastName: response.last_name,
+    });
+  };
+
   render() {
+    let fbContent;
+
+    if (this.state.fbIsLoggedIn) {
+      fbContent = console.log("Logged in");
+    } else {
+      fbContent = (
+        <FacebookLogin
+          appId="820137652056192"
+          autoLoad={false}
+          fields="name,first_name, last_name,email,picture"
+          scope="public_profile, email"
+          onClick={this.componentClicked}
+          callback={this.responseFacebook}
+          onFailure={this.handleFailure}
+        />
+      );
+    }
+
     return (
       <Card>
         <Card.Body>
@@ -87,6 +134,7 @@ class DummySignUpForm extends Component {
                 onChange={this.onChange}
               />
             </Form.Group>
+            {fbContent}
             <Link
               to={{
                 pathname: "/signup",
@@ -95,6 +143,10 @@ class DummySignUpForm extends Component {
                   username: this.state.username,
                   firstName: this.state.firstName,
                   lastName: this.state.lastName,
+                  fbIsLoggedIn: this.state.fbIsLoggedIn,
+                  fbUserID: this.state.fbUserID,
+                  fbPicture: this.state.fbPicture,
+                  fbAccessToken: this.state.fbAccessToken,
                 },
               }}
             >

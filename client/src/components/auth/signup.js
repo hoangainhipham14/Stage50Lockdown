@@ -26,6 +26,10 @@ class Signup extends Component {
         username: this.props.location.state.username,
         firstName: this.props.location.state.firstName,
         lastName: this.props.location.state.lastName,
+        fbIsLoggedIn: this.props.location.state.fbIsLoggedIn,
+        fbUserID: this.props.location.state.fbUserID,
+        fbPicture: this.props.location.state.fbPicture,
+        fbAccessToken: this.props.location.state.fbAccessToken,
       });
     } catch (err) {
       console.log("no state passed in");

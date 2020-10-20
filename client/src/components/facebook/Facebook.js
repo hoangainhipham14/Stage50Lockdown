@@ -3,35 +3,59 @@ import FacebookLogin from "react-facebook-login";
 import { Container } from "react-bootstrap";
 
 export class Facebook extends Component {
-  state = {
-    isLoggedIn: false,
-    userID: "",
-    name: "",
-    email: "",
-    picture: "",
-    accessToken: "",
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      fbIsLoggedIn: false,
+      fbUserID: "",
+      fbName: "",
+      fbEmail: "",
+      fbPicture: "",
+      fbAccessToken: "",
+    };
+  }
+
+  componentDidMount() {
+    // Get props from landing page and map to state
+    try {
+      this.setState({
+        fbIsLoggedIn: this.props.location.state.fbIsLoggedIn,
+        fbUserID: this.props.location.state.fbUserID,
+        fbName: this.props.location.state.fbName,
+        fbEmail: this.props.location.state.fbEmail,
+        fbPicture: this.props.location.state.fbPicture,
+        fbAccessToken: this.props.location.state.fbAccessToken,
+      });
+    } catch (err) {
+      console.log("no state passed in");
+    }
+  }
+
+  componentClicked = () => {
+    console.log("clicked");
   };
 
-  componentClicked = (data) => {
-    console.log("clicked\n", data);
+  handleFailure = () => {
+    console.log("failure");
   };
 
   responseFacebook = (response) => {
     console.log(response);
     this.setState({
-      isLoggedIn: true,
-      userID: response.userID,
-      name: response.name,
-      email: response.email,
-      picture: response.picture.data.url,
-      accessToken: response.accessToken,
+      fbIsLoggedIn: true,
+      fbUserID: response.userID,
+      fbName: response.name,
+      fbEmail: response.email,
+      fbPicture: response.picture.data.url,
+      fbAccessToken: response.accessToken,
     });
   };
 
   render() {
     let fbContent;
 
-    if (this.state.isLoggedIn) {
+    if (this.state.fbIsLoggedIn) {
       fbContent = (
         <div
           style={{
@@ -41,13 +65,13 @@ export class Facebook extends Component {
             padding: "20px",
           }}
         >
-          <img src={this.state.picture} alt={this.state.name} />
-          <h2>Welcome {this.state.name}</h2>
-          Email: {this.state.email}
+          <img src={this.state.fbPicture} alt={this.state.fbName} />
+          <h2>Welcome {this.state.fbName}</h2>
+          Email: {this.state.fbEmail}
           <br />
-          User Short-Lived Access Token: {this.state.accessToken}
+          User Short-Lived Access Token: {this.state.fbAccessToken}
           <br />
-          UserID: {this.state.userID}
+          UserID: {this.state.fbUserID}
           <br />
         </div>
       );
@@ -55,11 +79,12 @@ export class Facebook extends Component {
       fbContent = (
         <FacebookLogin
           appId="820137652056192"
-          autoLoad={true}
-          fields="name,email,picture"
-          scope="public_profile"
+          autoLoad={false}
+          fields="name,first_name, last_name,email,picture"
+          scope="public_profile, email"
           onClick={this.componentClicked}
           callback={this.responseFacebook}
+          onFailure={this.handleFailure}
         />
       );
     }
