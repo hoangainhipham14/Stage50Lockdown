@@ -15,6 +15,9 @@ class ProjectList extends Component {
         <Link to={`/projects/privacy/${project._id}`}>
           <Button>Change Privacy Settings</Button>
         </Link>
+        <Link to={`/projects/${project._id}`}>
+          <Button>More</Button>
+        </Link>
       </ListGroup.Item>
     ));
 
