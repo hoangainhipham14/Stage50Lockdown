@@ -19,9 +19,11 @@ class ProjectList extends Component {
         </Card.Text>
         <Card.Title>{project.title}</Card.Title>
         <Card.Text>{project.about}</Card.Text>
-        <Link to={`/projects/privacy/${project._id}`}>
-          <Button>Change Privacy Settings</Button>
-        </Link>
+        {this.props.isAuth && (
+          <Link to={`/projects/privacy/${project._id}`}>
+            <Button>Change Privacy Settings</Button>
+          </Link>
+        )}
         <Link to={`/projects/${project._id}`}>
           <Button>More</Button>
         </Link>
