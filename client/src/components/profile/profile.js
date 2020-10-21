@@ -95,14 +95,19 @@ class Profile extends Component {
             <Col className="col-sm d-flex ml-4">
               <div>
                 <Card style={{ width: "20rem", height: 350 }}>
-                  {this.state.photoExist ? (
-                    <Card.Img
-                      src={`/api/user/${this.state.profileUserName}/photo`}
-                    />
-                  ) : (
-                    <Card.Img src="../../default_photo.png" />
-                  )}
-
+                  <Container className="d-flex justify-content-center">
+                    {this.state.photoExist ? (
+                      <Card.Img
+                        src={`/api/user/${this.state.profileUserName}/photo`}
+                        style={{ width: 200, height: 200 }}
+                      />
+                    ) : (
+                      <Card.Img
+                        src="../../default_photo.png"
+                        style={{ width: 200, height: 200 }}
+                      />
+                    )}
+                  </Container>
                   <Card.Body>
                     <Card.Title>
                       {this.state.firstName} {this.state.lastName}

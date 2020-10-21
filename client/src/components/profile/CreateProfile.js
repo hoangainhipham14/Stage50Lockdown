@@ -121,6 +121,7 @@ class CreateProfile extends Component {
                   )}
                 </Container>
                 <Card.Subtitle className="mt-3">Upload New Image</Card.Subtitle>
+                <Card.Text>(Choose 200 x 200 or square picture)</Card.Text>
 
                 <Form onSubmit={this.onSubmit} className="mt-3">
                   <Form.File
