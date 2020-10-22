@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import setAuthToken from "./utils/setAuthToken";
+import SimpleReactLightbox from "simple-react-lightbox";
 
 import { setCurrentUser, logoutUser } from "./actions/authActions";
 import { Provider } from "react-redux";
@@ -47,8 +48,7 @@ if (localStorage.token) {
       // redirect to login
       window.location.href = "./";
     }
-  }
-  catch (err) {
+  } catch (err) {
     console.log("Invalid token");
     setAuthToken(false);
     localStorage.removeItem("token");
@@ -61,46 +61,53 @@ class App extends Component {
       <Provider store={store}>
         <Router>
           <div className="app">
-            <Navbar />
-            <Switch>
-              <Route exact path="/" component={LandingPage} />
-              <Route exact path="/signin" component={Signin} />
-              <Route exact path="/signup" component={Signup} />
-              <Route exact path="/profile/:username" component={Profile} />
-              <Route exact path="/createProject" component={CreateProject} />
-              <Route
-                exact
-                path="/projects/:projectId"
-                component={SingleProject}
-              />
-              <Route 
-              exact
-              path="/projects/link/:link"
-              component={SingleProject}
-              />
-              <Route
-                exact
-                path="/user/:username/account"
-                component={AccountDetails}
-              />
-              <Route path="/forgot-password" component={RequestPasswordReset} />
-              <Route
-                exact
-                path="/resetPassword/:token"
-                component={ResetPassword}
-              />
-              <Route
-                exact
-                path="/projects/privacy/:projectId"
-                component={PrivacyToggleButton}
-              />
-              
-              <PrivateRoute exact path="/dashboard" component={Dashboard} />
-              <Route exact path="/search" component={UserSearchResults} />
+            <SimpleReactLightbox>
+              {" "}
+              {/* Don't touch this wrapper, needed for gallery */}
+              <Navbar />
+              <Switch>
+                <Route exact path="/" component={LandingPage} />
+                <Route exact path="/signin" component={Signin} />
+                <Route exact path="/signup" component={Signup} />
+                <Route exact path="/profile/:username" component={Profile} />
+                <Route exact path="/createProject" component={CreateProject} />
+                <Route
+                  exact
+                  path="/projects/:projectId"
+                  component={SingleProject}
+                />
+                <Route
+                  exact
+                  path="/projects/link/:link"
+                  component={SingleProject}
+                />
+                <Route
+                  exact
+                  path="/user/:username/account"
+                  component={AccountDetails}
+                />
+                <Route
+                  path="/forgot-password"
+                  component={RequestPasswordReset}
+                />
+                <Route
+                  exact
+                  path="/resetPassword/:token"
+                  component={ResetPassword}
+                />
+                <Route
+                  exact
+                  path="/projects/privacy/:projectId"
+                  component={PrivacyToggleButton}
+                />
 
-              {/* This must stay at the bottom. Add any new routes above */}
-              <Route component={NoMatch} />
-            </Switch>
+                <PrivateRoute exact path="/dashboard" component={Dashboard} />
+                <Route exact path="/search" component={UserSearchResults} />
+
+                {/* This must stay at the bottom. Add any new routes above */}
+                <Route component={NoMatch} />
+              </Switch>
+            </SimpleReactLightbox>
           </div>
         </Router>
       </Provider>

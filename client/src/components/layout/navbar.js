@@ -20,7 +20,7 @@ function NavbarAccountLoggedOut() {
   return (
     <>
       <Nav className="mr-auto">
-        <LinkContainer to="/projects/5f8d46e2e467154d3c7c2eb2">
+        <LinkContainer to="/projects/5f9115b46e4c820db8a0d30d">
           <Nav.Link>Featured Project</Nav.Link>
         </LinkContainer>
       </Nav>
@@ -43,7 +43,7 @@ function NavbarAccountLoggedIn(props) {
       <Nav className="mr-auto">
         <Nav.Link href="/dashboard">Dashboard</Nav.Link>
         <Nav.Link href="/createProject">Create Project</Nav.Link>
-        <Nav.Link href="/projects/5f8d46e2e467154d3c7c2eb2">
+        <Nav.Link href="/projects/5f9115b46e4c820db8a0d30d">
           Example Project
         </Nav.Link>
       </Nav>

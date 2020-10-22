@@ -11,6 +11,7 @@ const {
   connectLinkToProject,
   singleFile,
   singleImage,
+  allImages,
 } = require("../controllers/project");
 
 const { userById } = require("../controllers/user");
@@ -22,6 +23,7 @@ router.post("/project/create/:userId", requireAuthentication, createProject);
 router.get("/project/:projectId/mainImage", image);
 router.get("/project/:projectId/file/:index", singleFile);
 router.get("/project/:projectId/image/:index", singleImage);
+router.get("/project/:projectId/images", allImages);
 
 router.get("/project/:projectId", singleProject);
 

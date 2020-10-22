@@ -28,3 +28,19 @@ hr {
 .form-container .alert {
   padding: 0.375rem 0.75rem;
 }
+
+.image-gallery-image {
+  height: 30rem !important;
+}
+
+.col-image {
+  /* padding: 0.2rem; */
+}
+
+.col-image:hover {
+  cursor: pointer;
+  opacity: 0.5;
+  transition-duration: 0.2s;
+}
+
+@import "~react-image-gallery/styles/css/image-gallery.css";

@@ -34,7 +34,6 @@ exports.createProject = (req, res, next) => {
 
     // add the main image to the project
     if (files.image) {
-      console.log("yes, files.image");
       project.image = {
         data: fs.readFileSync(files.image.path),
         contentType: files.image.type,
@@ -58,7 +57,6 @@ exports.createProject = (req, res, next) => {
 
     // add the additional files
     const numAdditionalFiles = parseInt(fields.numAdditionalFiles);
-    console.log("NUM ADDITIONAL FILES: ", numAdditionalFiles);
     const additionalFiles = [];
     for (var i = 0; i < numAdditionalFiles; i++) {
       const file = files[`file-${i}`];
@@ -114,22 +112,21 @@ exports.projectById = (req, res, next, id) => {
 
 // Image Response
 exports.image = (req, res, next) => {
+  console.log("mainImage");
+  console.log(req.project.image);
   res.set({
     // this line was causing an error
     // "Content-Disposition": "filename=" + req.project.image.fileName,
     // "Content-Disposition": `"filename="${req.project.image.fileName}"`,
     "Content-Type": req.project.image.contentType,
   });
-  console.log(req.project.image);
   return res.send(req.project.image.data);
 };
 
 // Send the ith additional file as an attachment
 exports.singleFile = (req, res, next) => {
   console.log("singleFile");
-  console.log(req.params.index);
   const file = req.project.additionalFiles[parseInt(req.params.index)];
-  console.log(file);
 
   res.set({
     "Content-Disposition": `attachment; filename="${file.fileName}"`,
@@ -140,15 +137,18 @@ exports.singleFile = (req, res, next) => {
 
 exports.singleImage = (req, res, next) => {
   console.log("singleImage");
-  console.log(req.params.index);
   const image = req.project.additionalImages[parseInt(req.params.index)];
-  console.log(image);
 
   res.set({
     "Content-Disposition": `filename="${image.fileName}"`,
     "Content-Type": image.contentType,
   });
   return res.send(image.data);
+};
+
+exports.allImages = (req, res, next) => {
+  console.log("allImages");
+  res.send(req.project.additionalImages);
 };
 
 // Responds with the project containing the data inside
@@ -162,7 +162,7 @@ exports.singleProject = (req, res) => {
   /*
   Changed this so were not sending data to the front end that is private
   */
-  console.log("project", req.project);
+  console.log("project");
   if (req.project.itemIsPublic) {
     const data = {
       title: req.project.title,
