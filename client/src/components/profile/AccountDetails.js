@@ -10,10 +10,10 @@ class AccountDetails extends Component {
     super(props);
 
     this.state = {
-      firstNamePrivate: false,
-      lastNamePrivate: false,
-      emailPrivate: false,
-      phoneNumberPrivate: false,
+      firstNamePrivate: "",
+      lastNamePrivate: "",
+      emailPrivate: "",
+      phoneNumberPrivate: "",
       user: "",
       username: this.props.match.params.username,
       firstName: "",
@@ -32,6 +32,7 @@ class AccountDetails extends Component {
         if (response.error) {
           console.log(response.error);
         } else {
+          console.log(response);
           this.setState({
             firstName: response.data.firstName,
             lastName: response.data.lastName,
@@ -81,6 +82,7 @@ class AccountDetails extends Component {
   }
 
   toggleLastNamePrivacy = (e) => {
+    console.log(this.state.lastNamePrivate);
     this.setState({
       lastNamePrivate: !(this.state.lastNamePrivate)
       });

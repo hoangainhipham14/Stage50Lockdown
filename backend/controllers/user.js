@@ -41,9 +41,49 @@ exports.userPhoto = (req, res, next) => {
   next();
 };
 
+// getAccountDetails is different as it requires authentication but 
+// allows users to access privacy settings
+exports.getUserAccountDetails = (req, res) => {
+
+  let data = {
+    _id: req.profile._id,
+    firstName: req.profile.firstName,
+    lastName: req.profile.lastName,
+    phoneNumber: req.profile.phoneNumber,
+    email: req.profile.email,
+    firstNamePrivate: req.profile.firstNamePrivate,
+    lastNamePrivate: req.profile.lastNamePrivate,
+    emailPrivate: req.profile.emailPrivate,
+    phoneNumberPrivate: req.profile.phoneNumberPrivate,
+  }
+  req.data = data;
+
+  return res.json(req.data);
+}
+
+
 // get user from database
 exports.getUser = (req, res) => {
+  
   //console.log(req.profile);
+  // Filter out things that shouldnt be sent
+
+  /*
+  if(req.profile.firstNamePrivate == true){
+    req.profile.firstName = "";
+  }
+  if(req.profile.lastNamePrivate == true){
+    req.profile.lastName = "";
+  }
+  if(req.profile.emailPrivate == true){
+    req.profile.email = "";
+  }
+  if(req.profile.phoneNumberPrivate == true){
+    req.profile.phoneNUmber = "";
+  }
+  */
+
+  console.log(req.profile);
   return res.json(req.profile);
 };
 
@@ -80,6 +120,8 @@ exports.updateUser = (req, res, next) => {
 
       fields = Object.assign(fields, imageObject);
     }
+
+    console.log("FIELDS: " + fields);
 
     User.findOneAndUpdate(
       { username: req.username },
