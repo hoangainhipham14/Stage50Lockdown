@@ -106,6 +106,7 @@ class CreateProfile extends Component {
     });
 
     this.updateUser(false, false, this.state.aboutUser, this.state.userPhoto);
+    window.location.reload();
   };
 
   render() {
