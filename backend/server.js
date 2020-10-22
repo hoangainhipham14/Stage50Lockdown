@@ -42,7 +42,7 @@ app.use("/api", searchRoutes);
 
 if (process.env.NODE_ENV === "production") {
   // Turn off mongoose debug mode
-  mongoose.set("debug", false);
+  mongoose.set("debug", true);
 
   app.use(express.static(path.join(__dirname, "../client/build")));
 

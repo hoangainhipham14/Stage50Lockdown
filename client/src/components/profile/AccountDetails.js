@@ -10,6 +10,10 @@ class AccountDetails extends Component {
     super(props);
 
     this.state = {
+      firstNamePrivate: false,
+      lastNamePrivate: false,
+      emailPrivate: false,
+      phoneNumberPrivate: false,
       user: "",
       username: this.props.match.params.username,
       firstName: "",
@@ -33,6 +37,10 @@ class AccountDetails extends Component {
             lastName: response.data.lastName,
             email: response.data.email,
             phoneNumber: response.data.phoneNumber,
+            firstNamePrivate: response.data.firstNamePrivate,
+            lastNamePrivate: response.data.lastNamePrivate,
+            emailPrivate: response.data.emailPrivate,
+            phoneNumberPrivate: response.data.phoneNumberPrivate,
             userExists: true,
           });
         }
@@ -60,6 +68,30 @@ class AccountDetails extends Component {
     });
   };
 
+  toggleEmailPrivacy = (e) => {
+    this.setState({
+      emailPrivate: !(this.state.emailPrivate)
+      });
+  }
+
+  toggleFirstNamePrivacy = (e) => {
+    this.setState({
+      firstNamePrivate: !(this.state.firstNamePrivate)
+      });
+  }
+
+  toggleLastNamePrivacy = (e) => {
+    this.setState({
+      lastNamePrivate: !(this.state.lastNamePrivate)
+      });
+  }
+
+  togglePhoneNumberPrivacy = (e) => {
+    this.setState({
+      phoneNumberPrivate: !(this.state.phoneNumberPrivate)
+      });
+  }
+
   // Submit event, update user information
   onSubmit = (e) => {
     // prevent page from reloading
@@ -72,6 +104,12 @@ class AccountDetails extends Component {
     formData.set("lastName", this.state.lastName);
     formData.set("email", this.state.email);
     formData.set("phoneNumber", this.state.phoneNumber);
+    
+    // Same but a boolean for all the items for privacy
+    formData.set("firstNamePrivate", this.state.firstNamePrivate);
+    formData.set("lastNamePrivate", this.state.lastNamePrivate);
+    formData.set("emailPrivate", this.state.emailPrivate);
+    formData.set("phoneNumberPrivate", this.state.phoneNumberPrivate);
     // formData.set("username", this.state.username);
 
     // configururation for post request since we aren't just posting json
@@ -120,6 +158,7 @@ class AccountDetails extends Component {
                   type="switch"
                   id="first name switch"
                   label="Private"
+                  onClick={this.toggleFirstNamePrivacy}
                 />
               </Form.Group>
 
@@ -134,6 +173,7 @@ class AccountDetails extends Component {
                   type="switch"
                   id="last name switch"
                   label="Private"
+                  onClick={this.toggleLastNamePrivacy}
                 />
               </Form.Group>
 
@@ -148,6 +188,7 @@ class AccountDetails extends Component {
                   type="switch"
                   id="phone number switch"
                   label="Private"
+                  onClick={this.togglePhoneNumberPrivacy}
                 />
               </Form.Group>
 
@@ -172,7 +213,11 @@ class AccountDetails extends Component {
                   placeholder={this.state.email}
                   onChange={this.onChange}
                 />
-                <Form.Check type="switch" id="email switch" label="Private" />
+                <Form.Check
+                 type="switch"
+                  id="email switch" 
+                  label="Private" 
+                  onClick={this.toggleEmailPrivacy}/>
               </Form.Group>
 
               <div className="text-center">

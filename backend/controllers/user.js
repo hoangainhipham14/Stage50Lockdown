@@ -43,7 +43,7 @@ exports.userPhoto = (req, res, next) => {
 
 // get user from database
 exports.getUser = (req, res) => {
-  // console.log(req.profile);
+  //console.log(req.profile);
   return res.json(req.profile);
 };
 
