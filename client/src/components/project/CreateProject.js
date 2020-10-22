@@ -14,6 +14,7 @@ import { HCenter } from "../layout";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
+import { singleProject } from "./APIProject";
 
 const acceptedImageTypes = ["jpg", "png", "jpeg"];
 
@@ -49,6 +50,59 @@ function checkSize(file, maxSize = 10 * 1024 * 1024) {
 function typesToAcceptAttribute(types) {
   return types.map((t) => "." + t).join(",");
 }
+
+const discardPopover = (
+  <Popover id="popover-basic">
+    <Popover.Title as="h3">Are you sure?</Popover.Title>
+    <Popover.Content>
+      <Button
+        variant="danger"
+        onClick={() => alert("go back needs to be implemented")}
+      >
+        Discard project
+      </Button>
+    </Popover.Content>
+  </Popover>
+);
+
+const formattingPopover = (
+  <Popover style={{ maxWidth: "none" }}>
+    <Popover.Title as="h3">Formatting help</Popover.Title>
+    <Popover.Content className="py-0 px-1">
+      <Table size="sm">
+        <thead>
+          <tr>
+            <th>You type:</th>
+            <th>You see:</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>*italics*</td>
+            <td>
+              <i>italics</i>
+            </td>
+          </tr>
+          <tr>
+            <td>**bold**</td>
+            <td>
+              <strong>bold</strong>
+            </td>
+          </tr>
+          <tr>
+            <td>[Google](https://google.com)</td>
+            <td>
+              <a href="https://google.com">Google</a>
+            </td>
+          </tr>
+        </tbody>
+      </Table>
+    </Popover.Content>
+  </Popover>
+);
+
+const deleteItem = <>&times;</>;
+const restoreItem = <span style={{ fontSize: "80%" }}>&#8635;</span>;
 
 class CreateProject extends Component {
   constructor(props) {
@@ -198,53 +252,6 @@ class CreateProject extends Component {
     if (this.state.submitSuccess) {
       return <Redirect to={`/projects/${this.state.projectId}`} />;
     }
-
-    const discardPopover = (
-      <Popover id="popover-basic">
-        <Popover.Title as="h3">Are you sure?</Popover.Title>
-        <Popover.Content>
-          <Button variant="danger" onClick={this.goBack}>
-            Discard project
-          </Button>
-        </Popover.Content>
-      </Popover>
-    );
-
-    const formattingPopover = (
-      <Popover style={{ maxWidth: "none" }}>
-        <Popover.Title as="h3">Formatting help</Popover.Title>
-        <Popover.Content className="py-0 px-1">
-          <Table size="sm">
-            <thead>
-              <tr>
-                <th>You type:</th>
-                <th>You see:</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>*italics*</td>
-                <td>
-                  <i>italics</i>
-                </td>
-              </tr>
-              <tr>
-                <td>**bold**</td>
-                <td>
-                  <strong>bold</strong>
-                </td>
-              </tr>
-              <tr>
-                <td>[Google](https://google.com)</td>
-                <td>
-                  <a href="https://google.com">Google</a>
-                </td>
-              </tr>
-            </tbody>
-          </Table>
-        </Popover.Content>
-      </Popover>
-    );
 
     const additionalImages = [];
     this.state.additionalImages.forEach((file, i) => {
@@ -411,6 +418,379 @@ class CreateProject extends Component {
                     overlay={discardPopover}
                   >
                     <Button variant="secondary">Discard Project</Button>
+                  </OverlayTrigger>
+                </div>
+              </HCenter>
+            </Row>
+          </Form>
+        </div>
+      </Container>
+    );
+  }
+}
+
+export class EditProject extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      title: "",
+      about: "",
+      body: "",
+      newAdditionalImages: [],
+      newAdditionalFiles: [],
+      oldAdditionalImagesNames: [],
+      oldAdditionalFilesNames: [],
+      imagesToDelete: new Set(),
+      filesToDelete: new Set(),
+    };
+  }
+
+  onChange = (e) => {
+    // the name of field changed
+    const name = e.target.id;
+    switch (name) {
+      case "additionalImages": {
+        const filesSelected = Array.from(e.target.files);
+        const isAcceptable = (file) =>
+          checkType(file, acceptedImageTypes) && checkSize(file);
+        const filesSelectedValid = filesSelected.filter(isAcceptable);
+        const alreadyAdded = (file) =>
+          this.state.newAdditionalImages.filter((f) => appearEqual(f, file))
+            .length > 0;
+        const filesToAdd = [];
+        filesSelectedValid.forEach((file) => {
+          if (!alreadyAdded(file)) {
+            filesToAdd.push(file);
+          }
+        });
+        this.setState({
+          newAdditionalImages: this.state.newAdditionalImages.concat(
+            filesToAdd
+          ),
+        });
+        break;
+      }
+      case "additionalFiles": {
+        const filesSelected = Array.from(e.target.files);
+        const isAcceptable = (file) => checkSize(file);
+        const filesSelectedValid = filesSelected.filter(isAcceptable);
+        const alreadyAdded = (file) =>
+          this.state.newAdditionalFiles.filter((f) => appearEqual(f, file))
+            .length > 0;
+        const filesToAdd = [];
+        filesSelectedValid.forEach((file) => {
+          if (!alreadyAdded(file)) {
+            filesToAdd.push(file);
+          }
+        });
+        this.setState({
+          newAdditionalFiles: this.state.newAdditionalFiles.concat(filesToAdd),
+        });
+        break;
+      }
+      default: {
+        // by default, the value is just the field value
+        this.setState({
+          [name]: e.target.value,
+        });
+      }
+    }
+  };
+
+  componentDidMount() {
+    const projectId = this.props.match.params.projectId;
+    console.log(projectId);
+    singleProject(projectId).then((data) => {
+      console.log(data);
+      this.setState({
+        title: data.title,
+        about: data.about,
+        body: data.body,
+
+        mainImageName: data.mainImageName,
+
+        oldAdditionalImagesNames: data.additionalImagesNames,
+
+        oldAdditionalFilesNames: data.additionalFilesNames,
+      });
+    });
+  }
+
+  toggleImageToDelete = (i) => () => {
+    const imagesToDeleteUpdated = this.state.imagesToDelete;
+    this.state.imagesToDelete.has(i)
+      ? imagesToDeleteUpdated.delete(i)
+      : imagesToDeleteUpdated.add(i);
+    this.setState({
+      imagesToDelete: imagesToDeleteUpdated,
+    });
+  };
+
+  toggleFileToDelete = (i) => () => {
+    const filesToDeleteUpdated = this.state.filesToDelete;
+    this.state.filesToDelete.has(i)
+      ? filesToDeleteUpdated.delete(i)
+      : filesToDeleteUpdated.add(i);
+    this.setState({
+      filesToDelete: filesToDeleteUpdated,
+    });
+  };
+
+  deleteNewAdditionalImage = (i) => () => {
+    this.state.additionalImages.splice(i, 1);
+    this.forceUpdate();
+  };
+
+  deleteNewAdditionalFile = (i) => () => {
+    this.state.additionalFiles.splice(i, 1);
+    this.forceUpdate();
+  };
+
+  render() {
+    // collect the old additional images into an array of x-able items
+    const oldAdditionalImages = [];
+    this.state.oldAdditionalImagesNames.forEach((imageName, i) => {
+      const toDelete = this.state.imagesToDelete.has(i);
+      oldAdditionalImages.push(
+        <div key={i}>
+          <button
+            type="button"
+            className="close"
+            onClick={this.toggleImageToDelete(i)}
+          >
+            <span aria-hidden="true">
+              {toDelete ? restoreItem : deleteItem}
+            </span>
+          </button>
+          <span style={toDelete ? { textDecoration: "line-through" } : {}}>
+            {imageName}
+          </span>
+        </div>
+      );
+    });
+
+    // collect the old additional files into an array of x-able items
+    const oldAdditionalFiles = [];
+    this.state.oldAdditionalFilesNames.forEach((fileName, i) => {
+      const toDelete = this.state.filesToDelete.has(i);
+      oldAdditionalFiles.push(
+        <div key={i}>
+          <button
+            type="button"
+            className="close"
+            onClick={this.toggleFileToDelete(i)}
+          >
+            <span aria-hidden="true">
+              {toDelete ? restoreItem : deleteItem}
+            </span>
+          </button>
+          <span style={toDelete ? { textDecoration: "line-through" } : {}}>
+            {fileName}
+          </span>
+        </div>
+      );
+    });
+
+    // collect the new additional images into an array of x-able items
+    const newAdditionalImages = [];
+    this.state.newAdditionalImages.forEach((image, i) => {
+      newAdditionalImages.push(
+        <div key={i}>
+          <button
+            type="button"
+            className="close"
+            onClick={this.deleteNewAdditionalImage(i)}
+          >
+            <span aria-hidden="true">{deleteItem}</span>
+          </button>
+          <span>{image.name}</span>
+        </div>
+      );
+    });
+
+    // collect the new additional images into an array of x-able items
+    const newAdditionalFiles = [];
+    this.state.newAdditionalFiles.forEach((file, i) => {
+      newAdditionalFiles.push(
+        <div key={i}>
+          <button
+            type="button"
+            className="close"
+            onClick={this.deleteNewAdditionalFile(i)}
+          >
+            <span aria-hidden="true">{deleteItem}</span>
+          </button>
+          <span>{file.name}</span>
+        </div>
+      );
+    });
+
+    // collect the new additional files into an array of x-able items
+
+    return (
+      <Container className="project-form">
+        <div style={{ margin: "0 auto" }}>
+          <HCenter>
+            <h2>Edit Project</h2>
+          </HCenter>
+
+          <Form onSubmit={this.onSubmit} style={{ marginTop: "1rem" }}>
+            <Row>
+              <Col md={6}>
+                <Form.Group controlId="title">
+                  <Form.Label>Title</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Give your project a title"
+                    onChange={this.onChange}
+                    value={this.state.title}
+                    required
+                  />
+                </Form.Group>
+
+                <Form.Group controlId="about">
+                  <Form.Label>About</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    rows="3"
+                    placeholder="A short description of the project"
+                    onChange={this.onChange}
+                    value={this.state.about}
+                  />
+                </Form.Group>
+
+                <Form.Group controlId="body">
+                  <Form.Label>Body Text</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    rows="7"
+                    placeholder="More information about your project"
+                    onChange={this.onChange}
+                    value={this.state.body}
+                  />
+                  <OverlayTrigger
+                    trigger="click"
+                    rootClose
+                    placement="bottom"
+                    overlay={formattingPopover}
+                  >
+                    <span
+                      style={{
+                        fontSize: "0.8rem",
+                        color: "blue",
+                        cursor: "pointer",
+                      }}
+                    >
+                      formatting help
+                    </span>
+                  </OverlayTrigger>
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group controlId="mainImage">
+                  <Form.Label>Main image</Form.Label>
+                  <div className="custom-file">
+                    <input
+                      type="file"
+                      accept={typesToAcceptAttribute(acceptedImageTypes)}
+                      className="custom-file-input"
+                      id="mainImage"
+                      onChange={this.onChange}
+                    />
+                    <label className="custom-file-label" htmlFor="mainImage">
+                      {this.state.mainImage
+                        ? this.state.mainImage.name
+                        : "Choose file"}
+                    </label>
+                  </div>
+                </Form.Group>
+
+                <Form.Group controlId="additionalImages">
+                  <Form.Label>Additional images</Form.Label>
+                  <div className="custom-file">
+                    <input
+                      type="file"
+                      accept={typesToAcceptAttribute(acceptedImageTypes)}
+                      multiple
+                      className="custom-file-input"
+                      id="additionalImages"
+                      onChange={this.onChange}
+                    />
+                    <label
+                      className="custom-file-label"
+                      htmlFor="additionalImages"
+                    >
+                      Choose images
+                    </label>
+                  </div>
+                  {oldAdditionalImages.length > 0 ? (
+                    <div className="mt-2 pl-2">
+                      <i>New images</i>
+                      <div className="pl-3">
+                        {newAdditionalImages.length > 0 ? (
+                          newAdditionalImages
+                        ) : (
+                          <i>New images you add will appear here</i>
+                        )}
+                      </div>
+                      <i>Old files</i>
+                      <div className="pl-3">{oldAdditionalImages}</div>
+                    </div>
+                  ) : (
+                    <div className="mt-2 pl-2">{newAdditionalImages}</div>
+                  )}
+                </Form.Group>
+
+                <Form.Group controlId="additionalFiles">
+                  <Form.Label>Additional files</Form.Label>
+                  <div className="custom-file">
+                    <input
+                      type="file"
+                      multiple
+                      className="custom-file-input"
+                      id="additionalFiles"
+                      onChange={this.onChange}
+                    />
+                    <label
+                      className="custom-file-label"
+                      htmlFor="additionalFiles"
+                    >
+                      Choose files
+                    </label>
+                  </div>
+                  {oldAdditionalFiles.length > 0 ? (
+                    <div className="mt-2 pl-2">
+                      <i>New files</i>
+                      <div className="pl-3">
+                        {newAdditionalFiles.length > 0 ? (
+                          newAdditionalFiles
+                        ) : (
+                          <i>New files you add will appear here</i>
+                        )}
+                      </div>
+                      <i>Old files</i>
+                      <div className="pl-3">{oldAdditionalFiles}</div>
+                    </div>
+                  ) : (
+                    <div className="mt-2 pl-2">{newAdditionalFiles}</div>
+                  )}
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <HCenter>
+                <div className="button-row">
+                  <Button variant="success" type="submit">
+                    Confirm Changes
+                  </Button>
+                  <OverlayTrigger
+                    trigger="click"
+                    rootClose
+                    placement="bottom"
+                    overlay={discardPopover}
+                  >
+                    <Button variant="secondary">Discard Changes</Button>
                   </OverlayTrigger>
                 </div>
               </HCenter>

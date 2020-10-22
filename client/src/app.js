@@ -18,7 +18,7 @@ import Signup from "./components/auth/signup";
 import Navbar from "./components/layout/navbar";
 import PrivateRoute from "./components/private-route/privateRoute";
 import Dashboard from "./components/dashboard/dashboard";
-import CreateProject from "./components/project/CreateProject";
+import CreateProject, { EditProject } from "./components/project/CreateProject";
 import SingleProject from "./components/project/SingleProject";
 import LandingPage from "./components/landing-page/landingPage";
 import AccountDetails from "./components/profile/AccountDetails";
@@ -75,6 +75,11 @@ class App extends Component {
                   exact
                   path="/projects/:projectId"
                   component={SingleProject}
+                />
+                <Route
+                  exact
+                  path="/projects/:projectId/edit"
+                  component={EditProject}
                 />
                 <Route
                   exact

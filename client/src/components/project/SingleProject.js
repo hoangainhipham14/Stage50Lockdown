@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Redirect } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { singleProject, connectLinkToProject } from "./APIProject";
 import {
   Card,
@@ -7,6 +7,7 @@ import {
   Image as BootstrapImage,
   Row,
   Col,
+  Button,
 } from "react-bootstrap";
 import { Center, HCenter } from "../layout";
 import { SRLWrapper } from "simple-react-lightbox";
@@ -83,6 +84,7 @@ class SingleProject extends Component {
     if (!project) {
       return <Container>Loading...</Container>;
     }
+    console.log(project);
     const { title, about, body, additionalFiles } = project;
     const formattedBody = DOMPurify.sanitize(this.convertRTFtoHTML(body));
     // const posterId = project.postedBy ? `/user/${project.postedBy._id}` : "";
@@ -135,6 +137,11 @@ class SingleProject extends Component {
             </HCenter>
             <HCenter>
               <i>{about}</i>
+            </HCenter>
+            <HCenter>
+              <Link to={`/projects/${this.state.projectId}/edit`}>
+                <Button>Edit Project</Button>
+              </Link>
             </HCenter>
           </Card.Header>
           <Card.Body>

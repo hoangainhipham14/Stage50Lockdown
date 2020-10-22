@@ -33,14 +33,18 @@ hr {
   height: 30rem !important;
 }
 
-.col-image {
-  /* padding: 0.2rem; */
-}
-
 .col-image:hover {
   cursor: pointer;
   opacity: 0.5;
   transition-duration: 0.2s;
+}
+
+button.close:focus {
+  outline: none;
+}
+
+.project-form .form-label {
+  font-weight: 500;
 }
 
 @import "~react-image-gallery/styles/css/image-gallery.css";

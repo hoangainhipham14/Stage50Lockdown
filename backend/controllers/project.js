@@ -29,8 +29,9 @@ exports.createProject = (req, res, next) => {
       title: fields.title,
       about: fields.about,
       body: fields.body,
-      _userId: fields.user_Id,
+      _userId: fields._userId,
     });
+    console.log(project);
 
     // add the main image to the project
     if (files.image) {
@@ -168,8 +169,19 @@ exports.singleProject = (req, res) => {
       title: req.project.title,
       about: req.project.about,
       body: req.project.body,
+      additionalImages: req.project.additionalImages.map(
+        (file) => file.fileName
+      ),
       additionalFiles: req.project.additionalFiles.map((file) => file.fileName),
-      numAdditionalImages: req.project.additionalImages.length,
+
+      mainImageName: req.project.image ? req.project.image.name : null,
+      additionalImagesNames: req.project.additionalImages.map(
+        (file) => file.fileName
+      ),
+      additionalFilesNames: req.project.additionalFiles.map(
+        (file) => file.fileName
+      ),
+
       itemIsPublic: req.project.itemIsPublic,
     };
     return res.json(data);
@@ -197,6 +209,8 @@ exports.ProjectList = (req, res) => {
     }
     Project.find({ _userId: user._id }, "_id title about created").exec(
       (err, projects) => {
+        console.log("user", user._id);
+        console.log("projects", projects);
         if (err || projects.length === 0) {
           return res.send({
             message: "Projects do not exist",
