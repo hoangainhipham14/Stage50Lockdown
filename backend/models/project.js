@@ -24,6 +24,14 @@ const projectSchema = new Schema({
     fileName: String,
   },
 
+  additionalImages: [
+    {
+      data: Buffer,
+      contentType: String,
+      fileName: String,
+    },
+  ],
+
   additionalFiles: [
     {
       data: Buffer,
