@@ -24,37 +24,35 @@ exports.createProject = (req, res, next) => {
       });
     }
 
+    // return res.status(400).json({
+    //   test: "success",
+    // });
+
     // create the new project
+    const mainImageIndex = JSON.parse(fields.mainImageIndex)
+      ? parseInt(fields.mainImageIndex)
+      : null;
     let project = new Project({
       title: fields.title,
       about: fields.about,
       body: fields.body,
+      mainImageIndex: mainImageIndex,
       _userId: fields._userId,
     });
-    console.log(project);
 
-    // add the main image to the project
-    if (files.image) {
-      project.image = {
-        data: fs.readFileSync(files.image.path),
-        contentType: files.image.type,
-        fileName: files.image.name,
-      };
-    }
-
-    // add the additional images
-    const numAdditionalImages = parseInt(fields.numAdditionalImages);
-    const additionalImages = [];
-    for (var i = 0; i < numAdditionalImages; i++) {
+    // add the images
+    const numImages = parseInt(fields.numImages);
+    const images = [];
+    for (var i = 0; i < numImages; i++) {
       const image = files[`image-${i}`];
-      additionalImages.push({
+      images.push({
         data: fs.readFileSync(image.path),
         contentType: image.type,
         fileName: image.name,
       });
     }
-    project.additionalImages = additionalImages;
-    console.log(`Added ${project.additionalImages.length} additional images`);
+    project.images = images;
+    console.log(`Added ${project.images.length} images`);
 
     // add the additional files
     const numAdditionalFiles = parseInt(fields.numAdditionalFiles);
@@ -85,10 +83,79 @@ exports.createProject = (req, res, next) => {
       if (err) {
         console.log("Saving error:", err);
         return res.status(500).json({
-          image: "Image could not be saved",
+          error: "Failed to save project.",
         });
       } else {
-        console.log("Saving success:", result);
+        console.log("Saving success!");
+        res.json({
+          message: "Success",
+        });
+      }
+    });
+  });
+};
+
+// Edit a project
+exports.editProject = (req, res, next) => {
+  let form = new formidable.IncomingForm();
+  form.keepExtensions = true;
+  form.parse(req, (err, fields, files) => {
+    console.log("===================================");
+    console.log(fields);
+    for (i in files) console.log(i, files[i].name);
+    console.log("===================================");
+    if (err) {
+      return res.status(400).json({
+        image: "There was a problem updated your project",
+      });
+    }
+
+    // the project to be edited
+    let project = req.project;
+
+    // remove additional images removed by the user
+    const imagesToDelete = JSON.parse(fields.imagesToDelete);
+    project.images = project.images.filter(
+      (img, i) => !imagesToDelete.includes(i)
+    );
+    // add any new additional images
+    const numNewImages = parseInt(fields.numNewImages);
+    for (var i = 0; i < numNewImages; i++) {
+      const image = files[`image-${i}`];
+      project.images.push({
+        data: fs.readFileSync(image.path),
+        contentType: image.type,
+        fileName: image.name,
+      });
+    }
+
+    // remove additional files removed by the user
+    const filesToDelete = JSON.parse(fields.filesToDelete);
+    project.additionalFiles = project.additionalFiles.filter(
+      (file, i) => !filesToDelete.includes(i)
+    );
+    // add any new additional files
+    const numNewAdditionalFiles = parseInt(fields.numNewAdditionalFiles);
+    for (var i = 0; i < numNewAdditionalFiles; i++) {
+      const file = files[`file-${i}`];
+      project.additionalFiles.push({
+        data: fs.readFileSync(file.path),
+        contentType: file.type,
+        fileName: file.name,
+      });
+    }
+
+    // return res.status(400).json({ test: "success" });
+
+    console.log("Saving...");
+    project.save((err, result) => {
+      if (err) {
+        console.log("Saving error:", err);
+        return res.status(500).json({
+          image: "Project could not be updated",
+        });
+      } else {
+        console.log("Saving success!");
         res.json(result);
       }
     });
@@ -97,6 +164,7 @@ exports.createProject = (req, res, next) => {
 
 // Project parameter field, finds the project in the database
 exports.projectById = (req, res, next, id) => {
+  console.log("projectById");
   Project.findById(id)
     .populate("postedBy", "_id name")
     .exec((err, project) => {
@@ -114,14 +182,21 @@ exports.projectById = (req, res, next, id) => {
 // Image Response
 exports.image = (req, res, next) => {
   console.log("mainImage");
-  console.log(req.project.image);
-  res.set({
-    // this line was causing an error
-    // "Content-Disposition": "filename=" + req.project.image.fileName,
-    // "Content-Disposition": `"filename="${req.project.image.fileName}"`,
-    "Content-Type": req.project.image.contentType,
-  });
-  return res.send(req.project.image.data);
+  const project = req.project;
+  const mainImageIndex = project.mainImageIndex;
+  if (!mainImageIndex) {
+    console.log("No main image.");
+    res.status(404).json({
+      error: "This project does not have a main image.",
+    });
+  } else {
+    const image = project.images[mainImageIndex];
+    console.log("Sending image...");
+    res.set({
+      "Content-Type": image.contentType,
+    });
+    return res.send(image.data);
+  }
 };
 
 // Send the ith additional file as an attachment
@@ -138,7 +213,7 @@ exports.singleFile = (req, res, next) => {
 
 exports.singleImage = (req, res, next) => {
   console.log("singleImage");
-  const image = req.project.additionalImages[parseInt(req.params.index)];
+  const image = req.project.images[parseInt(req.params.index)];
 
   res.set({
     "Content-Disposition": `filename="${image.fileName}"`,
@@ -149,7 +224,7 @@ exports.singleImage = (req, res, next) => {
 
 exports.allImages = (req, res, next) => {
   console.log("allImages");
-  res.send(req.project.additionalImages);
+  res.send(req.project.images);
 };
 
 // Responds with the project containing the data inside
@@ -163,21 +238,16 @@ exports.singleProject = (req, res) => {
   /*
   Changed this so were not sending data to the front end that is private
   */
-  console.log("project");
+  console.log("singleProject");
   if (req.project.itemIsPublic) {
+    console.log("Sending...");
     const data = {
       title: req.project.title,
       about: req.project.about,
       body: req.project.body,
-      additionalImages: req.project.additionalImages.map(
-        (file) => file.fileName
-      ),
-      additionalFiles: req.project.additionalFiles.map((file) => file.fileName),
 
-      mainImageName: req.project.image ? req.project.image.name : null,
-      additionalImagesNames: req.project.additionalImages.map(
-        (file) => file.fileName
-      ),
+      imagesNames: req.project.images.map((file) => file.fileName),
+      mainImageIndex: req.project.mainImageIndex,
       additionalFilesNames: req.project.additionalFiles.map(
         (file) => file.fileName
       ),
@@ -186,13 +256,10 @@ exports.singleProject = (req, res) => {
     };
     return res.json(data);
   } else {
-    const falseData = {
-      title: "",
-      about: "",
-      body: "",
-      itemIsPublic: false,
-    };
-    return res.json(falseData);
+    console.log("Project is private or does not exist.");
+    return res.status(400).json({
+      error: "Project does not exist",
+    });
   }
 };
 
@@ -216,7 +283,7 @@ exports.ProjectList = (req, res) => {
             message: "Projects do not exist",
           });
         }
-        console.log(projects);
+        // console.log(projects);
         req.projects = projects; //add
         return res.json(req.projects);
       }

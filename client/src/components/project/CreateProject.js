@@ -32,7 +32,9 @@ function checkType(file, acceptedTypes) {
   const fileType = pieces[pieces.length - 1];
   const acceptable = acceptedTypes.includes(fileType);
   if (!acceptable) {
-    console.log(`Rejected the file ${file.name} (invalid type).`);
+    console.log(
+      `Rejected the file ${renderFileName(file.name)} (invalid type).`
+    );
   }
   return acceptable;
 }
@@ -40,7 +42,7 @@ function checkType(file, acceptedTypes) {
 function checkSize(file, maxSize = 10 * 1024 * 1024) {
   const acceptable = file.size <= maxSize;
   if (!acceptable) {
-    console.log(`Rejected the file ${file.name} (too large).`);
+    console.log(`Rejected the file ${renderFileName(file.name)} (too large).`);
   }
   return acceptable;
 }
@@ -51,19 +53,24 @@ function typesToAcceptAttribute(types) {
   return types.map((t) => "." + t).join(",");
 }
 
-const discardPopover = (
-  <Popover id="popover-basic">
-    <Popover.Title as="h3">Are you sure?</Popover.Title>
-    <Popover.Content>
-      <Button
-        variant="danger"
-        onClick={() => alert("go back needs to be implemented")}
-      >
-        Discard project
-      </Button>
-    </Popover.Content>
-  </Popover>
-);
+function renderFileName(fileName, maxLength = 40) {
+  return fileName.length > maxLength
+    ? fileName.substring(0, maxLength - 3) + "..."
+    : fileName;
+}
+
+function discardPopover(message, cb) {
+  return (
+    <Popover id="popover-basic">
+      <Popover.Title as="h3">Are you sure?</Popover.Title>
+      <Popover.Content>
+        <Button variant="danger" onClick={cb}>
+          {message}
+        </Button>
+      </Popover.Content>
+    </Popover>
+  );
+}
 
 const formattingPopover = (
   <Popover style={{ maxWidth: "none" }}>
@@ -112,8 +119,8 @@ class CreateProject extends Component {
       title: "",
       about: "",
       body: "",
-      mainImage: undefined,
-      additionalImages: [],
+      mainImageIndex: null,
+      images: [],
       additionalFiles: [],
       submitSuccess: false,
       projectId: null,
@@ -128,31 +135,13 @@ class CreateProject extends Component {
       /* i know it looks strange to wrap case blocks in {}, but it means you 
       can "redeclare" a const across blocks, which is what i want to do since
       the blocks are mutually exclusive. */
-      case "mainImage": {
-        const image = e.target.files[0];
-        // handle case of empty input (remove the main image)
-        if (!image) {
-          this.setState({
-            mainImage: undefined,
-          });
-          break;
-        }
-        // check type and size
-        if (checkType(image, acceptedImageTypes) && checkSize(image)) {
-          this.setState({
-            mainImage: image,
-          });
-        }
-        break;
-      }
-      case "additionalImages": {
+      case "images": {
         const filesSelected = Array.from(e.target.files);
         const isAcceptable = (file) =>
           checkType(file, acceptedImageTypes) && checkSize(file);
         const filesSelectedValid = filesSelected.filter(isAcceptable);
         const alreadyAdded = (file) =>
-          this.state.additionalImages.filter((f) => appearEqual(f, file))
-            .length > 0;
+          this.state.images.filter((f) => appearEqual(f, file)).length > 0;
         const filesToAdd = [];
         filesSelectedValid.forEach((file) => {
           if (!alreadyAdded(file)) {
@@ -160,7 +149,7 @@ class CreateProject extends Component {
           }
         });
         this.setState({
-          additionalImages: this.state.additionalImages.concat(filesToAdd),
+          images: this.state.images.concat(filesToAdd),
         });
         break;
       }
@@ -190,20 +179,6 @@ class CreateProject extends Component {
     }
   };
 
-  deleteAdditionalImage = (i) => (e) => {
-    this.state.additionalImages.splice(i, 1);
-    this.forceUpdate();
-  };
-
-  deleteAdditionalFile = (i) => (e) => {
-    this.state.additionalFiles.splice(i, 1);
-    this.forceUpdate();
-  };
-
-  goBack = () => {
-    this.props.history.goBack();
-  };
-
   onSubmit = (e) => {
     // prevent page from reloading
     e.preventDefault();
@@ -217,11 +192,11 @@ class CreateProject extends Component {
     formData.set("title", this.state.title);
     formData.set("about", this.state.about);
     formData.set("body", this.state.body);
-    formData.set("image", this.state.mainImage);
-    this.state.additionalImages.forEach((file, i) => {
+    this.state.images.forEach((file, i) => {
       formData.set(`image-${i}`, file, file.name);
     });
-    formData.set("numAdditionalImages", this.state.additionalImages.length);
+    formData.set("numImages", this.state.images.length);
+    formData.set("mainImageIndex", this.state.mainImageIndex);
     this.state.additionalFiles.forEach((file, i) => {
       formData.set(`file-${i}`, file, file.name);
     });
@@ -248,23 +223,68 @@ class CreateProject extends Component {
       });
   };
 
+  deleteImage = (i) => (e) => {
+    this.state.images.splice(i, 1);
+    const index = this.state.mainImageIndex;
+    if (index) {
+      console.log(index, i);
+      if (index === i) {
+        // just deleted the main image
+        this.removeMainImage();
+      } else if (index > i) {
+        // need to decrement the main image
+        console.log("need to decrement");
+        this.setImageAsMain(index - 1)();
+      }
+    }
+    this.forceUpdate();
+  };
+
+  deleteAdditionalFile = (i) => (e) => {
+    this.state.additionalFiles.splice(i, 1);
+    this.forceUpdate();
+  };
+
+  goBack = () => {
+    this.props.history.goBack();
+  };
+
+  setImageAsMain = (i) => () => {
+    console.log("setting", i);
+    this.setState({
+      mainImageIndex: i,
+    });
+  };
+
+  removeMainImage = () => {
+    this.setState({
+      mainImageIndex: null,
+    });
+  };
+
   render() {
     if (this.state.submitSuccess) {
       return <Redirect to={`/projects/${this.state.projectId}`} />;
     }
 
-    const additionalImages = [];
-    this.state.additionalImages.forEach((file, i) => {
-      additionalImages.push(
-        <div key={i}>
-          <button
-            type="button"
-            className="close"
-            onClick={this.deleteAdditionalImage(i)}
-          >
+    const images = [];
+    this.state.images.forEach((image, i) => {
+      const isMain = this.state.mainImageIndex === i;
+      images.push(
+        <div key={i} className="image-item">
+          <span>{renderFileName(image.name)}</span>
+          <button type="button" className="close" onClick={this.deleteImage(i)}>
             <span aria-hidden="true">&times;</span>
           </button>
-          <span>{file.name}</span>
+          {isMain ? (
+            <span className="unset-as-main" onClick={this.removeMainImage}>
+              Remove as main
+            </span>
+          ) : (
+            <span className="set-as-main" onClick={this.setImageAsMain(i)}>
+              Set as main
+            </span>
+          )}
         </div>
       );
     });
@@ -280,13 +300,13 @@ class CreateProject extends Component {
           >
             <span aria-hidden="true">&times;</span>
           </button>
-          <span>{file.name}</span>
+          <span>{renderFileName(file.name)}</span>
         </div>
       );
     });
 
     return (
-      <Container>
+      <Container className="project-form">
         <div style={{ margin: "0 auto" }}>
           <div className="text-center">
             <h2>Create New Project</h2>
@@ -294,7 +314,7 @@ class CreateProject extends Component {
 
           <Form onSubmit={this.onSubmit} style={{ marginTop: "1rem" }}>
             <Row>
-              <Col md={6}>
+              <Col lg={6}>
                 <Form.Group controlId="title">
                   <Form.Label>Title</Form.Label>
                   <Form.Control
@@ -341,47 +361,23 @@ class CreateProject extends Component {
                   </OverlayTrigger>
                 </Form.Group>
               </Col>
-              <Col md={6}>
-                <Form.Group controlId="mainImage">
-                  <Form.Label>Main image</Form.Label>
-                  <div className="custom-file">
-                    <input
-                      type="file"
-                      accept={typesToAcceptAttribute(acceptedImageTypes)}
-                      className="custom-file-input"
-                      id="mainImage"
-                      onChange={this.onChange}
-                    />
-                    <label className="custom-file-label" htmlFor="mainImage">
-                      {this.state.mainImage
-                        ? this.state.mainImage.name
-                        : "Choose file"}
-                    </label>
-                    <div className="invalid-feedback">
-                      Example invalid custom file feedback
-                    </div>
-                  </div>
-                </Form.Group>
-
-                <Form.Group controlId="additionalImages">
-                  <Form.Label>Additional images</Form.Label>
+              <Col lg={6}>
+                <Form.Group controlId="images">
+                  <Form.Label>Images</Form.Label>
                   <div className="custom-file">
                     <input
                       type="file"
                       accept={typesToAcceptAttribute(acceptedImageTypes)}
                       multiple
                       className="custom-file-input"
-                      id="additionalImages"
+                      id="images"
                       onChange={this.onChange}
                     />
-                    <label
-                      className="custom-file-label"
-                      htmlFor="additionalImages"
-                    >
+                    <label className="custom-file-label" htmlFor="images">
                       Choose files
                     </label>
                   </div>
-                  <div className="mt-2">{additionalImages}</div>
+                  <div className="mt-2 pl-2">{images}</div>
                 </Form.Group>
 
                 <Form.Group controlId="additionalFiles">
@@ -401,7 +397,7 @@ class CreateProject extends Component {
                       Choose files
                     </label>
                   </div>
-                  <div className="mt-2">{additionalFiles}</div>
+                  <div className="mt-2 pl-2">{additionalFiles}</div>
                 </Form.Group>
               </Col>
             </Row>
@@ -415,7 +411,7 @@ class CreateProject extends Component {
                     trigger="click"
                     rootClose
                     placement="bottom"
-                    overlay={discardPopover}
+                    overlay={discardPopover("Discard Project", this.goBack)}
                   >
                     <Button variant="secondary">Discard Project</Button>
                   </OverlayTrigger>
@@ -437,27 +433,84 @@ export class EditProject extends Component {
       title: "",
       about: "",
       body: "",
-      newAdditionalImages: [],
+      newImages: [],
       newAdditionalFiles: [],
-      oldAdditionalImagesNames: [],
+      oldimagesNames: [],
       oldAdditionalFilesNames: [],
       imagesToDelete: new Set(),
       filesToDelete: new Set(),
+      mainImageIndex: null,
+      mainImageIsNew: false,
     };
   }
+
+  onSubmit = (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+
+    // text fields
+    formData.set("title", this.state.title);
+    formData.set("about", this.state.about);
+    formData.set("body", this.state.body);
+
+    // main image
+    formData.set("mainImageIndex", this.state.mainImageIndex);
+    formData.set("mainImageIsNew", this.state.mainImageIsNew);
+
+    // images
+    this.state.newImages.forEach((file, i) => {
+      formData.set(`image-${i}`, file, file.name);
+    });
+    formData.set("numNewimages", this.state.newImages.length);
+    formData.set(
+      "imagesToDelete",
+      JSON.stringify(Array.from(this.state.imagesToDelete))
+    );
+
+    // files
+    this.state.newAdditionalFiles.forEach((file, i) => {
+      formData.set(`file-${i}`, file, file.name);
+    });
+    formData.set("numNewAdditionalFiles", this.state.newAdditionalFiles.length);
+    formData.set(
+      "filesToDelete",
+      JSON.stringify(Array.from(this.state.filesToDelete))
+    );
+
+    // configururation for post request since we aren't just posting json
+    const config = {
+      headers: {
+        "content-type": "multipart/form-data",
+      },
+    };
+
+    axios
+      .post(`/api/project/${this.state.projectId}/edit`, formData, config)
+      .then((response) => {
+        console.log("Success!");
+        console.log(response.data);
+        this.setState({
+          submitSuccess: true,
+        });
+      })
+      .catch((err) => {
+        console.log("Failre!");
+        console.log(err);
+      });
+  };
 
   onChange = (e) => {
     // the name of field changed
     const name = e.target.id;
     switch (name) {
-      case "additionalImages": {
+      case "images": {
         const filesSelected = Array.from(e.target.files);
         const isAcceptable = (file) =>
           checkType(file, acceptedImageTypes) && checkSize(file);
         const filesSelectedValid = filesSelected.filter(isAcceptable);
         const alreadyAdded = (file) =>
-          this.state.newAdditionalImages.filter((f) => appearEqual(f, file))
-            .length > 0;
+          this.state.newImages.filter((f) => appearEqual(f, file)).length > 0;
         const filesToAdd = [];
         filesSelectedValid.forEach((file) => {
           if (!alreadyAdded(file)) {
@@ -465,9 +518,7 @@ export class EditProject extends Component {
           }
         });
         this.setState({
-          newAdditionalImages: this.state.newAdditionalImages.concat(
-            filesToAdd
-          ),
+          newImages: this.state.newImages.concat(filesToAdd),
         });
         break;
       }
@@ -507,12 +558,10 @@ export class EditProject extends Component {
         title: data.title,
         about: data.about,
         body: data.body,
-
-        mainImageName: data.mainImageName,
-
-        oldAdditionalImagesNames: data.additionalImagesNames,
-
+        oldimagesNames: data.imagesNames,
         oldAdditionalFilesNames: data.additionalFilesNames,
+        mainImageIndex: data.mainImageIndex,
+        projectId: projectId,
       });
     });
   }
@@ -525,6 +574,12 @@ export class EditProject extends Component {
     this.setState({
       imagesToDelete: imagesToDeleteUpdated,
     });
+
+    // un-main this image if appropriate
+    const mainImageIndex = this.state.mainImageIndex;
+    if (!this.state.mainImageIsNew && mainImageIndex === i) {
+      this.removeMainImage();
+    }
   };
 
   toggleFileToDelete = (i) => () => {
@@ -537,8 +592,16 @@ export class EditProject extends Component {
     });
   };
 
-  deleteNewAdditionalImage = (i) => () => {
-    this.state.additionalImages.splice(i, 1);
+  deleteNewimage = (i) => () => {
+    this.state.images.splice(i, 1);
+    const index = this.state.mainImageIndex;
+    if (this.state.mainImageIsNew && index) {
+      if (index === i) {
+        this.removeMainImage();
+      } else if (index > i) {
+        this.setImageAsMain(index - 1)();
+      }
+    }
     this.forceUpdate();
   };
 
@@ -547,13 +610,47 @@ export class EditProject extends Component {
     this.forceUpdate();
   };
 
+  setOldImageAsMain = (i) => () => {
+    this.setState({
+      mainImageIndex: i,
+      mainImageIsNew: false,
+    });
+  };
+
+  setNewImageAsMain = (i) => () => {
+    this.setState({
+      mainImageIndex: i,
+      mainImageIsNew: true,
+    });
+  };
+
+  removeMainImage = () => {
+    this.setState({
+      mainImageIndex: null,
+      mainImageIsNew: false,
+    });
+  };
+
+  goBack = () => {
+    this.props.history.goBack();
+  };
+
   render() {
+    if (this.state.submitSuccess) {
+      return <Redirect to={`/projects/${this.state.projectId}`} />;
+    }
+
     // collect the old additional images into an array of x-able items
-    const oldAdditionalImages = [];
-    this.state.oldAdditionalImagesNames.forEach((imageName, i) => {
+    const oldimages = [];
+    this.state.oldimagesNames.forEach((imageName, i) => {
       const toDelete = this.state.imagesToDelete.has(i);
-      oldAdditionalImages.push(
-        <div key={i}>
+      const isMain =
+        this.state.mainImageIndex === i && !this.state.mainImageIsNew;
+      oldimages.push(
+        <div key={i} className="image-item">
+          <span style={toDelete ? { textDecoration: "line-through" } : {}}>
+            {imageName}
+          </span>
           <button
             type="button"
             className="close"
@@ -563,9 +660,43 @@ export class EditProject extends Component {
               {toDelete ? restoreItem : deleteItem}
             </span>
           </button>
-          <span style={toDelete ? { textDecoration: "line-through" } : {}}>
-            {imageName}
-          </span>
+          {isMain ? (
+            <span className="unset-as-main" onClick={this.removeMainImage}>
+              Remove as main
+            </span>
+          ) : (
+            <span className="set-as-main" onClick={this.setOldImageAsMain(i)}>
+              Set as main
+            </span>
+          )}
+        </div>
+      );
+    });
+
+    // collect the new additional images into an array of x-able items
+    const newImages = [];
+    this.state.newImages.forEach((image, i) => {
+      const isMain =
+        this.state.mainImageIndex === i && this.state.mainImageIsNew;
+      newImages.push(
+        <div key={i} className="image-item">
+          <span>{renderFileName(image.name)}</span>
+          <button
+            type="button"
+            className="close"
+            onClick={this.deleteNewimage(i)}
+          >
+            <span aria-hidden="true">{deleteItem}</span>
+          </button>
+          {isMain ? (
+            <span className="unset-as-main" onClick={this.removeMainImage}>
+              Remove as main
+            </span>
+          ) : (
+            <span className="set-as-main" onClick={this.setNewImageAsMain(i)}>
+              Set as main
+            </span>
+          )}
         </div>
       );
     });
@@ -586,25 +717,8 @@ export class EditProject extends Component {
             </span>
           </button>
           <span style={toDelete ? { textDecoration: "line-through" } : {}}>
-            {fileName}
+            {renderFileName(fileName)}
           </span>
-        </div>
-      );
-    });
-
-    // collect the new additional images into an array of x-able items
-    const newAdditionalImages = [];
-    this.state.newAdditionalImages.forEach((image, i) => {
-      newAdditionalImages.push(
-        <div key={i}>
-          <button
-            type="button"
-            className="close"
-            onClick={this.deleteNewAdditionalImage(i)}
-          >
-            <span aria-hidden="true">{deleteItem}</span>
-          </button>
-          <span>{image.name}</span>
         </div>
       );
     });
@@ -621,7 +735,7 @@ export class EditProject extends Component {
           >
             <span aria-hidden="true">{deleteItem}</span>
           </button>
-          <span>{file.name}</span>
+          <span>{renderFileName(file.name)}</span>
         </div>
       );
     });
@@ -637,7 +751,7 @@ export class EditProject extends Component {
 
           <Form onSubmit={this.onSubmit} style={{ marginTop: "1rem" }}>
             <Row>
-              <Col md={6}>
+              <Col lg={6}>
                 <Form.Group controlId="title">
                   <Form.Label>Title</Form.Label>
                   <Form.Control
@@ -687,58 +801,37 @@ export class EditProject extends Component {
                   </OverlayTrigger>
                 </Form.Group>
               </Col>
-              <Col md={6}>
-                <Form.Group controlId="mainImage">
-                  <Form.Label>Main image</Form.Label>
-                  <div className="custom-file">
-                    <input
-                      type="file"
-                      accept={typesToAcceptAttribute(acceptedImageTypes)}
-                      className="custom-file-input"
-                      id="mainImage"
-                      onChange={this.onChange}
-                    />
-                    <label className="custom-file-label" htmlFor="mainImage">
-                      {this.state.mainImage
-                        ? this.state.mainImage.name
-                        : "Choose file"}
-                    </label>
-                  </div>
-                </Form.Group>
-
-                <Form.Group controlId="additionalImages">
-                  <Form.Label>Additional images</Form.Label>
+              <Col lg={6}>
+                <Form.Group controlId="images">
+                  <Form.Label>Images</Form.Label>
                   <div className="custom-file">
                     <input
                       type="file"
                       accept={typesToAcceptAttribute(acceptedImageTypes)}
                       multiple
                       className="custom-file-input"
-                      id="additionalImages"
+                      id="images"
                       onChange={this.onChange}
                     />
-                    <label
-                      className="custom-file-label"
-                      htmlFor="additionalImages"
-                    >
+                    <label className="custom-file-label" htmlFor="images">
                       Choose images
                     </label>
                   </div>
-                  {oldAdditionalImages.length > 0 ? (
+                  {oldimages.length > 0 ? (
                     <div className="mt-2 pl-2">
                       <i>New images</i>
                       <div className="pl-3">
-                        {newAdditionalImages.length > 0 ? (
-                          newAdditionalImages
+                        {newImages.length > 0 ? (
+                          newImages
                         ) : (
-                          <i>New images you add will appear here</i>
+                          <i>Images you add will appear here</i>
                         )}
                       </div>
-                      <i>Old files</i>
-                      <div className="pl-3">{oldAdditionalImages}</div>
+                      <i>Old images</i>
+                      <div className="pl-3">{oldimages}</div>
                     </div>
                   ) : (
-                    <div className="mt-2 pl-2">{newAdditionalImages}</div>
+                    <div className="mt-2 pl-2">{newImages}</div>
                   )}
                 </Form.Group>
 
@@ -766,7 +859,7 @@ export class EditProject extends Component {
                         {newAdditionalFiles.length > 0 ? (
                           newAdditionalFiles
                         ) : (
-                          <i>New files you add will appear here</i>
+                          <i>Files you add will appear here</i>
                         )}
                       </div>
                       <i>Old files</i>
@@ -788,7 +881,7 @@ export class EditProject extends Component {
                     trigger="click"
                     rootClose
                     placement="bottom"
-                    overlay={discardPopover}
+                    overlay={discardPopover("Discard changes", this.goBack)}
                   >
                     <Button variant="secondary">Discard Changes</Button>
                   </OverlayTrigger>

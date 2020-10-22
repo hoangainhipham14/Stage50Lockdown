@@ -12,6 +12,7 @@ const {
   singleFile,
   singleImage,
   allImages,
+  editProject,
 } = require("../controllers/project");
 
 const { userById } = require("../controllers/user");
@@ -26,6 +27,8 @@ router.get("/project/:projectId/image/:index", singleImage);
 router.get("/project/:projectId/images", allImages);
 
 router.get("/project/:projectId", singleProject);
+
+router.post("/project/:projectId/edit", editProject);
 
 // this should post to exports.getProject
 router.post("/project/list", ProjectList);

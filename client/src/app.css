@@ -1,6 +1,7 @@
 html {
   overflow-x: hidden;
   margin-right: calc(-1 * (100vw - 100%));
+  margin-bottom: 3rem;
 }
 
 .error-text {
@@ -33,7 +34,12 @@ hr {
   height: 30rem !important;
 }
 
-.col-image:hover {
+.col-image img {
+  border: 1px #dddddd solid;
+  border-radius: 1rem;
+}
+
+.col-image img:hover {
   cursor: pointer;
   opacity: 0.5;
   transition-duration: 0.2s;
@@ -45,6 +51,35 @@ button.close:focus {
 
 .project-form .form-label {
   font-weight: 500;
+}
+
+.set-as-main,
+.unset-as-main {
+  float: right;
+  padding-right: 1rem;
+  font-size: 80%;
+}
+
+.set-as-main {
+  opacity: 0;
+}
+
+.unset-as-main {
+  opacity: 0.5;
+}
+
+.image-item:hover .set-as-main {
+  opacity: 0.5;
+}
+
+.set-as-main:hover,
+.unset-as-main:hover {
+  cursor: pointer;
+  opacity: 1 !important;
+}
+
+.close {
+  margin-top: -0.25rem !important;
 }
 
 @import "~react-image-gallery/styles/css/image-gallery.css";

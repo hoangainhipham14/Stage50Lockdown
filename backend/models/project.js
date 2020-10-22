@@ -18,19 +18,17 @@ const projectSchema = new Schema({
     // required: true,
   },
 
-  image: {
-    data: Buffer,
-    contentType: String,
-    fileName: String,
-  },
-
-  additionalImages: [
+  images: [
     {
       data: Buffer,
       contentType: String,
       fileName: String,
     },
   ],
+
+  mainImageIndex: {
+    type: Number,
+  },
 
   additionalFiles: [
     {

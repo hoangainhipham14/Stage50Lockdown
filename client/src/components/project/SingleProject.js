@@ -50,7 +50,9 @@ class SingleProject extends Component {
       });
     } else {
       // Otherwise go through the standard procedure
+      console.log("trying to access normally");
       const projectId = this.props.match.params.projectId;
+      console.log("project id:", projectId);
       singleProject(projectId).then((data) => {
         console.log(data);
         if (data.error) {
@@ -85,12 +87,19 @@ class SingleProject extends Component {
       return <Container>Loading...</Container>;
     }
     console.log(project);
-    const { title, about, body, additionalFiles } = project;
+    const {
+      title,
+      about,
+      body,
+      additionalFilesNames,
+      imagesNames,
+      mainImageIndex,
+    } = project;
     const formattedBody = DOMPurify.sanitize(this.convertRTFtoHTML(body));
     // const posterId = project.postedBy ? `/user/${project.postedBy._id}` : "";
     // const posterName = project.postedBy ? project.postedBy.name : "Unknown";
 
-    const files = additionalFiles.map((file, i) => {
+    const files = additionalFilesNames.map((file, i) => {
       const url = `http://localhost:5000/api/project/${this.state.projectId}/file/${i}`;
       const displayName =
         file.length > 25 ? file.substring(0, 22) + "..." : file;
@@ -112,11 +121,11 @@ class SingleProject extends Component {
       filesDisplay = null;
     }
 
-    const numImages = this.state.project.numAdditionalImages;
+    const numImages = imagesNames.length;
     const images = [];
     for (var i = 0; i < numImages; i++) {
       images.push(
-        <Col sm={3} className="col-image">
+        <Col sm={3} className="col-image" key={i}>
           <Center>
             <img
               src={`http://localhost:5000/api/project/${this.state.projectId}/image/${i}`}
@@ -127,6 +136,15 @@ class SingleProject extends Component {
         </Col>
       );
     }
+
+    const bodyJSX = (
+      <div>
+        <span
+          style={{ whiteSpace: "pre-line" }}
+          dangerouslySetInnerHTML={{ __html: formattedBody }}
+        ></span>
+      </div>
+    );
 
     return (
       <Container>
@@ -145,24 +163,24 @@ class SingleProject extends Component {
             </HCenter>
           </Card.Header>
           <Card.Body>
-            <Row>
-              <Col>
-                <Col lg={6} className="float-left">
-                  <BootstrapImage
-                    src={`http://localhost:5000/api/project/${this.state.projectId}/mainImage`}
-                    alt=""
-                    style={{ width: "100%" }}
-                    thumbnail
-                    className="img-responsive"
-                  />
+            {mainImageIndex ? (
+              <Row>
+                <Col>
+                  <Col lg={6} className="float-left">
+                    <BootstrapImage
+                      src={`http://localhost:5000/api/project/${this.state.projectId}/mainImage`}
+                      alt=""
+                      style={{ width: "100%" }}
+                      thumbnail
+                      className="img-responsive"
+                    />
+                  </Col>
+                  {bodyJSX}
                 </Col>
-                <div>
-                  <span
-                    dangerouslySetInnerHTML={{ __html: formattedBody }}
-                  ></span>
-                </div>
-              </Col>
-            </Row>
+              </Row>
+            ) : (
+              bodyJSX
+            )}
           </Card.Body>
           <Row noGutters>
             <Card.Body>
