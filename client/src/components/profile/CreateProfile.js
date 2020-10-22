@@ -19,10 +19,7 @@ class CreateProfile extends Component {
     super(props);
 
     this.state = {
-      aboutUser: "",
       username: this.props.match.params.username,
-      userPhoto: null,
-      updated: false,
       fileName: "",
       photoExist: false,
       formwaiting: false,
@@ -47,41 +44,19 @@ class CreateProfile extends Component {
       });
   }
 
-  onChangeText = (e) => {
-    this.setState({
-      aboutUser: e.target.value,
-      updated: true,
-    });
-  };
-
-  onChangePhoto = (e) => {
-    this.setState({
-      userPhoto: e.target.files[0],
-      updated: true,
-      fileName: e.target.files[0].name,
-      photoExist: true,
-    });
-  };
-
-  onDiscard = (e) => {
-    this.setState({
-      photoExist: false,
-    });
-  };
-
-  onSubmit = (e) => {
-    // prevent page from reloading
-    e.preventDefault();
-
+  updateUser(changeText, changePhoto, aboutUser, userPhoto) {
     // Start spinner
     this.setState({ formwaiting: true });
-
-    // create the formdata object
-    // we need to do this because JSON isn't sufficient for image sending
     const formData = new FormData();
-    formData.set("aboutUser", this.state.aboutUser);
-    formData.set("userPhoto", this.state.userPhoto);
-    formData.set("photoExist", this.state.photoExist);
+
+    if (changeText) {
+      formData.set("aboutUser", aboutUser);
+    } else if (changePhoto) {
+      formData.set("userPhoto", userPhoto);
+      formData.set("photoExist", true);
+    } else {
+      formData.set("photoExist", false);
+    }
 
     // configuration for post request since we aren't just posting json
     const config = {
@@ -89,19 +64,48 @@ class CreateProfile extends Component {
         "content-type": "multipart/form-data",
       },
     };
-
     axios
       .post(`/api/user/${this.state.username}`, formData, config)
       .then((response) => {
         console.log("Success!");
         console.log(response.data);
-        window.location.reload();
       })
       .catch((err) => {
         console.log("Failure!");
         console.log(err);
         this.setState({ formwaiting: false });
       });
+
+    return;
+  }
+
+  onChangeText = (e) => {
+    e.preventDefault();
+    this.setState({
+      aboutUser: e.target.value,
+    });
+
+    this.updateUser(true, false, e.target.value, this.state.userPhoto);
+  };
+
+  onChangePhoto = (e) => {
+    e.preventDefault();
+    // display file name
+    this.setState({
+      fileName: e.target.files[0].name,
+      userPhoto: e.target.files[0],
+    });
+
+    this.updateUser(false, true, this.state.aboutUser, e.target.files[0]);
+  };
+
+  onDiscard = (e) => {
+    e.preventDefault();
+    this.setState({
+      photoExist: false,
+    });
+
+    this.updateUser(false, false, this.state.aboutUser, this.state.userPhoto);
   };
 
   render() {
