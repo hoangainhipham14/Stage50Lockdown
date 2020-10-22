@@ -25,10 +25,16 @@ exports.createProject = (req, res, next) => {
     }
 
     // create the new project
-    let project = new Project(fields);
+    let project = new Project({
+      title: fields.title,
+      about: fields.about,
+      body: fields.body,
+      _userId: fields.user_Id,
+    });
 
     // add the main image to the project
     if (files.image) {
+      console.log("yes, files.image");
       project.image = {
         data: fs.readFileSync(files.image.path),
         contentType: files.image.type,
@@ -36,9 +42,23 @@ exports.createProject = (req, res, next) => {
       };
     }
 
-    // add the additional files to the project
-    const numAdditionalFiles =
-      Object.keys(files).length - (files.image ? 1 : 0);
+    // add the additional images
+    const numAdditionalImages = parseInt(fields.numAdditionalImages);
+    const additionalImages = [];
+    for (var i = 0; i < numAdditionalImages; i++) {
+      const image = files[`image-${i}`];
+      additionalImages.push({
+        data: fs.readFileSync(image.path),
+        contentType: image.type,
+        fileName: image.name,
+      });
+    }
+    project.additionalImages = additionalImages;
+    console.log(`Added ${project.additionalImages.length} additional images`);
+
+    // add the additional files
+    const numAdditionalFiles = parseInt(fields.numAdditionalFiles);
+    console.log("NUM ADDITIONAL FILES: ", numAdditionalFiles);
     const additionalFiles = [];
     for (var i = 0; i < numAdditionalFiles; i++) {
       const file = files[`file-${i}`];
@@ -58,7 +78,7 @@ exports.createProject = (req, res, next) => {
     today = Date.now();
     project.created = moment(today).utc().format("MM/DD/YYYY");
 
-    // return res.json({ success: "true" });
+    // return res.status(400).json({ success: "test" });
 
     // save the new project
     console.log("Saving...");
@@ -96,10 +116,11 @@ exports.projectById = (req, res, next, id) => {
 exports.image = (req, res, next) => {
   res.set({
     // this line was causing an error
-    // "Content-Disposition": "inline; filename=" + req.project.image.fileName,
+    // "Content-Disposition": "filename=" + req.project.image.fileName,
+    // "Content-Disposition": `"filename="${req.project.image.fileName}"`,
     "Content-Type": req.project.image.contentType,
   });
-
+  console.log(req.project.image);
   return res.send(req.project.image.data);
 };
 
@@ -115,6 +136,19 @@ exports.singleFile = (req, res, next) => {
     "Content-Type": file.contentType,
   });
   return res.send(file.data);
+};
+
+exports.singleImage = (req, res, next) => {
+  console.log("singleImage");
+  console.log(req.params.index);
+  const image = req.project.additionalImages[parseInt(req.params.index)];
+  console.log(image);
+
+  res.set({
+    "Content-Disposition": `filename="${image.fileName}"`,
+    "Content-Type": image.contentType,
+  });
+  return res.send(image.data);
 };
 
 // Responds with the project containing the data inside
@@ -135,6 +169,7 @@ exports.singleProject = (req, res) => {
       about: req.project.about,
       body: req.project.body,
       additionalFiles: req.project.additionalFiles.map((file) => file.fileName),
+      numAdditionalImages: req.project.additionalImages.length,
       itemIsPublic: req.project.itemIsPublic,
     };
     return res.json(data);

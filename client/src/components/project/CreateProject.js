@@ -164,13 +164,14 @@ class CreateProject extends Component {
     formData.set("about", this.state.about);
     formData.set("body", this.state.body);
     formData.set("image", this.state.mainImage);
-    for (var i in this.state.files) {
-      const file = this.state.files[i];
-      /*
-      Add the ith file with the key file-i to the formData. Why not an array? Because I can't figure out how to get formidable to show me the full array on the other end. I hate it. I hate it so much.
-      */
-      formData.append(`file-${i}`, file, file.name);
-    }
+    this.state.additionalImages.forEach((file, i) => {
+      formData.set(`image-${i}`, file, file.name);
+    });
+    formData.set("numAdditionalImages", this.state.additionalImages.length);
+    this.state.additionalFiles.forEach((file, i) => {
+      formData.set(`file-${i}`, file, file.name);
+    });
+    formData.set("numAdditionalFiles", this.state.additionalFiles.length);
     formData.set("_userId", _id);
 
     // configururation for post request since we aren't just posting json

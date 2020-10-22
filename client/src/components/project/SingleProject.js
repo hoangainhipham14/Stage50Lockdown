@@ -1,8 +1,16 @@
-import React, { Component } from "react";
+import React, { Component, useState, useCallback } from "react";
 import { Redirect } from "react-router-dom";
 import { singleProject, connectLinkToProject } from "./APIProject";
-import { Card, Container, Image, Row, Col } from "react-bootstrap";
+import {
+  Card,
+  Container,
+  Image as BootstrapImage,
+  Row,
+  Col,
+} from "react-bootstrap";
 import { HCenter } from "../layout";
+import Gallery from "react-photo-gallery";
+import Carousel, { Modal, ModalGateway } from "react-images";
 
 // sanitizer so we can safely render the body text as html after conversion
 const createDOMPurify = require("dompurify");
@@ -10,11 +18,20 @@ const { JSDOM } = require("jsdom");
 const window = new JSDOM("").window;
 const DOMPurify = createDOMPurify(window);
 
+function scale(width, height) {
+  const m = Math.max(width, height);
+  return [width / m, height / m];
+}
+
 class SingleProject extends Component {
-  state = {
-    project: "",
-    projectId: "",
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      project: "",
+      projectId: "",
+    };
+  }
 
   componentDidMount = () => {
     const possibleLink = this.props.match.params.link;
@@ -52,56 +69,6 @@ class SingleProject extends Component {
     }
   };
 
-  // renderProject = (project) => {
-  //   if (project.itemIsPublic) {
-  //     return (
-  //       <Container>
-  //         <Card bg="Light" border="secondary">
-  //           <Card.Header>{project.title}</Card.Header>
-  //           <ListGroup variant="flush">
-  //             <ListGroup.Item>{project.about}</ListGroup.Item>
-  //             <ListGroup.Item>
-  //               <Row>
-  //                 <Col sm={20}>
-  //                   <Image
-  //                     src={`/api/project/${this.state.projectId}/img`}
-  //                     alt=""
-  //                     rounded
-  //                     thumbnail
-  //                   />
-  //                 </Col>
-  //                 <Col lg={true}>{project.body}</Col>
-  //               </Row>
-  //             </ListGroup.Item>
-  //           </ListGroup>
-  //         </Card>
-  //         <Row className="justify-content-md-center">
-  //           <Image
-  //             src={`/api/project/img/${this.state.projectId}`}
-  //             alt=""
-  //             rounded
-  //           />
-  //         </Row>
-  //         <Row className="justify-content-md-center">
-  //           <Image
-  //             src={`/api/project/img/${this.state.projectId}`}
-  //             alt=""
-  //             rounded
-  //           />
-  //         </Row>
-  //       </Container>
-  //     );
-  //   } else {
-  //     return (
-  //       <Container>
-  //         <ListGroup.Item variant="warning">
-  //           Project Is Currently Private
-  //         </ListGroup.Item>
-  //       </Container>
-  //     );
-  //   }
-  // };
-
   convertRTFtoHTML = (txt) => {
     // replace **text** with <strong>text</strong>
     txt = txt.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
@@ -113,6 +80,84 @@ class SingleProject extends Component {
   };
 
   render() {
+    // // I don't know what this is doing, taken from docs
+    // const [currentImage, setCurrentImage] = useState(0);
+    // const [viewerIsOpen, setViewerIsOpen] = useState(false);
+
+    // const openLightbox = useCallback((event, { photo, index }) => {
+    //   setCurrentImage(index);
+    //   setViewerIsOpen(true);
+    // }, []);
+
+    // const closeLightbox = () => {
+    //   setCurrentImage(0);
+    //   setViewerIsOpen(false);
+    // };
+
+    const photos = [];
+    console.log(this.state.project.numAdditionalImages);
+    for (var i = 0; i < this.state.project.numAdditionalImages; i++) {
+      // Must declare as image object, this allows us to get dimensions
+      const img = new Image();
+      img.src = `http://localhost:5000/api/project/${this.state.projectId}/image/${i}`;
+      const [w, h] = scale(img.width, img.height);
+
+      photos.push({
+        src: `http://localhost:5000/api/project/${this.state.projectId}/image/${i}`,
+        width: w,
+        height: h,
+      });
+    }
+    console.log(photos);
+
+    // const photos = [
+    //   {
+    //     src: "https://source.unsplash.com/2ShvY8Lf6l0/800x599",
+    //     width: 4,
+    //     height: 3,
+    //   },
+    //   {
+    //     src: "https://source.unsplash.com/Dm-qxdynoEc/800x799",
+    //     width: 1,
+    //     height: 1,
+    //   },
+    //   {
+    //     src: "https://source.unsplash.com/qDkso9nvCg0/600x799",
+    //     width: 3,
+    //     height: 4,
+    //   },
+    //   {
+    //     src: "https://source.unsplash.com/iecJiKe_RNg/600x799",
+    //     width: 3,
+    //     height: 4,
+    //   },
+    //   {
+    //     src: "https://source.unsplash.com/epcsn8Ed8kY/600x799",
+    //     width: 3,
+    //     height: 4,
+    //   },
+    //   {
+    //     src: "https://source.unsplash.com/NQSWvyVRIJk/800x599",
+    //     width: 4,
+    //     height: 3,
+    //   },
+    //   {
+    //     src: "https://source.unsplash.com/zh7GEuORbUw/600x799",
+    //     width: 3,
+    //     height: 4,
+    //   },
+    //   {
+    //     src: "https://source.unsplash.com/PpOHJezOalU/800x599",
+    //     width: 4,
+    //     height: 3,
+    //   },
+    //   {
+    //     src: "https://source.unsplash.com/I1ASdgphUH4/800x599",
+    //     width: 4,
+    //     height: 3,
+    //   },
+    // ];
+
     if (this.state.redirectToHome) {
       return <Redirect to={`/`} />;
     }
@@ -162,8 +207,8 @@ class SingleProject extends Component {
           <Row noGutters>
             <Col lg={6}>
               <Card.Body>
-                <Image
-                  src={`http://localhost:5000/api/project/${this.state.projectId}/img`}
+                <BootstrapImage
+                  src={`http://localhost:5000/api/project/${this.state.projectId}/mainImage`}
                   alt=""
                   style={{ width: "100%" }}
                   thumbnail
@@ -176,6 +221,27 @@ class SingleProject extends Component {
                 {filesDisplay}
               </Card.Body>
             </Col>
+          </Row>
+          {/* (just need things to save for the mmoment) */}
+          <Row>
+            <Card.Body>
+              <Gallery photos={photos} />
+              {/* <Gallery photos={photos} onClick={openLightbox} /> */}
+              {/* <ModalGateway>
+                {viewerIsOpen ? (
+                  <Modal onClose={closeLightbox}>
+                    <Carousel
+                      currentIndex={currentImage}
+                      views={photos.map((x) => ({
+                        ...x,
+                        srcset: x.srcSet,
+                        caption: x.title,
+                      }))}
+                    />
+                  </Modal>
+                ) : null}
+              </ModalGateway> */}
+            </Card.Body>
           </Row>
           <Card.Footer className="text-muted">
             Last updated at some point who knows really

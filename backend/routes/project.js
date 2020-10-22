@@ -10,6 +10,7 @@ const {
   generateProjectLink,
   connectLinkToProject,
   singleFile,
+  singleImage,
 } = require("../controllers/project");
 
 const { userById } = require("../controllers/user");
@@ -18,8 +19,9 @@ const { requireAuthentication } = require("../controllers/auth");
 router.post("/project/create/:userId", requireAuthentication, createProject);
 // router.get("/projects", getProject);
 // router.get("/Projects/by/:userId", requireAuthentication, ProjectsByUser);
-router.get("/project/:projectId/img", image);
+router.get("/project/:projectId/mainImage", image);
 router.get("/project/:projectId/file/:index", singleFile);
+router.get("/project/:projectId/image/:index", singleImage);
 
 router.get("/project/:projectId", singleProject);
 
