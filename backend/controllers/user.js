@@ -88,6 +88,13 @@ exports.updateUser = (req, res, next) => {
       (err, doc) => {
         if (err) {
           console.log("Something wrong when updating data!");
+          return res.send({
+            error: err,
+          });
+        } else {
+          return res.send({
+            message: "Success!",
+          });
         }
       }
     );
