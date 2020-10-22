@@ -50,6 +50,11 @@ class ProjectList extends Component {
               </Button>
             )}
             {this.props.isAuth && (
+              <Button href={`/createProject/${this.props.username}`}>
+                Create Project
+              </Button>
+            )}
+            {this.props.isAuth && (
               <Button href={`/user/${this.props.username}/account`}>
                 Edit Account Details
               </Button>
