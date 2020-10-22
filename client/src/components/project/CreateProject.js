@@ -15,7 +15,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 
-const acceptedImageTypes = [".jpg", ".png", ".jpeg"];
+const acceptedImageTypes = ["jpg", "png", "jpeg"];
 
 function appearEqual(file1, file2) {
   return (
@@ -23,6 +23,31 @@ function appearEqual(file1, file2) {
     file1.lastModified === file2.lastModified &&
     file1.size === file2.size
   );
+}
+
+function checkType(file, acceptedTypes) {
+  // file.type looks like "application/html" or "image/jpg"
+  const pieces = file.type.split("/");
+  const fileType = pieces[pieces.length - 1];
+  const acceptable = acceptedTypes.includes(fileType);
+  if (!acceptable) {
+    console.log(`Rejected the file ${file.name} (invalid type).`);
+  }
+  return acceptable;
+}
+
+function checkSize(file, maxSize = 10 * 1024 * 1024) {
+  const acceptable = file.size <= maxSize;
+  if (!acceptable) {
+    console.log(`Rejected the file ${file.name} (too large).`);
+  }
+  return acceptable;
+}
+
+// convert a list of accepted types (e.g. ["jpg", "png"]) to a string to be
+// passed in as the accept attribute of an input (e.g. ".jpg,.png")
+function typesToAcceptAttribute(types) {
+  return types.map((t) => "." + t).join(",");
 }
 
 class CreateProject extends Component {
@@ -34,7 +59,8 @@ class CreateProject extends Component {
       about: "",
       body: "",
       mainImage: undefined,
-      files: [],
+      additionalImages: [],
+      additionalFiles: [],
       submitSuccess: false,
       projectId: null,
     };
@@ -42,79 +68,66 @@ class CreateProject extends Component {
 
   // called whenever a value is changed in the form
   onChange = (e) => {
-    const maxBytes = 10 * 1024 * 1024;
-
     // the name of field changed
     const name = e.target.id;
     switch (name) {
-      case "mainImage":
-        // extract the image
+      /* i know it looks strange to wrap case blocks in {}, but it means you 
+      can "redeclare" a const across blocks, which is what i want to do since
+      the blocks are mutually exclusive. */
+      case "mainImage": {
         const image = e.target.files[0];
-        if (image) {
-          // check file type
-          const filetype = image.type.replace("image/", ".");
-          if (!acceptedImageTypes.includes(filetype)) {
-            alert(`Invalid file type. ${acceptedImageTypes.join("/")} only.`);
-            break;
-          }
-          // check file size
-          if (image.size > maxBytes) {
-            alert("The selected image is too large (over 10MB).");
-            break;
-          }
+        // handle case of empty input (remove the main image)
+        if (!image) {
+          this.setState({
+            mainImage: undefined,
+          });
+          break;
         }
-        // tests passed (for now...)
-        this.setState({
-          mainImage: image,
-        });
+        // check type and size
+        if (checkType(image, acceptedImageTypes) && checkSize(image)) {
+          this.setState({
+            mainImage: image,
+          });
+        }
         break;
-      case "additionalFiles":
-        // list of files selected on this click of "choose files"
-        const filesSelected = e.target.files;
-
-        var filesToAdd = [];
-        var filesTooLarge = [];
-        for (var i = 0; i < filesSelected.length; i++) {
-          const file = filesSelected[i];
-
-          /* Check that the file is not too large. Note this should also be 
-          done on the backend, but it's good to do it here because the user
-          doesn't have to wait for their large file to be sent to the server
-          before being told it's too large to store. */
-          if (file.size > maxBytes) {
-            // bigger than 10MB
-            filesTooLarge.push(file.name);
-            continue;
-          }
-
-          // next we need to check that the file isn't already added
-          var alreadyAdded = false;
-          // search already selected files
-          for (var j in this.state.files) {
-            const f = this.state.files[j];
-            if (appearEqual(file, f)) {
-              // found a match!
-              // file already selected - we won't add it
-              alreadyAdded = true;
-              break;
-            }
-          }
-          if (!alreadyAdded) {
+      }
+      case "additionalImages": {
+        const filesSelected = Array.from(e.target.files);
+        const isAcceptable = (file) =>
+          checkType(file, acceptedImageTypes) && checkSize(file);
+        const filesSelectedValid = filesSelected.filter(isAcceptable);
+        const alreadyAdded = (file) =>
+          this.state.additionalImages.filter((f) => appearEqual(f, file))
+            .length > 0;
+        const filesToAdd = [];
+        filesSelectedValid.forEach((file) => {
+          if (!alreadyAdded(file)) {
             filesToAdd.push(file);
           }
-        }
-        // alert the user of files that were too large
-        if (filesTooLarge.length > 0) {
-          alert(
-            `The following files were too large (over 10MB) and were not added:\n${filesTooLarge.join(
-              "\n"
-            )}`
-          );
-        }
-
-        // new list of files is the old list plus files we've decided to add
-        this.setState({ files: this.state.files.concat(filesToAdd) });
+        });
+        this.setState({
+          additionalImages: this.state.additionalImages.concat(filesToAdd),
+        });
         break;
+      }
+      case "additionalFiles": {
+        const filesSelected = Array.from(e.target.files);
+        const isAcceptable = (file) => checkSize(file);
+        const filesSelectedValid = filesSelected.filter(isAcceptable);
+        const alreadyAdded = (file) =>
+          this.state.additionalFiles.filter((f) => appearEqual(f, file))
+            .length > 0;
+        const filesToAdd = [];
+        filesSelectedValid.forEach((file) => {
+          if (!alreadyAdded(file)) {
+            filesToAdd.push(file);
+          }
+        });
+        this.setState({
+          additionalFiles: this.state.additionalFiles.concat(filesToAdd),
+        });
+        break;
+      }
       default:
         // by default, the value is just the field value
         this.setState({
@@ -123,12 +136,14 @@ class CreateProject extends Component {
     }
   };
 
-  // this guy deletes the ith file from the file list
-  // note this is a curried function - it takes a number (i) and produces a
-  // function that takes an event and deletes the ith file
-  deleteFile = (i) => (e) => {
-    this.state.files.splice(i, 1);
-    this.setState({});
+  deleteAdditionalImage = (i) => (e) => {
+    this.state.additionalImages.splice(i, 1);
+    this.forceUpdate();
+  };
+
+  deleteAdditionalFile = (i) => (e) => {
+    this.state.additionalFiles.splice(i, 1);
+    this.forceUpdate();
   };
 
   goBack = () => {
@@ -230,18 +245,37 @@ class CreateProject extends Component {
       </Popover>
     );
 
-    var files = [];
-    for (var i = 0; i < this.state.files.length; i++) {
-      const file = this.state.files[i];
-      files.push(
+    const additionalImages = [];
+    this.state.additionalImages.forEach((file, i) => {
+      additionalImages.push(
         <div key={i}>
-          <button type="button" className="close" onClick={this.deleteFile(i)}>
+          <button
+            type="button"
+            className="close"
+            onClick={this.deleteAdditionalImage(i)}
+          >
             <span aria-hidden="true">&times;</span>
           </button>
           <span>{file.name}</span>
         </div>
       );
-    }
+    });
+
+    const additionalFiles = [];
+    this.state.additionalFiles.forEach((file, i) => {
+      additionalFiles.push(
+        <div key={i}>
+          <button
+            type="button"
+            className="close"
+            onClick={this.deleteAdditionalFile(i)}
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <span>{file.name}</span>
+        </div>
+      );
+    });
 
     return (
       <Container>
@@ -252,7 +286,7 @@ class CreateProject extends Component {
 
           <Form onSubmit={this.onSubmit} style={{ marginTop: "1rem" }}>
             <Row>
-              <Col>
+              <Col md={6}>
                 <Form.Group controlId="title">
                   <Form.Label>Title</Form.Label>
                   <Form.Control
@@ -299,13 +333,13 @@ class CreateProject extends Component {
                   </OverlayTrigger>
                 </Form.Group>
               </Col>
-              <Col>
+              <Col md={6}>
                 <Form.Group controlId="mainImage">
                   <Form.Label>Main image</Form.Label>
                   <div className="custom-file">
                     <input
                       type="file"
-                      accept={acceptedImageTypes.join(",")}
+                      accept={typesToAcceptAttribute(acceptedImageTypes)}
                       className="custom-file-input"
                       id="mainImage"
                       onChange={this.onChange}
@@ -319,6 +353,27 @@ class CreateProject extends Component {
                       Example invalid custom file feedback
                     </div>
                   </div>
+                </Form.Group>
+
+                <Form.Group controlId="additionalImages">
+                  <Form.Label>Additional images</Form.Label>
+                  <div className="custom-file">
+                    <input
+                      type="file"
+                      accept={typesToAcceptAttribute(acceptedImageTypes)}
+                      multiple
+                      className="custom-file-input"
+                      id="additionalImages"
+                      onChange={this.onChange}
+                    />
+                    <label
+                      className="custom-file-label"
+                      htmlFor="additionalImages"
+                    >
+                      Choose files
+                    </label>
+                  </div>
+                  <div className="mt-2">{additionalImages}</div>
                 </Form.Group>
 
                 <Form.Group controlId="additionalFiles">
@@ -338,7 +393,7 @@ class CreateProject extends Component {
                       Choose files
                     </label>
                   </div>
-                  <div className="mt-2">{files}</div>
+                  <div className="mt-2">{additionalFiles}</div>
                 </Form.Group>
               </Col>
             </Row>
