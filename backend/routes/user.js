@@ -6,12 +6,15 @@ const {
   getUser,
   userByUsername,
   getUsernameId,
+  userPhoto,
 } = require("../controllers/user");
 
 const { requireAuthentication } = require("../controllers/auth");
 
-router.post("/user/:username", requireAuthentication, updateUser);
-router.get("/user/:username", requireAuthentication, getUser);
+router.post("/user/:username", updateUser);
+router.get("/user/:username", getUser);
+router.get("/user/:username/photo", userPhoto);
+// router.post("/user/:username/photo", requireAuthentication, updateUserPhoto);
 
 router.param("username", userByUsername);
 

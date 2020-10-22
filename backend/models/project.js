@@ -8,6 +8,10 @@ const projectSchema = new Schema({
     required: true,
   },
 
+  about: {
+    type: String,
+  },
+
   body: {
     type: String,
     required: true,
@@ -24,8 +28,23 @@ const projectSchema = new Schema({
   },
 
   created: {
-    type: Date,
-    default: Date.now,
+    type: String,
+  },
+
+  // Added this to determine if the item is ready for public viewing
+  itemIsPublic: {
+    type: Boolean,
+    default: false,
+  },
+
+  // A way to connect the user to the project
+  _userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+
+  username: {
+    type: String,
   },
 });
 

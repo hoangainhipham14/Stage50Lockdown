@@ -25,13 +25,17 @@ exports.userByUsername = (req, res, next, username) => {
     }
     req.profile = user; //add
     req.username = username;
+
     next();
   });
 };
 
 exports.userPhoto = (req, res, next) => {
   if (req.profile.image.data) {
-    res.set(("Content-Type", req.profile.image.contentType));
+    res.set({
+      "Content-Disposition": "inline; filename=" + req.profile.image.fileName,
+      "Content-Type": req.profile.image.contentType,
+    });
     return res.send(req.profile.image.data);
   }
   next();
@@ -64,7 +68,19 @@ exports.updateUser = (req, res, next) => {
   let form = new formidable.IncomingForm();
   form.keepExtensions = true;
 
-  form.parse(req, (err, fields) => {
+  form.parse(req, (err, fields, files) => {
+    if (files.userPhoto) {
+      let imageObject = {
+        image: {
+          data: fs.readFileSync(files.userPhoto.path),
+          contentType: files.userPhoto.type,
+          fileName: files.userPhoto.name,
+        },
+      };
+
+      fields = Object.assign(fields, imageObject);
+    }
+
     User.findOneAndUpdate(
       { username: req.username },
       fields,
@@ -72,6 +88,13 @@ exports.updateUser = (req, res, next) => {
       (err, doc) => {
         if (err) {
           console.log("Something wrong when updating data!");
+          return res.send({
+            error: err,
+          });
+        } else {
+          return res.send({
+            message: "Success!",
+          });
         }
       }
     );

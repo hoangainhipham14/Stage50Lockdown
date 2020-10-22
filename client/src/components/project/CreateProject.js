@@ -10,6 +10,7 @@ class CreateProject extends Component {
 
     this.state = {
       title: "",
+      about: "",
       body: "",
       image: null,
     };
@@ -42,12 +43,19 @@ class CreateProject extends Component {
     // prevent page from reloading
     e.preventDefault();
 
+    // get user id for post request and to save as a reference for the project
+    const _id = this.props.auth.user._id;
+    const username = this.props.match.params.username;
+
     // create the formdata object
     // we need to do this because JSON isn't sufficient for image sending
     const formData = new FormData();
     formData.set("title", this.state.title);
+    formData.set("about", this.state.about);
     formData.set("body", this.state.body);
     formData.set("image", this.state.image);
+    formData.set("_userId", _id);
+    formData.set("username", username);
 
     // configururation for post request since we aren't just posting json
     const config = {
@@ -55,9 +63,6 @@ class CreateProject extends Component {
         "content-type": "multipart/form-data",
       },
     };
-
-    // get user id for post request
-    const _id = this.props.auth.user._id;
 
     axios
       .post(`/api/project/create/${_id}`, formData, config)
@@ -83,6 +88,11 @@ class CreateProject extends Component {
             <Form.Group controlId="title">
               <Form.Label>Title</Form.Label>
               <Form.Control type="text" onChange={this.onChange} />
+            </Form.Group>
+
+            <Form.Group controlId="about">
+              <Form.Label>About</Form.Label>
+              <Form.Control as="textarea" rows="5" onChange={this.onChange} />
             </Form.Group>
 
             <Form.Group controlId="body">

@@ -18,6 +18,7 @@ mongoose
     useUnifiedTopology: true,
     useNewUrlParser: true,
     useCreateIndex: true,
+    autoIndex: true,
   })
   .then(() => {
     console.log("Connected to MongoDB Atlas");
@@ -26,15 +27,23 @@ mongoose
     console.error("Error connecting to MongoDB", err);
   });
 
+// Logs all mongoose calls
+mongoose.set("debug", false);
+
 const authRoutes = require("./routes/auth");
 const projectRoutes = require("./routes/project");
 const userRoutes = require("./routes/user");
+const searchRoutes = require("./routes/search");
 
 app.use("/api", authRoutes);
 app.use("/api", projectRoutes);
 app.use("/api", userRoutes);
+app.use("/api", searchRoutes);
 
 if (process.env.NODE_ENV === "production") {
+  // Turn off mongoose debug mode
+  mongoose.set("debug", false);
+
   app.use(express.static(path.join(__dirname, "../client/build")));
 
   app.get("*", (req, res) => {

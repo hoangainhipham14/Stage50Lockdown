@@ -1,53 +1,175 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { Card, Container, Col, Row, Alert } from "react-bootstrap";
+import axios from "axios";
+
+import ProjectList from "./ProjectList";
+import { getUsernameId } from "../layout/GetUsername";
+import DisplayCarousel from "../profile/Carousel";
 
 class Profile extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      username: this.props.match.params.username,
+      profileUserName: this.props.match.params.username,
       firstName: "",
       lastName: "",
       email: "",
-      userExists: false,
+      userExists: true,
+      phoneNumberExists: true,
+      userId: this.props.auth.user._id,
+      projects: [],
+      projectExists: true,
+      aboutUserExists: true,
+      aboutUser: "",
+      photoExist: false,
+      isAuth: false,
     };
+  }
 
-    // Pull user details from backend API
-    fetch("/api/" + this.props.match.params.username)
-      .then((res) => res.json())
-      .then((json) => {
-        if (json.success) {
+  componentDidMount = () => {
+    getUsernameId(this.state.userId).then((data) => {
+      if (data === this.state.profileUserName)
+        this.setState({
+          isAuth: true,
+        });
+    });
+
+    axios
+      .get(`/api/user/${this.props.match.params.username}`)
+      .then((response) => {
+        if (response.error) {
+          console.log(response.error);
+        } else if (response.data.message === "Profile does not exist") {
           this.setState({
-            firstName: json.firstName,
-            lastName: json.lastName,
-            email: json.email,
-            userExists: true,
+            userExists: false,
+            photoExist: response.data.photoExist,
+          });
+        } else {
+          this.setState({
+            firstName: response.data.firstName,
+            lastName: response.data.lastName,
+            email: response.data.email,
+            phoneNumber: response.data.phoneNumber,
+            aboutUser: response.data.aboutUser,
+            photoExist: response.data.photoExist,
+          });
+
+          if (this.state.phoneNumber === "") {
+            this.setState({
+              phoneNumberExists: false,
+            });
+          } else if (this.state.aboutUser === "") {
+            this.setState({
+              aboutUser: false,
+            });
+          }
+        }
+      });
+
+    axios
+      .post(`/api/project/list`, { username: this.state.profileUserName })
+      .then((response) => {
+        if (response.error) {
+          console.log("failure");
+          console.log(response.error);
+        } else if (response.data.message === "Projects do not exist") {
+          this.setState({
+            projectExists: false,
+          });
+        } else {
+          // console.log("response:");
+          this.setState({
+            projects: Array.from(response.data),
           });
         }
       });
-  }
+  };
 
   render() {
     if (this.state.userExists) {
       return (
-        <div>
-          <h1>
-            This profile belongs to {this.state.firstName} {this.state.lastName}
-          </h1>
-          <p>Contact: {this.state.email}</p>
-        </div>
+        <Container fluid>
+          <Row>
+            <DisplayCarousel
+              className="mt-3"
+              projects={this.state.projects}
+              projectExists={this.state.projectExists}
+            ></DisplayCarousel>
+            <Col className="col-sm d-flex ml-4 mt-5">
+              <div>
+                <Card style={{ width: "20rem", height: 350 }}>
+                  <Container className="d-flex justify-content-center">
+                    {this.state.photoExist ? (
+                      <Card.Img
+                        src={`/api/user/${this.state.profileUserName}/photo`}
+                        style={{ width: 200, height: 200 }}
+                      />
+                    ) : (
+                      <Card.Img
+                        src="../../default_photo.png"
+                        style={{ width: 200, height: 200 }}
+                      />
+                    )}
+                  </Container>
+                  <Card.Body>
+                    <Card.Title>
+                      {this.state.firstName} {this.state.lastName}
+                    </Card.Title>
+                    <Card.Subtitle>Email</Card.Subtitle>
+                    <Card.Text>{this.state.email}</Card.Text>
+                    <Card.Subtitle>Phone</Card.Subtitle>
+                    <Card.Text>
+                      {this.state.phoneNumberExists
+                        ? this.state.phoneNumber
+                        : " None"}
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
+              </div>
+            </Col>
+            <Col className="col-sm d-flex mt-5">
+              <div>
+                <Card style={{ width: "20rem" }}>
+                  <Card.Header>About</Card.Header>
+                  <Card.Body style={{ overflowY: "scroll", height: 299 }}>
+                    {this.state.aboutUserExists
+                      ? this.state.aboutUser
+                      : " None"}
+                  </Card.Body>
+                </Card>
+              </div>
+            </Col>
+            <ProjectList
+              projects={this.state.projects}
+              projectExists={this.state.projectExists}
+              username={this.state.profileUserName}
+              isAuth={this.state.isAuth}
+            ></ProjectList>
+          </Row>
+        </Container>
       );
     } else {
       return (
-        <div>
-          <h1>
-            This profile does not exist: {this.props.match.params.username}
-          </h1>
-          <a href="/">Go home</a>
-        </div>
+        <Container>
+          <Alert variant="warning">
+            <Alert.Heading>User doesn't exist</Alert.Heading>
+            <Alert.Link href="/">Go Home</Alert.Link>
+          </Alert>
+        </Container>
       );
     }
   }
 }
 
-export default Profile;
+Profile.propTypes = {
+  auth: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+
+export default connect(mapStateToProps)(Profile);

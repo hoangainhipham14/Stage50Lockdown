@@ -19,27 +19,40 @@ import PrivateRoute from "./components/private-route/privateRoute";
 import Dashboard from "./components/dashboard/dashboard";
 import CreateProject from "./components/project/CreateProject";
 import SingleProject from "./components/project/SingleProject";
+import LandingPage from "./components/landing-page/landingPage";
 import AccountDetails from "./components/profile/AccountDetails";
 import DisplayCarousel from "./components/profile/Carousel";
 import RequestPasswordReset from "./components/auth/requestRecovery";
+import PrivacyToggleButton from "./components/dashboard/PrivacyToggleButton";
+import UserSearchResults from "./components/search/UserSearchResults";
+import NoMatch from "./components/404/404";
+import CreateProfile from "./components/profile/CreateProfile";
 
 // check for token to keep user logged in
 if (localStorage.token) {
-  // set authentication token to header
-  const token = localStorage.token;
-  setAuthToken(token);
-  // decode token and get user info and expiry
-  const decoded = jwt_decode(token);
-  // set user
-  store.dispatch(setCurrentUser(decoded));
-  // check for expired token
-  const currentTime = Date.now() / 1000;
-  if (decoded.exp < currentTime) {
-    // log user out
-    store.dispatch(logoutUser());
+  try {
+    // set authentication token to header
+    const token = localStorage.token;
+    // decode token and get user info and expiry
+    const decoded = jwt_decode(token);
 
-    // redirect to login
-    window.location.href = "./";
+    setAuthToken(token);
+
+    // set user
+    store.dispatch(setCurrentUser(decoded));
+    // check for expired token
+    const currentTime = Date.now() / 1000;
+    if (decoded.exp < currentTime) {
+      // log user out
+      store.dispatch(logoutUser());
+
+      // redirect to login
+      window.location.href = "./";
+    }
+  } catch (err) {
+    console.log("Invalid token");
+    setAuthToken(false);
+    localStorage.removeItem("token");
   }
 }
 
@@ -50,29 +63,55 @@ class App extends Component {
         <Router>
           <div className="app">
             <Navbar />
-            <Route exact path="/signin" component={Signin} />
-            <Route exact path="/signup" component={Signup} />
-            <Route exact path="/profile/:username" component={Profile} />
-            <Route exact path="/createProject" component={CreateProject} />
-            <Route exact path="/project/:projectId" component={SingleProject} />
-            <Route
-              exact
-              path="/carousel/:projectId"
-              component={DisplayCarousel}
-            />
-            <Route
-              exact
-              path="/user/:username/account"
-              component={AccountDetails}
-            />
-            <Route path="/forgot-password" component={RequestPasswordReset} />
-            <Route
-              exact
-              path="/resetPassword/:token"
-              component={ResetPassword}
-            />
             <Switch>
+              <Route exact path="/" component={LandingPage} />
+              <Route exact path="/signin" component={Signin} />
+              <Route exact path="/signup" component={Signup} />
+              <Route exact path="/profile/:username" component={Profile} />
+              <Route
+                exact
+                path="/createProject/:username"
+                component={CreateProject}
+              />
+              <Route
+                exact
+                path="/createProfile/:username"
+                component={CreateProfile}
+              />
+              <Route
+                exact
+                path="/projects/:projectId"
+                component={SingleProject}
+              />
+              <Route
+                exact
+                path="/projects/link/:link"
+                component={SingleProject}
+              />
+              <Route
+                exact
+                path="/user/:username/account"
+                component={AccountDetails}
+              />
+              <Route path="/forgot-password" component={RequestPasswordReset} />
+              <Route
+                exact
+                path="/resetPassword/:token"
+                component={ResetPassword}
+              />
+              <Route
+                exact
+                path="/projects/privacy/:projectId"
+                component={PrivacyToggleButton}
+              />
+
+              <Route exact path="/carousel" component={DisplayCarousel} />
+
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
+              <Route exact path="/search" component={UserSearchResults} />
+
+              {/* This must stay at the bottom. Add any new routes above */}
+              <Route component={NoMatch} />
             </Switch>
           </div>
         </Router>

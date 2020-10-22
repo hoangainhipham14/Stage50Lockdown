@@ -18,6 +18,20 @@ class Signup extends Component {
     };
   }
 
+  componentDidMount() {
+    // Get props from landing page and map to state
+    try {
+      this.setState({
+        email: this.props.location.state.email,
+        username: this.props.location.state.username,
+        firstName: this.props.location.state.firstName,
+        lastName: this.props.location.state.lastName,
+      });
+    } catch (err) {
+      console.log("no state passed in");
+    }
+  }
+
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.errors) {
       this.setState({
@@ -84,6 +98,7 @@ class Signup extends Component {
                   type="text"
                   placeholder="First name"
                   onChange={this.onChange}
+                  defaultValue={this.state.firstName}
                 />
                 <Alert variant="danger" show={!isEmpty(errors.firstName)}>
                   {errors.firstName}
@@ -96,6 +111,7 @@ class Signup extends Component {
                   type="text"
                   placeholder="Last name"
                   onChange={this.onChange}
+                  defaultValue={this.state.lastName}
                 />
                 <Alert variant="danger" show={!isEmpty(errors.lastName)}>
                   {errors.lastName}
@@ -108,6 +124,7 @@ class Signup extends Component {
                   type="text"
                   placeholder="Username"
                   onChange={this.onChange}
+                  defaultValue={this.state.username}
                 />
                 <Alert variant="danger" show={!isEmpty(errors.username)}>
                   {errors.username}
@@ -120,6 +137,7 @@ class Signup extends Component {
                   type="email"
                   placeholder="Email"
                   onChange={this.onChange}
+                  defaultValue={this.state.email}
                 />
                 <Alert variant="danger" show={!isEmpty(errors.email)}>
                   {errors.email}
