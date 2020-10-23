@@ -138,7 +138,9 @@ class MyNavbar extends Component {
 
   onClickLogout = (e) => {
     e.preventDefault();
+    //console.log("if you see this the user is still being logged out");
     this.props.logoutUser();
+    this.props.history.push('/');
   };
 
   render() {
@@ -153,6 +155,7 @@ class MyNavbar extends Component {
               <NavbarUserSearch />
               {isAuthenticated ? (
                 <NavbarAccountLoggedIn
+
                   onClickLogout={this.onClickLogout}
                   user={user}
                   username={this.state.username}
