@@ -20,7 +20,7 @@
 .carousel {
   width: 100%;
   display: block;
-  margin: auto;
+  margin-bottom: 30px;
 }
 link:link {
   color: red;

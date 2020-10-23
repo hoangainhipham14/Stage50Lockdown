@@ -33,7 +33,7 @@ class ProjectList extends Component {
     if (this.props.projectExists) {
       // display scrollable projects
       return (
-        <Col className="col-sm d-flex mt-5 mb-5">
+        <Col className="col-sm d-flex mb-5">
           <Container>
             <Card style={{ width: "45rem", height: maxHeight }}>
               <Card.Header>Projects</Card.Header>
@@ -49,14 +49,16 @@ class ProjectList extends Component {
                 Edit Profile
               </Button>
             )}
-            {this.props.isAuth && (
-              <Button href={`/createProject/${this.props.username}`}>
-                Create Project
-              </Button>
-            )}
+
             {this.props.isAuth && (
               <Button href={`/user/${this.props.username}/account`}>
                 Edit Account Details
+              </Button>
+            )}
+
+            {this.props.isAuth && (
+              <Button href={`/createProject/${this.props.username}`}>
+                Create Project
               </Button>
             )}
           </Container>
@@ -66,7 +68,7 @@ class ProjectList extends Component {
     } else {
       // display no project
       return (
-        <Col className="col-sm d-flex mt-5 mb-5">
+        <Col className="col-sm d-flex mb-5">
           <Container>
             <Card style={{ width: "45rem", height: maxHeight }}>
               <Card.Header>Projects</Card.Header>
@@ -80,9 +82,16 @@ class ProjectList extends Component {
                 Edit Profile
               </Button>
             )}
+
             {this.props.isAuth && (
               <Button href={`/user/${this.props.username}/account`}>
                 Edit Account Details
+              </Button>
+            )}
+
+            {this.props.isAuth && (
+              <Button href={`/createProject/${this.props.username}`}>
+                Create Project
               </Button>
             )}
           </Container>

@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 
 class DisplayCarousel extends Component {
   render() {
+    // display image of each project, show project title, part of about project text,
+    // and link to each project to see more
     const projectCards = this.props.projects.map((project, idx) => (
       <Carousel.Item>
         <Container>
@@ -21,7 +23,7 @@ class DisplayCarousel extends Component {
           <Carousel.Caption className="text-left">
             <h1 style={{ fontSize: 30 }}>{project.title}</h1>
             <h2 style={{ fontSize: 20, width: "50%", height: "80%" }}>
-              {project.about.substring(0, 100)}...
+              {project.about.substring(0, 900)}...
               <Link to={`/projects/${project._id}`} style={{ color: "white" }}>
                 see more
               </Link>
@@ -31,21 +33,7 @@ class DisplayCarousel extends Component {
       </Carousel.Item>
     ));
 
-    return (
-      // <div>
-      //   {this.props.projects.length > 0 ? (
-      <Carousel>
-        {this.props.projects.length > 0 ? (
-          projectCards
-        ) : (
-          <Carousel.Item></Carousel.Item>
-        )}
-      </Carousel>
-      //   ) : (
-      //     "No Project"
-      //   )}
-      // </div>
-    );
+    return <Carousel>{projectCards}</Carousel>;
   }
 }
 

@@ -102,12 +102,14 @@ class Profile extends Component {
             </HCenter>
           ) : (
             <Row>
-              <DisplayCarousel
-                className="mt-3"
-                projects={this.state.projects}
-                projectExists={this.state.projectExists}
-              ></DisplayCarousel>
-              <Col className="col-sm d-flex ml-4 mt-5">
+              {this.state.projects.length > 0 && (
+                <DisplayCarousel
+                  className="mt-3 mb-5"
+                  projects={this.state.projects}
+                  projectExists={this.state.projectExists}
+                ></DisplayCarousel>
+              )}
+              <Col className="col-sm d-flex ml-4 ">
                 <div>
                   <Card style={{ width: "20rem", height: 350 }}>
                     <Container className="d-flex justify-content-center">
@@ -139,7 +141,7 @@ class Profile extends Component {
                   </Card>
                 </div>
               </Col>
-              <Col className="col-sm d-flex mt-5">
+              <Col className="col-sm d-flex">
                 <div>
                   <Card style={{ width: "20rem" }}>
                     <Card.Header>About</Card.Header>
