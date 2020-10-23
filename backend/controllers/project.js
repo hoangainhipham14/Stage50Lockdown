@@ -278,6 +278,11 @@ exports.projectById = (req, res, next, id) => {
 // Return main image of project
 exports.image = (req, res, next) => {
   const mainImageIndex = req.project.mainImageIndex;
+  if (mainImageIndex === null) {
+    return res.status(400).json({
+      error: "Project has no main image",
+    });
+  }
   const imageId = req.project.images[mainImageIndex].fileRef;
   File.findById(imageId).exec((err, image) => {
     if (err) {
@@ -353,12 +358,7 @@ exports.allImages = (req, res, next) => {
 exports.ProjectList = (req, res) => {
   const username = req.body.username;
 
-  Project.find({ username: username }).exec((err, projects) => {
-    if (err || projects.length === 0) {
-      return res.send({
-        message: "Server error don't ask",
-      });
-    }
+  User.findOne({ username: username }).exec((err, user) => {
     Project.find({ _userId: user._id }, "_id title about created").exec(
       (err, projects) => {
         console.log("user", user._id);
@@ -375,6 +375,20 @@ exports.ProjectList = (req, res) => {
     );
   });
 };
+
+// exports.ProjectList = (req, res) => {
+//   const username = req.body.username;
+
+//   Project.find({ username: username }).exec((err, projects) => {
+//     if (err || projects.length === 0) {
+//       return res.send({
+//         message: "Projects do not exist",
+//       });
+//     }
+//     req.projects = projects; //add
+//     return res.json(req.projects);
+//   });
+// };
 
 // toggles the privacy setting of a particular project
 exports.toggleProjectPrivacy = (req, res) => {
