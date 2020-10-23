@@ -1,7 +1,6 @@
 import React from "react";
 
 export function Center(props) {
-  console.log(props);
   return (
     <div
       style={{

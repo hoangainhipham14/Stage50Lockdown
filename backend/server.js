@@ -29,7 +29,7 @@ mongoose
 
 // Logs all mongoose calls
 // turned off to avoid console logging the entire bytestream of the image
-mongoose.set("debug", true);
+// mongoose.set("debug", true);
 
 const authRoutes = require("./routes/auth");
 const projectRoutes = require("./routes/project");

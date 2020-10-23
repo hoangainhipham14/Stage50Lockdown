@@ -34,9 +34,13 @@ hr {
   height: 30rem !important;
 }
 
+.col-image {
+  padding: 0.5rem;
+}
+
 .col-image img {
   border: 1px #dddddd solid;
-  border-radius: 1rem;
+  border-radius: 0.5rem;
 }
 
 .col-image img:hover {
@@ -80,6 +84,12 @@ button.close:focus {
 
 .close {
   margin-top: -0.25rem !important;
+}
+
+.loading-image {
+  padding: 2rem;
+  border: 1px #dddddd solid;
+  border-radius: 0.5rem;
 }
 
 @import "~react-image-gallery/styles/css/image-gallery.css";

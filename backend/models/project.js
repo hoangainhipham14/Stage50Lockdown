@@ -18,11 +18,24 @@ const projectSchema = new Schema({
     // required: true,
   },
 
+  // images: [
+  //   {
+  //     data: Buffer,
+  //     contentType: String,
+  //     fileName: String,
+  //   },
+  // ],
+
   images: [
     {
-      data: Buffer,
-      contentType: String,
-      fileName: String,
+      fileRef: {
+        type: ObjectId,
+        ref: "File",
+      },
+      fileName: {
+        type: String,
+        required: true,
+      },
     },
   ],
 
@@ -30,11 +43,24 @@ const projectSchema = new Schema({
     type: Number,
   },
 
+  // additionalFiles: [
+  //   {
+  //     data: Buffer,
+  //     contentType: String,
+  //     fileName: String,
+  //   },
+  // ],
+
   additionalFiles: [
     {
-      data: Buffer,
-      contentType: String,
-      fileName: String,
+      fileRef: {
+        type: ObjectId,
+        ref: "File",
+      },
+      fileName: {
+        type: String,
+        required: true,
+      },
     },
   ],
 

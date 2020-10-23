@@ -9,6 +9,7 @@ import {
   Row,
   Col,
   Table,
+  Image as BootstrapImage,
 } from "react-bootstrap";
 import { HCenter } from "../layout";
 import PropTypes from "prop-types";
@@ -39,7 +40,7 @@ function checkType(file, acceptedTypes) {
   return acceptable;
 }
 
-function checkSize(file, maxSize = 10 * 1024 * 1024) {
+function checkSize(file, maxSize = 1 * 1024 * 1024) {
   const acceptable = file.size <= maxSize;
   if (!acceptable) {
     console.log(`Rejected the file ${renderFileName(file.name)} (too large).`);
@@ -110,6 +111,40 @@ const formattingPopover = (
 
 const deleteItem = <>&times;</>;
 const restoreItem = <span style={{ fontSize: "80%" }}>&#8635;</span>;
+
+class ImageWithLoading extends Component {
+  state = { isLoaded: false };
+
+  componentDidMount() {
+    const image = new Image();
+    image.onload = () => this.setState({ isLoaded: true });
+    image.src = this.props.src;
+  }
+
+  render() {
+    const { isLoaded } = this.state;
+
+    return isLoaded ? (
+      <BootstrapImage {...this.props} />
+    ) : (
+      <div class="loading-image">Loading image...</div>
+    );
+  }
+}
+
+function generateImagePopovers(n, func) {
+  const popovers = [];
+  for (var i = 0; i < n; i++) {
+    popovers.push(
+      <Popover>
+        <Popover.Content>
+          <ImageWithLoading src={func(i)} style={{ width: "100%" }} />
+        </Popover.Content>
+      </Popover>
+    );
+  }
+  return popovers;
+}
 
 class CreateProject extends Component {
   constructor(props) {
@@ -215,7 +250,12 @@ class CreateProject extends Component {
       .then((response) => {
         console.log("Success!");
         console.log(response.data);
-        this.setState({ submitSuccess: true, projectId: response.data._id });
+        // successful project creation should return project id
+        this.setState({
+          submitSuccess: true,
+          projectId: response.data.projectId,
+        });
+        console.log(this.state);
       })
       .catch((err) => {
         console.log("Failure!");
@@ -435,7 +475,7 @@ export class EditProject extends Component {
       body: "",
       newImages: [],
       newAdditionalFiles: [],
-      oldimagesNames: [],
+      oldImagesNames: [],
       oldAdditionalFilesNames: [],
       imagesToDelete: new Set(),
       filesToDelete: new Set(),
@@ -462,7 +502,7 @@ export class EditProject extends Component {
     this.state.newImages.forEach((file, i) => {
       formData.set(`image-${i}`, file, file.name);
     });
-    formData.set("numNewimages", this.state.newImages.length);
+    formData.set("numNewImages", this.state.newImages.length);
     formData.set(
       "imagesToDelete",
       JSON.stringify(Array.from(this.state.imagesToDelete))
@@ -552,13 +592,16 @@ export class EditProject extends Component {
   componentDidMount() {
     const projectId = this.props.match.params.projectId;
     console.log(projectId);
+    const func = (i) =>
+      `http://localhost:5000/api/project/${projectId}/image/${i}`;
     singleProject(projectId).then((data) => {
       console.log(data);
       this.setState({
         title: data.title,
         about: data.about,
         body: data.body,
-        oldimagesNames: data.imagesNames,
+        oldImagesNames: data.imagesNames,
+        oldImagePopovers: generateImagePopovers(data.imagesNames.length, func),
         oldAdditionalFilesNames: data.additionalFilesNames,
         mainImageIndex: data.mainImageIndex,
         projectId: projectId,
@@ -577,7 +620,11 @@ export class EditProject extends Component {
 
     // un-main this image if appropriate
     const mainImageIndex = this.state.mainImageIndex;
-    if (!this.state.mainImageIsNew && mainImageIndex === i) {
+    if (
+      this.state.imagesToDelete.has(i) &&
+      !this.state.mainImageIsNew &&
+      mainImageIndex === i
+    ) {
       this.removeMainImage();
     }
   };
@@ -592,14 +639,14 @@ export class EditProject extends Component {
     });
   };
 
-  deleteNewimage = (i) => () => {
-    this.state.images.splice(i, 1);
+  deleteNewImage = (i) => () => {
+    this.state.newImages.splice(i, 1);
     const index = this.state.mainImageIndex;
     if (this.state.mainImageIsNew && index) {
       if (index === i) {
         this.removeMainImage();
       } else if (index > i) {
-        this.setImageAsMain(index - 1)();
+        this.setNewImageAsMain(index - 1)();
       }
     }
     this.forceUpdate();
@@ -615,6 +662,9 @@ export class EditProject extends Component {
       mainImageIndex: i,
       mainImageIsNew: false,
     });
+    if (this.state.imagesToDelete.has(i)) {
+      this.toggleImageToDelete(i)();
+    }
   };
 
   setNewImageAsMain = (i) => () => {
@@ -641,16 +691,30 @@ export class EditProject extends Component {
     }
 
     // collect the old additional images into an array of x-able items
-    const oldimages = [];
-    this.state.oldimagesNames.forEach((imageName, i) => {
+    const oldImages = [];
+    this.state.oldImagesNames.forEach((imageName, i) => {
       const toDelete = this.state.imagesToDelete.has(i);
       const isMain =
         this.state.mainImageIndex === i && !this.state.mainImageIsNew;
-      oldimages.push(
+      const deleteStyle = toDelete ? { textDecoration: "line-through" } : {};
+      oldImages.push(
         <div key={i} className="image-item">
-          <span style={toDelete ? { textDecoration: "line-through" } : {}}>
-            {imageName}
-          </span>
+          <OverlayTrigger
+            trigger="click"
+            rootClose
+            placement="bottom"
+            overlay={this.state.oldImagePopovers[i]}
+          >
+            <span
+              style={{
+                ...deleteStyle,
+                cursor: "pointer",
+              }}
+            >
+              {renderFileName(imageName)}
+            </span>
+          </OverlayTrigger>
+
           <button
             type="button"
             className="close"
@@ -684,7 +748,7 @@ export class EditProject extends Component {
           <button
             type="button"
             className="close"
-            onClick={this.deleteNewimage(i)}
+            onClick={this.deleteNewImage(i)}
           >
             <span aria-hidden="true">{deleteItem}</span>
           </button>
@@ -723,7 +787,7 @@ export class EditProject extends Component {
       );
     });
 
-    // collect the new additional images into an array of x-able items
+    // collect the new additional files into an array of x-able items
     const newAdditionalFiles = [];
     this.state.newAdditionalFiles.forEach((file, i) => {
       newAdditionalFiles.push(
@@ -739,8 +803,6 @@ export class EditProject extends Component {
         </div>
       );
     });
-
-    // collect the new additional files into an array of x-able items
 
     return (
       <Container className="project-form">
@@ -817,18 +879,20 @@ export class EditProject extends Component {
                       Choose images
                     </label>
                   </div>
-                  {oldimages.length > 0 ? (
+                  {oldImages.length > 0 ? (
                     <div className="mt-2 pl-2">
                       <i>New images</i>
                       <div className="pl-3">
                         {newImages.length > 0 ? (
                           newImages
                         ) : (
-                          <i>Images you add will appear here</i>
+                          <i style={{ opacity: "0.5" }}>
+                            Images you add will appear here
+                          </i>
                         )}
                       </div>
                       <i>Old images</i>
-                      <div className="pl-3">{oldimages}</div>
+                      <div className="pl-3">{oldImages}</div>
                     </div>
                   ) : (
                     <div className="mt-2 pl-2">{newImages}</div>

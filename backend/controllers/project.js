@@ -1,19 +1,64 @@
 const Project = require("../models/project");
 const ProjectLink = require("../models/projectLink");
 const User = require("../models/user");
+const File = require("../models/file");
 const crypto = require("crypto");
 const _ = require("lodash");
 const moment = require("moment");
 
 const formidable = require("formidable");
 const fs = require("fs");
-const { connect } = require("tls");
+
+// Responds with the project containing the data inside
+
+/* 3 Possibilies:
+    Project is private
+    Project is public
+    Project is accesed with a link
+*/
+exports.singleProject = (req, res) => {
+  /*
+  Changed this so were not sending data to the front end that is private
+  */
+  if (req.project.itemIsPublic) {
+    const data = {
+      title: req.project.title,
+      about: req.project.about,
+      body: req.project.body,
+
+      imagesNames: req.project.images.map((file) => file.fileName),
+      mainImageIndex: req.project.mainImageIndex,
+      additionalFilesNames: req.project.additionalFiles.map(
+        (file) => file.fileName
+      ),
+
+      itemIsPublic: req.project.itemIsPublic,
+    };
+    return res.json(data);
+  } else {
+    console.log("Project is private or does not exist.");
+    return res.status(400).json({
+      error: "Project does not exist",
+    });
+  }
+};
+
+async function uploadFile(file) {
+  let newFile = new File({
+    data: fs.readFileSync(file.path),
+    contentType: file.type,
+    fileName: file.name,
+  });
+
+  await newFile.save();
+  return newFile._id;
+}
 
 // Creates the project
 exports.createProject = (req, res, next) => {
   let form = new formidable.IncomingForm();
   form.keepExtensions = true;
-  form.parse(req, (err, fields, files) => {
+  form.parse(req, async (err, fields, files) => {
     console.log("===================================");
     console.log(fields);
     for (i in files) console.log(i, files[i].name);
@@ -24,49 +69,50 @@ exports.createProject = (req, res, next) => {
       });
     }
 
-    // return res.status(400).json({
-    //   test: "success",
-    // });
-
     // create the new project
-    const mainImageIndex = JSON.parse(fields.mainImageIndex)
-      ? parseInt(fields.mainImageIndex)
-      : null;
     let project = new Project({
       title: fields.title,
       about: fields.about,
       body: fields.body,
-      mainImageIndex: mainImageIndex,
+      mainImageIndex: JSON.parse(fields.mainImageIndex),
       _userId: fields._userId,
     });
 
-    // add the images
-    const numImages = parseInt(fields.numImages);
-    const images = [];
+    // upload the images
+    const numImages = JSON.parse(fields.numImages);
+    const imageRefs = [];
     for (var i = 0; i < numImages; i++) {
       const image = files[`image-${i}`];
-      images.push({
-        data: fs.readFileSync(image.path),
-        contentType: image.type,
-        fileName: image.name,
-      });
+      const id = await uploadFile(image);
+      if (!id) {
+        console.log("FAILURE UPLOADING FILE");
+      } else {
+        imageRefs.push({
+          fileRef: id,
+          fileName: image.name,
+        });
+      }
     }
-    project.images = images;
-    console.log(`Added ${project.images.length} images`);
+    project.images = imageRefs;
 
-    // add the additional files
-    const numAdditionalFiles = parseInt(fields.numAdditionalFiles);
-    const additionalFiles = [];
-    for (var i = 0; i < numAdditionalFiles; i++) {
+    // upload the files
+    const numFiles = JSON.parse(fields.numAdditionalFiles);
+    const fileRefs = [];
+    for (var i = 0; i < numFiles; i++) {
       const file = files[`file-${i}`];
-      additionalFiles.push({
-        data: fs.readFileSync(file.path),
-        contentType: file.type,
-        fileName: file.name,
-      });
+      const id = await uploadFile(file);
+      if (!id) {
+        console.log("FAILURE UPLOADING FILE");
+      } else {
+        fileRefs.push({
+          fileRef: id,
+          fileName: file.name,
+        });
+      }
     }
-    project.additionalFiles = additionalFiles;
-    console.log(`Added ${project.additionalFiles.length} additional files`);
+    project.additionalFiles = fileRefs;
+
+    // return res.status(400).json({ test: "success" });
 
     // TALK TO NHI ABOUT THIS
     // project = _.extend(project, fields);
@@ -78,7 +124,6 @@ exports.createProject = (req, res, next) => {
     // return res.status(400).json({ success: "test" });
 
     // save the new project
-    console.log("Saving...");
     project.save((err, result) => {
       if (err) {
         console.log("Saving error:", err);
@@ -86,9 +131,10 @@ exports.createProject = (req, res, next) => {
           error: "Failed to save project.",
         });
       } else {
-        console.log("Saving success!");
+        console.log("Saving success! Data:");
+        console.log(result);
         res.json({
-          message: "Success",
+          projectId: result._id,
         });
       }
     });
@@ -99,7 +145,7 @@ exports.createProject = (req, res, next) => {
 exports.editProject = (req, res, next) => {
   let form = new formidable.IncomingForm();
   form.keepExtensions = true;
-  form.parse(req, (err, fields, files) => {
+  form.parse(req, async (err, fields, files) => {
     console.log("===================================");
     console.log(fields);
     for (i in files) console.log(i, files[i].name);
@@ -113,36 +159,88 @@ exports.editProject = (req, res, next) => {
     // the project to be edited
     let project = req.project;
 
-    // remove additional images removed by the user
+    project.title = fields.title;
+    project.about = fields.about;
+    project.body = fields.body;
+
+    // update the index of the main image
+    // yes, i know this is fucking disgusting.
+    const mainImageIndexRel = JSON.parse(fields.mainImageIndex);
+    const mainImageIsNew = JSON.parse(fields.mainImageIsNew);
     const imagesToDelete = JSON.parse(fields.imagesToDelete);
+    let mainImageIndex;
+    if (!mainImageIndexRel) {
+      mainImageIndex = null;
+    } else {
+      if (mainImageIsNew) {
+        const numOldImagesAfterUpdate =
+          project.images.length - imagesToDelete.length;
+        mainImageIndex = numOldImagesAfterUpdate + mainImageIndexRel;
+      } else {
+        mainImageIndex = mainImageIndexRel;
+      }
+    }
+    project.mainImageIndex = mainImageIndex;
+
+    // remove additional images removed by the user
+    imagesToDelete.forEach((i) => {
+      // need to genuinely delete this image from the database, not just its
+      // reference in the project
+      const id = project.images[i].fileRef;
+      File.findByIdAndDelete(id, (err) => {
+        if (err) {
+          console.log("Error deleting image:", err);
+          // no need to alert the user here.
+        }
+      });
+    });
     project.images = project.images.filter(
-      (img, i) => !imagesToDelete.includes(i)
+      (_, i) => !imagesToDelete.includes(i)
     );
+
     // add any new additional images
     const numNewImages = parseInt(fields.numNewImages);
     for (var i = 0; i < numNewImages; i++) {
       const image = files[`image-${i}`];
-      project.images.push({
-        data: fs.readFileSync(image.path),
-        contentType: image.type,
-        fileName: image.name,
-      });
+      const id = await uploadFile(image);
+      if (!id) {
+        console.log("FAILURE UPLOADING FILE");
+      } else {
+        project.images.push({
+          fileRef: id,
+          fileName: image.name,
+        });
+      }
     }
 
-    // remove additional files removed by the user
+    // remove additional images removed by the user
     const filesToDelete = JSON.parse(fields.filesToDelete);
-    project.additionalFiles = project.additionalFiles.filter(
-      (file, i) => !filesToDelete.includes(i)
-    );
-    // add any new additional files
-    const numNewAdditionalFiles = parseInt(fields.numNewAdditionalFiles);
-    for (var i = 0; i < numNewAdditionalFiles; i++) {
-      const file = files[`file-${i}`];
-      project.additionalFiles.push({
-        data: fs.readFileSync(file.path),
-        contentType: file.type,
-        fileName: file.name,
+    filesToDelete.forEach((i) => {
+      const id = project.additionalFiles[i].fileRef;
+      File.findByIdAndDelete(id, (err) => {
+        if (err) {
+          console.log("Error deleting file:", err);
+          // no need to alert the user here.
+        }
       });
+    });
+    project.additionalFiles = project.additionalFiles.filter(
+      (_, i) => !filesToDelete.includes(i)
+    );
+
+    // add any new additional files
+    const numNewFiles = parseInt(fields.numNewAdditionalFiles);
+    for (var i = 0; i < numNewFiles; i++) {
+      const file = files[`file-${i}`];
+      const id = await uploadFile(file);
+      if (!id) {
+        console.log("FAILURE UPLOADING FILE");
+      } else {
+        project.additionalFiles.push({
+          fileRef: id,
+          fileName: image.name,
+        });
+      }
     }
 
     // return res.status(400).json({ test: "success" });
@@ -164,7 +262,6 @@ exports.editProject = (req, res, next) => {
 
 // Project parameter field, finds the project in the database
 exports.projectById = (req, res, next, id) => {
-  console.log("projectById");
   Project.findById(id)
     .populate("postedBy", "_id name")
     .exec((err, project) => {
@@ -179,88 +276,78 @@ exports.projectById = (req, res, next, id) => {
     });
 };
 
-// Image Response
+// Return main image of project
 exports.image = (req, res, next) => {
-  console.log("mainImage");
-  const project = req.project;
-  const mainImageIndex = project.mainImageIndex;
-  if (!mainImageIndex) {
-    console.log("No main image.");
-    res.status(404).json({
-      error: "This project does not have a main image.",
-    });
-  } else {
-    const image = project.images[mainImageIndex];
-    console.log("Sending image...");
+  const mainImageIndex = req.project.mainImageIndex;
+  const imageId = req.project.images[mainImageIndex].fileRef;
+  File.findById(imageId).exec((err, image) => {
+    if (err) {
+      return res.status(500).json({
+        error: "Server error.",
+      });
+    } else if (!image) {
+      return res.status(400).json({
+        error: "Image not found.",
+      });
+    }
+
+    // no problems! send the image
     res.set({
+      "Content-Disposition": `filename="${image.fileName}"`,
       "Content-Type": image.contentType,
     });
     return res.send(image.data);
-  }
+  });
 };
 
 // Send the ith additional file as an attachment
 exports.singleFile = (req, res, next) => {
-  console.log("singleFile");
-  const file = req.project.additionalFiles[parseInt(req.params.index)];
+  const fileId =
+    req.project.additionalFiles[parseInt(req.params.index)].fileRef;
+  File.findById(fileId).exec((err, file) => {
+    if (err) {
+      return res.status(500).json({
+        error: "Server error.",
+      });
+    } else if (!file) {
+      return res.status(400).json({
+        error: "File not found.",
+      });
+    }
 
-  res.set({
-    "Content-Disposition": `attachment; filename="${file.fileName}"`,
-    "Content-Type": file.contentType,
+    // no problems! send the file
+    res.set({
+      "Content-Disposition": `attachment; filename="${file.fileName}"`,
+      "Content-Type": file.contentType,
+    });
+    return res.send(file.data);
   });
-  return res.send(file.data);
 };
 
 exports.singleImage = (req, res, next) => {
-  console.log("singleImage");
-  const image = req.project.images[parseInt(req.params.index)];
+  const imageId = req.project.images[parseInt(req.params.index)].fileRef;
+  File.findById(imageId).exec((err, image) => {
+    if (err) {
+      return res.status(500).json({
+        error: "Server error.",
+      });
+    } else if (!image) {
+      return res.status(400).json({
+        error: "Image not found.",
+      });
+    }
 
-  res.set({
-    "Content-Disposition": `filename="${image.fileName}"`,
-    "Content-Type": image.contentType,
+    // no problems! send the image
+    res.set({
+      "Content-Disposition": `filename="${image.fileName}"`,
+      "Content-Type": image.contentType,
+    });
+    return res.send(image.data);
   });
-  return res.send(image.data);
 };
 
 exports.allImages = (req, res, next) => {
-  console.log("allImages");
   res.send(req.project.images);
-};
-
-// Responds with the project containing the data inside
-
-/* 3 Possibilies:
-    Project is private
-    Project is public
-    Project is accesed with a link
-*/
-exports.singleProject = (req, res) => {
-  /*
-  Changed this so were not sending data to the front end that is private
-  */
-  console.log("singleProject");
-  if (req.project.itemIsPublic) {
-    console.log("Sending...");
-    const data = {
-      title: req.project.title,
-      about: req.project.about,
-      body: req.project.body,
-
-      imagesNames: req.project.images.map((file) => file.fileName),
-      mainImageIndex: req.project.mainImageIndex,
-      additionalFilesNames: req.project.additionalFiles.map(
-        (file) => file.fileName
-      ),
-
-      itemIsPublic: req.project.itemIsPublic,
-    };
-    return res.json(data);
-  } else {
-    console.log("Project is private or does not exist.");
-    return res.status(400).json({
-      error: "Project does not exist",
-    });
-  }
 };
 
 // Returns an array of projects the user has made (Provided it has the userId attached to it)
@@ -302,12 +389,10 @@ exports.toggleProjectPrivacy = (req, res) => {
       });
     } else {
       if (project.itemIsPublic) {
-        //console.log("Item is now private");
         project.itemIsPublic = false;
         project.save();
         return res.status(200);
       } else if (!project.itemIsPublic) {
-        //console.log("Item is now public");
         project.itemIsPublic = true;
         project.save();
         return res.status(200);
@@ -327,12 +412,10 @@ exports.generateProjectLink = (req, res) => {
   const requiredTime = req.body.requiredTime;
 
   // Generate a link
-  //console.log("Generate Link to project...");
   const projectLinkString =
     req.headers.host +
     "/projects/link/" +
     crypto.randomBytes(10).toString("hex");
-  //console.log("Link Generated...");
 
   // Check to make sure link hasnt been used before
   if (ProjectLink.findOne({ link: projectLinkString }) == true) {
@@ -346,7 +429,6 @@ exports.generateProjectLink = (req, res) => {
     requiredTime: requiredTime,
   });
 
-  //console.log("Saving Link With Details: " + newProjectLink);
   // Save the Schema and return a link
   newProjectLink
     .save()

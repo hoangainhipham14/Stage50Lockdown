@@ -18,6 +18,26 @@ const { JSDOM } = require("jsdom");
 const window = new JSDOM("").window;
 const DOMPurify = createDOMPurify(window);
 
+class ImageWithLoading extends Component {
+  state = { isLoaded: false };
+
+  componentDidMount() {
+    const image = new Image();
+    image.onload = () => this.setState({ isLoaded: true });
+    image.src = this.props.src;
+  }
+
+  render() {
+    const { isLoaded } = this.state;
+
+    return isLoaded ? (
+      <BootstrapImage {...this.props} />
+    ) : (
+      <div className="loading-image">Loading image...</div>
+    );
+  }
+}
+
 class SingleProject extends Component {
   constructor(props) {
     super(props);
@@ -37,7 +57,7 @@ class SingleProject extends Component {
     if (possibleLink) {
       console.log("trying to access with a link");
       connectLinkToProject(possibleLink).then((data) => {
-        console.log(data);
+        console.log("Got project data:", data);
         if (data.error) {
           console.log(data.error);
         } else {
@@ -86,7 +106,6 @@ class SingleProject extends Component {
     if (!project) {
       return <Container>Loading...</Container>;
     }
-    console.log(project);
     const {
       title,
       about,
@@ -124,13 +143,14 @@ class SingleProject extends Component {
     const numImages = imagesNames.length;
     const images = [];
     for (var i = 0; i < numImages; i++) {
+      if (i === mainImageIndex) continue;
       images.push(
         <Col sm={3} className="col-image" key={i}>
           <Center>
-            <img
+            <ImageWithLoading
               src={`http://localhost:5000/api/project/${this.state.projectId}/image/${i}`}
               className="w-100"
-              alt=""
+              alt={this.state.project.imagesNames[i]}
             />
           </Center>
         </Col>
@@ -163,11 +183,11 @@ class SingleProject extends Component {
             </HCenter>
           </Card.Header>
           <Card.Body>
-            {mainImageIndex ? (
+            {mainImageIndex !== null ? (
               <Row>
                 <Col>
                   <Col lg={6} className="float-left">
-                    <BootstrapImage
+                    <ImageWithLoading
                       src={`http://localhost:5000/api/project/${this.state.projectId}/mainImage`}
                       alt=""
                       style={{ width: "100%" }}
