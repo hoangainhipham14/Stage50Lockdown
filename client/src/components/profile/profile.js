@@ -28,11 +28,15 @@ class Profile extends Component {
       photoExist: false,
       isAuth: false,
       loading: true,
+      emptyString: "",
+      emailPrivate: true,
+      phoneNumberPrivate: true,
     };
   }
 
   componentDidMount = () => {
     getUsernameId(this.state.userId).then((data) => {
+      //console.log("getUserNameId yealds: " + data);
       if (data === this.state.profileUserName)
         this.setState({
           isAuth: true,
@@ -40,7 +44,7 @@ class Profile extends Component {
     });
 
     axios
-      .get(`/api/user/${this.props.match.params.username}`)
+      .get(`/api/user/profile/${this.props.match.params.username}`)
       .then((response) => {
         if (response.error) {
           console.log(response.error);
@@ -50,6 +54,7 @@ class Profile extends Component {
             photoExist: response.data.photoExist,
           });
         } else {
+          //console.log(response);
           this.setState({
             firstName: response.data.firstName,
             lastName: response.data.lastName,
@@ -57,7 +62,11 @@ class Profile extends Component {
             phoneNumber: response.data.phoneNumber,
             aboutUser: response.data.aboutUser,
             photoExist: response.data.photoExist,
+            emailPrivate: response.data.emailPrivate,
+            phoneNumberPrivate: response.data.phoneNumberPrivate,
           });
+
+          //console.log(this.state);
 
           if (this.state.phoneNumber === "") {
             this.setState({
@@ -129,9 +138,13 @@ class Profile extends Component {
                       <Card.Title>
                         {this.state.firstName} {this.state.lastName}
                       </Card.Title>
-                      <Card.Subtitle>Email</Card.Subtitle>
+                      <Card.Subtitle>
+                        {this.state.emailPrivate ? "" : "Email:"}
+                      </Card.Subtitle>
                       <Card.Text>{this.state.email}</Card.Text>
-                      <Card.Subtitle>Phone</Card.Subtitle>
+                      <Card.Subtitle>
+                        {this.state.phoneNumberPrivate ? "" : "Phone Number:"}
+                      </Card.Subtitle>
                       <Card.Text>
                         {this.state.phoneNumberExists
                           ? this.state.phoneNumber

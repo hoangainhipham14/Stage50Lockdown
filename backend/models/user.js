@@ -61,6 +61,27 @@ const userSchema = new Schema({
     type: String,
     default: "",
   },
+
+  // Booleans to manage privacy
+  firstNamePrivate: {
+    type: Boolean,
+    default: false,
+  },
+
+  lastNamePrivate: {
+    type: Boolean,
+    default: false,
+  },
+
+  emailPrivate: {
+    type: Boolean,
+    default: false,
+  },
+
+  phoneNumberPrivate: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 // Add secondary indexes to userSchema. Allows searching
