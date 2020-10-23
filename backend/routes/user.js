@@ -21,7 +21,6 @@ router.post("/user/:username", requireAuthentication, updateUser);
 
 //router.get("/user/:username", getUser);
 router.get("/user/:username/photo", userPhoto);
-// router.post("/user/:username/photo", requireAuthentication, updateUserPhoto);
 
 router.param("username", userByUsername);
 

@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Card, Container, Col, Row, Alert } from "react-bootstrap";
+import { Card, Container, Col, Row, Alert, Spinner } from "react-bootstrap";
 import axios from "axios";
 
 import ProjectList from "./ProjectList";
 import { getUsernameId } from "../layout/GetUsername";
+import DisplayCarousel from "../profile/Carousel";
+import { HCenter } from "../layout";
 
 class Profile extends Component {
   constructor(props) {
@@ -25,6 +27,7 @@ class Profile extends Component {
       aboutUser: "",
       photoExist: false,
       isAuth: false,
+      loading: true,
       emptyString: "",
       emailPrivate: true,
       phoneNumberPrivate: true,
@@ -33,7 +36,6 @@ class Profile extends Component {
 
   componentDidMount = () => {
     getUsernameId(this.state.userId).then((data) => {
-
       //console.log("getUserNameId yealds: " + data);
       if (data === this.state.profileUserName)
         this.setState({
@@ -87,11 +89,13 @@ class Profile extends Component {
         } else if (response.data.message === "Projects do not exist") {
           this.setState({
             projectExists: false,
+            loading: false,
           });
         } else {
           // console.log("response:");
           this.setState({
             projects: Array.from(response.data),
+            loading: false,
           });
         }
       });
@@ -100,60 +104,78 @@ class Profile extends Component {
   render() {
     if (this.state.userExists) {
       return (
-        <Container fluid>
-          <Row>
-            <Col className="col-sm d-flex ml-4">
-              <div>
-                <Card style={{ width: "20rem", height: 350 }}>
-                  <Container className="d-flex justify-content-center">
-                    {this.state.photoExist ? (
-                      <Card.Img
-                        src={`/api/user/${this.state.profileUserName}/photo`}
-                        style={{ width: 200, height: 200 }}
-                      />
-                    ) : (
-                      <Card.Img
-                        src="../../default_photo.png"
-                        style={{ width: 200, height: 200 }}
-                      />
-                    )}
-                  </Container>
-                  <Card.Body>
-                    <Card.Title>
-                      {this.state.firstName} {this.state.lastName}
-                    </Card.Title>
-                    <Card.Subtitle>{this.state.emailPrivate ? "" : "Email:"}</Card.Subtitle>
-                    <Card.Text>{this.state.email}</Card.Text>
-                    <Card.Subtitle>{this.state.phoneNumberPrivate ? "" : "Phone Number:"}</Card.Subtitle>
-                    <Card.Text>
-                      {this.state.phoneNumberExists
-                        ? this.state.phoneNumber
+        <div>
+          {this.state.loading ? (
+            <HCenter>
+              <Spinner animation="grow" size="lg" />
+            </HCenter>
+          ) : (
+            <Row>
+              {this.state.projects.length > 0 && (
+                <DisplayCarousel
+                  className="mt-3 mb-5"
+                  projects={this.state.projects}
+                  projectExists={this.state.projectExists}
+                ></DisplayCarousel>
+              )}
+              <Col className="col-sm d-flex ml-4 ">
+                <div>
+                  <Card style={{ width: "20rem", height: 350 }}>
+                    <Container className="d-flex justify-content-center">
+                      {this.state.photoExist ? (
+                        <Card.Img
+                          src={`/api/user/${this.state.profileUserName}/photo`}
+                          style={{ width: 200, height: 200 }}
+                        />
+                      ) : (
+                        <Card.Img
+                          src="../../default_photo.png"
+                          style={{ width: 200, height: 200 }}
+                        />
+                      )}
+                    </Container>
+                    <Card.Body>
+                      <Card.Title>
+                        {this.state.firstName} {this.state.lastName}
+                      </Card.Title>
+                      <Card.Subtitle>
+                        {this.state.emailPrivate ? "" : "Email:"}
+                      </Card.Subtitle>
+                      <Card.Text>{this.state.email}</Card.Text>
+                      <Card.Subtitle>
+                        {this.state.phoneNumberPrivate ? "" : "Phone Number:"}
+                      </Card.Subtitle>
+                      <Card.Text>
+                        {this.state.phoneNumberExists
+                          ? this.state.phoneNumber
+                          : " None"}
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>
+                </div>
+              </Col>
+              <Col className="col-sm d-flex">
+                <div>
+                  <Card style={{ width: "20rem" }}>
+                    <Card.Header>About</Card.Header>
+                    <Card.Body style={{ overflowY: "scroll", height: 299 }}>
+                      {this.state.aboutUserExists
+                        ? this.state.aboutUser
                         : " None"}
-                    </Card.Text>
-                  </Card.Body>
-                </Card>
-              </div>
-            </Col>
-            <Col className="col-sm d-flex">
-              <div>
-                <Card style={{ width: "20rem" }}>
-                  <Card.Header>About</Card.Header>
-                  <Card.Body style={{ overflowY: "scroll", height: 299 }}>
-                    {this.state.aboutUserExists
-                      ? this.state.aboutUser
-                      : " None"}
-                  </Card.Body>
-                </Card>
-              </div>
-            </Col>
-            <ProjectList
-              projects={this.state.projects}
-              projectExists={this.state.projectExists}
-              username={this.state.profileUserName}
-              isAuth={this.state.isAuth}
-            ></ProjectList>
-          </Row>
-        </Container>
+                    </Card.Body>
+                  </Card>
+                </div>
+              </Col>
+              <ProjectList
+                projects={this.state.projects}
+                projectExists={this.state.projectExists}
+                username={this.state.profileUserName}
+                isAuth={this.state.isAuth}
+              ></ProjectList>
+            </Row>
+          )}
+          ;
+        </div>
       );
     } else {
       return (
