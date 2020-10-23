@@ -8,6 +8,7 @@ class DisplayCarousel extends Component {
   render() {
     // display image of each project, show project title, part of about project text,
     // and link to each project to see more
+
     const projectCards = this.props.projects.map((project, idx) => (
       <Carousel.Item key={idx}>
         <Container>

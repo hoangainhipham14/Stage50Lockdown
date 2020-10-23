@@ -42,7 +42,6 @@ function NavbarAccountLoggedIn(props) {
     <>
       <Nav className="mr-auto">
         <Nav.Link href="/dashboard">Dashboard</Nav.Link>
-        <Nav.Link href="/createProject">Create Project</Nav.Link>
       </Nav>
       <Nav className="ml-auto">
         <Nav.Link href={`/profile/${props.username}`}>My Profile</Nav.Link>

@@ -37,7 +37,6 @@ class Profile extends Component {
 
   componentDidMount = () => {
     getUsernameId(this.state.userId).then((data) => {
-      //console.log("getUserNameId yealds: " + data);
       if (data === this.state.profileUserName)
         this.setState({
           isAuth: true,
@@ -56,7 +55,6 @@ class Profile extends Component {
             loading: false,
           });
         } else {
-          //console.log(response);
           this.setState({
             firstName: response.data.firstName,
             lastName: response.data.lastName,
@@ -86,7 +84,6 @@ class Profile extends Component {
     axios
       .post(`/api/project/list`, { username: this.state.profileUserName })
       .then((response) => {
-        console.log(response);
         if (response.error) {
           console.log("failure");
           console.log(response.error);

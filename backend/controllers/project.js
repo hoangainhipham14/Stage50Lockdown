@@ -361,14 +361,14 @@ exports.ProjectList = (req, res) => {
   User.findOne({ username: username }).exec((err, user) => {
     Project.find({ _userId: user._id }, "_id title about created").exec(
       (err, projects) => {
-        console.log("user", user._id);
-        console.log("projects", projects);
+        // console.log("user", user._id);
+        // console.log("projects", projects);
         if (err || projects.length === 0) {
           return res.send({
             message: "Projects do not exist",
           });
         }
-        // console.log(projects);
+
         req.projects = projects; //add
         return res.json(req.projects);
       }
@@ -512,7 +512,7 @@ exports.connectLinkToProject = (req, res) => {
             // Pass the id of the project through as well as it doesnt come through inately with the link
             _id: projectId,
           };
-          console.log(data);
+          // console.log(data);
           return res.json(data);
         }
       });
