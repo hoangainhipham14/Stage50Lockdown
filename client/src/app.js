@@ -64,7 +64,6 @@ class App extends Component {
         <Router>
           <div className="app">
             <SimpleReactLightbox>
-              {" "}
               {/* Don't touch this wrapper, needed for gallery */}
               <Navbar />
               <Switch>
