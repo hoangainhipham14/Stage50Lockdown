@@ -21,11 +21,12 @@ import CreateProject from "./components/project/CreateProject";
 import SingleProject from "./components/project/SingleProject";
 import LandingPage from "./components/landing-page/landingPage";
 import AccountDetails from "./components/profile/AccountDetails";
+import DisplayCarousel from "./components/profile/Carousel";
 import RequestPasswordReset from "./components/auth/requestRecovery";
 import PrivacyToggleButton from "./components/dashboard/PrivacyToggleButton";
 import UserSearchResults from "./components/search/UserSearchResults";
 import NoMatch from "./components/404/404";
-import Facebook from "./components/facebook/Facebook";
+import CreateProfile from "./components/profile/CreateProfile";
 
 // check for token to keep user logged in
 if (localStorage.token) {
@@ -66,9 +67,17 @@ class App extends Component {
               <Route exact path="/" component={LandingPage} />
               <Route exact path="/signin" component={Signin} />
               <Route exact path="/signup" component={Signup} />
-              <Route exact path="/facebook" component={Facebook} />
               <Route exact path="/profile/:username" component={Profile} />
-              <Route exact path="/createProject" component={CreateProject} />
+              <Route
+                exact
+                path="/createProject/:username"
+                component={CreateProject}
+              />
+              <Route
+                exact
+                path="/createProfile/:username"
+                component={CreateProfile}
+              />
               <Route
                 exact
                 path="/projects/:projectId"
@@ -95,6 +104,8 @@ class App extends Component {
                 path="/projects/privacy/:projectId"
                 component={PrivacyToggleButton}
               />
+
+              <Route exact path="/carousel" component={DisplayCarousel} />
 
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
               <Route exact path="/search" component={UserSearchResults} />

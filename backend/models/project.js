@@ -42,6 +42,10 @@ const projectSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
+
+  username: {
+    type: String,
+  },
 });
 
 module.exports = mongoose.model("Project", projectSchema);

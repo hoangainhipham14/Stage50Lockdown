@@ -9,23 +9,28 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+
   lastName: {
     type: String,
     required: true,
   },
+
   username: {
     type: String,
     required: true,
     unique: true,
   },
+
   email: {
     type: String,
     required: true,
     unique: true,
   },
+
   phoneNumber: {
     type: String,
   },
+
   password: {
     type: String,
     // required: true,
@@ -47,11 +52,43 @@ const userSchema = new Schema({
     fileName: String,
   },
 
+  photoExist: {
+    type: Boolean,
+    default: false,
+  },
+
   isDeleted: {
     type: Boolean,
     default: false,
   },
+
   isValidated: {
+    type: Boolean,
+    default: false,
+  },
+
+  aboutUser: {
+    type: String,
+    default: "",
+  },
+
+  // Booleans to manage privacy
+  firstNamePrivate: {
+    type: Boolean,
+    default: false,
+  },
+
+  lastNamePrivate: {
+    type: Boolean,
+    default: false,
+  },
+
+  emailPrivate: {
+    type: Boolean,
+    default: false,
+  },
+
+  phoneNumberPrivate: {
     type: Boolean,
     default: false,
   },

@@ -59,7 +59,6 @@ exports.projectById = (req, res, next, id) => {
         });
       }
       req.project = project;
-
       next();
     });
 };
@@ -70,7 +69,6 @@ exports.image = (req, res, next) => {
     "Content-Disposition": "inline; filename=" + req.project.image.fileName,
     "Content-Type": req.project.image.contentType,
   });
-
   return res.send(req.project.image.data);
 };
 
@@ -106,9 +104,9 @@ exports.singleProject = (req, res) => {
 
 // Returns an array of projects the user has made (Provided it has the userId attached to it)
 exports.ProjectList = (req, res) => {
-  const userID = req.body.userID;
+  const username = req.body.username;
 
-  Project.find({ _userId: userID }).exec((err, projects) => {
+  Project.find({ username: username }).exec((err, projects) => {
     if (err || projects.length === 0) {
       return res.send({
         message: "Projects do not exist",

@@ -25,9 +25,6 @@ function NavbarAccountLoggedOut() {
         </LinkContainer>
       </Nav>
       <Nav className="ml-auto">
-        <LinkContainer to="/facebook">
-          <Nav.Link>Facebook</Nav.Link>
-        </LinkContainer>
         <LinkContainer to="/signin">
           <Nav.Link>Sign In</Nav.Link>
         </LinkContainer>
@@ -44,12 +41,8 @@ function NavbarAccountLoggedIn(props) {
     <>
       <Nav className="mr-auto">
         <Nav.Link href="/dashboard">Dashboard</Nav.Link>
-        <Nav.Link href="/createProject">Create Project</Nav.Link>
       </Nav>
       <Nav className="ml-auto">
-        <Nav.Link href={`/user/${props.username}/account`}>
-          Account Details
-        </Nav.Link>
         <Nav.Link href={`/profile/${props.username}`}>My Profile</Nav.Link>
         <Nav.Link onClick={props.onClickLogout}>Sign Out</Nav.Link>
       </Nav>
@@ -152,8 +145,8 @@ class MyNavbar extends Component {
   render() {
     const { isAuthenticated, user } = this.props.auth;
     return (
-      <div style={{ marginBottom: "1rem" }}>
-        <Navbar bg="dark" variant="dark" expand="sm">
+      <div className="mb-4">
+        <Navbar bg="dark" variant="dark" expand="md">
           <Container>
             <Navbar.Brand href="/">ePortfolio</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />

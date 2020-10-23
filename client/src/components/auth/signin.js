@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Form, Button, Alert, Container } from "react-bootstrap";
 import FacebookLogin from "react-facebook-login";
+import { Form, Button, Alert, Container, Spinner } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 import PropTypes from "prop-types";
@@ -19,6 +19,7 @@ class Signin extends Component {
       email: "",
       password: "",
       errors: {},
+      waiting: false,
       // Facebook state
       fbIsLoggedIn: false,
       fbUserID: "",
@@ -42,16 +43,23 @@ class Signin extends Component {
     this.setState({
       [e.target.id]: e.target.value,
     });
+
+    this.setState({
+      waiting: false,
+    });
   };
 
   onSubmit = (e) => {
     e.preventDefault();
 
+    this.setState({
+      waiting: true,
+    });
+
     const userData = {
       email: this.state.email,
       password: this.state.password,
     };
-
     this.props.signinUser(userData);
   };
 
@@ -79,6 +87,13 @@ class Signin extends Component {
 
     this.props.fbSigninUser(userData);
   };
+  componentDidUpdate() {
+    if (!isEmpty(this.state.errors) && this.state.waiting) {
+      this.setState({
+        waiting: false,
+      });
+    }
+  }
 
   render() {
     const { errors } = this.state;
@@ -151,7 +166,11 @@ class Signin extends Component {
             </Form.Group>
             <div className="text-center">
               <Button variant="primary" type="submit">
-                Sign In
+                {this.state.waiting ? (
+                  <Spinner animation="border" size="sm" />
+                ) : (
+                  <Container>Sign in</Container>
+                )}
               </Button>
               {fbContent}
             </div>
