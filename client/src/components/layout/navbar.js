@@ -37,7 +37,6 @@ function NavbarAccountLoggedOut() {
 }
 
 function NavbarAccountLoggedIn(props) {
-  // console.log("Props " + props.username);
   return (
     <>
       <Nav className="mr-auto">
@@ -129,11 +128,13 @@ class MyNavbar extends Component {
 
   componentDidMount = () => {
     const id = this.props.auth.user._id;
-    getUsernameId(id).then((data) => {
-      this.setState({
-        username: data,
+    if (id) {
+      getUsernameId(id).then((data) => {
+        this.setState({
+          username: data,
+        });
       });
-    });
+    }
   };
 
   onClickLogout = (e) => {

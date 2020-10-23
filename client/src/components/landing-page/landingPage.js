@@ -1,7 +1,11 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { Center, HCenter } from "../layout";
+import FacebookLogin from "react-facebook-login";
+import PropTypes from "prop-types";
+import { fbSigninUser } from "../../actions/authActions";
+import { connect } from "react-redux";
 import { Card, Form, Container, Button, Col, Row } from "react-bootstrap";
+import { Center, HCenter } from "../layout";
 
 class LandingPage extends Component {
   render() {
@@ -22,6 +26,8 @@ class LandingPage extends Component {
   }
 }
 
+// Home page sign up form
+// Will redirect to signup page with filled out form
 class DummySignUpForm extends Component {
   constructor(props) {
     super(props);
@@ -31,6 +37,11 @@ class DummySignUpForm extends Component {
       username: "",
       firstName: "",
       lastName: "",
+      // Facebook state
+      fbIsLoggedIn: false,
+      fbUserID: "",
+      image: "",
+      fbAccessToken: "",
     };
   }
 
@@ -40,7 +51,56 @@ class DummySignUpForm extends Component {
     });
   };
 
+  componentClicked = () => {
+    console.log("clicked");
+  };
+
+  handleFailure = () => {
+    console.log("failure");
+  };
+
+  // Response from facebook recorded
+  responseFacebook = (response) => {
+    console.log(response);
+    this.setState({
+      fbIsLoggedIn: true,
+      fbUserID: response.userID,
+      image: response.picture.data.url,
+      fbAccessToken: response.accessToken,
+      email: response.email,
+      firstName: response.first_name,
+      lastName: response.last_name,
+    });
+
+    // const userData = {
+    //   fbUserID: this.state.fbUserID,
+    //   fbAccessToken: this.state.fbAccessToken,
+    // };
+
+    // fbSigninUser(userData);
+  };
+
   render() {
+    // Renders facebook button
+    let fbContent;
+
+    if (this.state.fbIsLoggedIn) {
+      fbContent = console.log("Logged in");
+    } else {
+      fbContent = (
+        <FacebookLogin
+          // appId of ePortfolio
+          appId="820137652056192"
+          autoLoad={false}
+          fields="name,first_name, last_name,email,picture"
+          scope="public_profile, email"
+          onClick={this.componentClicked}
+          callback={this.responseFacebook}
+          onFailure={this.handleFailure}
+        />
+      );
+    }
+
     return (
       <Card>
         <Card.Body>
@@ -52,6 +112,7 @@ class DummySignUpForm extends Component {
                 type="email"
                 placeholder="Enter email"
                 onChange={this.onChange}
+                defaultValue={this.state.email}
               />
             </Form.Group>
             <Form.Group controlId="username">
@@ -60,6 +121,7 @@ class DummySignUpForm extends Component {
                 type="tex"
                 placeholder="Username"
                 onChange={this.onChange}
+                defaultValue={this.state.username}
               />
             </Form.Group>
             <Form.Group controlId="firstName">
@@ -68,6 +130,7 @@ class DummySignUpForm extends Component {
                 type="text"
                 placeholder="First name"
                 onChange={this.onChange}
+                defaultValue={this.state.firstName}
               />
             </Form.Group>
             <Form.Group controlId="lastName">
@@ -76,6 +139,7 @@ class DummySignUpForm extends Component {
                 type="text"
                 placeholder="Last name"
                 onChange={this.onChange}
+                defaultValue={this.state.lastName}
               />
             </Form.Group>
             <Link
@@ -86,11 +150,16 @@ class DummySignUpForm extends Component {
                   username: this.state.username,
                   firstName: this.state.firstName,
                   lastName: this.state.lastName,
+                  fbIsLoggedIn: this.state.fbIsLoggedIn,
+                  fbUserID: this.state.fbUserID,
+                  image: this.state.image,
+                  fbAccessToken: this.state.fbAccessToken,
                 },
               }}
             >
               <Button variant="primary">Sign Up</Button>
             </Link>
+            {fbContent}
           </Form>
         </Card.Body>
       </Card>
@@ -170,4 +239,15 @@ class BottomText extends Component {
   }
 }
 
-export default LandingPage;
+LandingPage.propTypes = {
+  fbSigninUser: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+  errors: state.errors,
+});
+
+export default connect(mapStateToProps, { fbSigninUser })(LandingPage);
