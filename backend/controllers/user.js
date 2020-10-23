@@ -30,6 +30,7 @@ exports.userByUsername = (req, res, next, username) => {
   });
 };
 
+
 exports.userPhoto = (req, res, next) => {
   if (req.profile.image.data) {
     res.set({
@@ -41,11 +42,117 @@ exports.userPhoto = (req, res, next) => {
   next();
 };
 
+// getAccountDetails is different as it requires authentication but 
+// allows users to access privacy settings
+exports.getUserAccountDetails = (req, res) => {
+
+  User.findOne({ username: req.params.username }).exec((err, user) => {
+
+    if (err || !user) {
+      return res.send({
+        message: "Profile does not exist",
+      });
+    }
+
+    let data = {
+      _id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      phoneNumber: user.phoneNumber,
+      email: user.email,
+      firstNamePrivate: user.firstNamePrivate,
+      lastNamePrivate: user.lastNamePrivate,
+      emailPrivate: user.emailPrivate,
+      phoneNumberPrivate: user.phoneNumberPrivate,
+    }
+    
+    req.data = data;
+    //console.log(req.data);
+    return res.json(req.data);
+  });
+
+}
+
+// getUserProfile displays the data that will be public on the profile page
+// of the user 
+exports.getUserProfile = (req, res) => {
+  
+  User.findOne({ username: req.params.username }).exec((err, user) => {
+    if (err || !user) {
+      return res.send({
+        message: "Profile does not exist",
+      });
+    }
+
+    let data = { 
+      firstName: user.firstName,
+      lastName: user.lastName,
+      phoneNumber: user.phoneNumber,
+      email: user.email,
+      aboutUser: user.aboutUser,
+      photoExist: user.photoExist,
+      emailPrivate: user.emailPrivate,
+      phoneNumberPrivate: user.phoneNumberPrivate,
+    }
+    //console.log("Current Data: " + JSON.stringify(data));
+
+    // Set any data to blank that is currently private
+    if(user.firstNamePrivate == true){
+      data.firstName = "";
+    }
+    if(user.lastNamePrivate == true){
+      data.lastName = "";
+    }
+    if(user.emailPrivate == true){
+      data.email = "";
+    }
+    if(user.phoneNumberPrivate == true){
+      data.phoneNumber = "";
+    }
+
+    //console.log("Current Data: " + JSON.stringify(data));
+    
+    req.data = data;  
+    
+    return res.json(req.data);
+  });
+}
+
+/*
+getEditProfileDetails will return the data for the edit profile
+statement
+*/
+exports.getEditProfileDetails = (req, res) => {
+  User.findOne({ username: req.params.username }).exec((err, user) => {
+    if (err || !user) {
+      return res.send({
+        message: "Profile does not exist",
+      });
+    }
+
+    let data = { 
+      aboutUser: user.aboutUser,
+      photoExist: user.photoExist,
+    }
+     
+    req.data = data;  
+    
+    return res.json(req.data);
+  });
+}
+
+
 // get user from database
+/*
 exports.getUser = (req, res) => {
-  // console.log(req.profile);
-  return res.json(req.profile);
+  
+  //console.log(req.profile);
+  // Filter out things that shouldnt be sent
+  console.log(req.profile);
+  return res.json("false");
 };
+*/
+
 
 // get user from database
 exports.getUsernameId = (req, res) => {
@@ -80,6 +187,8 @@ exports.updateUser = (req, res, next) => {
 
       fields = Object.assign(fields, imageObject);
     }
+
+    //console.log("FIELDS: " + fields);
 
     User.findOneAndUpdate(
       { username: req.username },
