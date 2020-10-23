@@ -121,7 +121,10 @@ class Profile extends Component {
               <Col className="col-sm d-flex ml-4 ">
                 <div>
                   <Card style={{ width: "20rem", height: 350 }}>
-                    <Container className="d-flex justify-content-center">
+                    <Container
+                      className="d-flex justify-content-center"
+                      style={{ borderBottom: "solid 1px #E0E0E0" }}
+                    >
                       {this.state.photoExist ? (
                         <Card.Img
                           src={`/api/user/${this.state.profileUserName}/photo`}
@@ -134,7 +137,7 @@ class Profile extends Component {
                         />
                       )}
                     </Container>
-                    <Card.Body>
+                    <Card.Body style={{ overflowY: "scroll" }}>
                       <Card.Title>
                         {this.state.firstName} {this.state.lastName}
                       </Card.Title>
