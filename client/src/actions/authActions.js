@@ -72,6 +72,9 @@ export const logoutUser = () => (dispatch) => {
 export const deleteUser = (history) => {
   // const logoutUser = logoutUser;
   // console.log("Clicked");
+
+  // send a request to delete the projects as well
+
   axios
     .delete("/api/deleteuser")
     .then((res) => {
