@@ -148,7 +148,7 @@ class MyNavbar extends Component {
       <div className="mb-4">
         <Navbar bg="dark" variant="dark" expand="md">
           <Container>
-            <Navbar.Brand href="/">CringePortfolio</Navbar.Brand>
+            <Navbar.Brand href="/">ePortfolio</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
               <NavbarUserSearch />
