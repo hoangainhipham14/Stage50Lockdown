@@ -121,9 +121,7 @@ exports.getUserProfile = (req, res) => {
 getEditProfileDetails will return the data for the edit profile
 statement
 */
-
 exports.getEditProfileDetails = (req, res) => {
-
   User.findOne({ username: req.params.username }).exec((err, user) => {
     if (err || !user) {
       return res.send({
@@ -135,28 +133,25 @@ exports.getEditProfileDetails = (req, res) => {
       aboutUser: user.aboutUser,
       photoExist: user.photoExist,
     }
-    
-    
+     
     req.data = data;  
     
     return res.json(req.data);
   });
-
-
-
 }
 
 
-
-
 // get user from database
+/*
 exports.getUser = (req, res) => {
   
   //console.log(req.profile);
   // Filter out things that shouldnt be sent
   console.log(req.profile);
-  return res.json(req.profile);
+  return res.json("false");
 };
+*/
+
 
 // get user from database
 exports.getUsernameId = (req, res) => {
