@@ -9,7 +9,7 @@ exports.userSearch = (req, res) => {
     { $text: { $search: searchphrase } },
     { score: { $meta: "textScore" } },
     // Return only these fields
-    { select: "firstName lastName username email" }
+    { select: "firstName lastName username " }
   )
     .sort({ score: { $meta: "textScore" } })
     .exec((err, results) => {
