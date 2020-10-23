@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { ListGroup, Button, Card, Col, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
-// import CreateProfile from "./CreateProfile";
 
 class ProjectList extends Component {
   render() {
@@ -34,7 +33,7 @@ class ProjectList extends Component {
     if (this.props.projectExists) {
       // display scrollable projects
       return (
-        <Col className="col-sm d-flex">
+        <Col className="col-sm d-flex mb-5">
           <Container>
             <Card style={{ width: "45rem", height: maxHeight }}>
               <Card.Header>Projects</Card.Header>
@@ -44,14 +43,22 @@ class ProjectList extends Component {
                 </ListGroup>
               </Container>
             </Card>
+
             {this.props.isAuth && (
               <Button href={`/createProfile/${this.props.username}`}>
                 Edit Profile
               </Button>
             )}
+
             {this.props.isAuth && (
               <Button href={`/user/${this.props.username}/account`}>
                 Edit Account Details
+              </Button>
+            )}
+
+            {this.props.isAuth && (
+              <Button href={`/createProject/${this.props.username}`}>
+                Create Project
               </Button>
             )}
           </Container>
@@ -61,7 +68,7 @@ class ProjectList extends Component {
     } else {
       // display no project
       return (
-        <Col className="col-sm d-flex">
+        <Col className="col-sm d-flex mb-5">
           <Container>
             <Card style={{ width: "45rem", height: maxHeight }}>
               <Card.Header>Projects</Card.Header>
@@ -69,14 +76,22 @@ class ProjectList extends Component {
                 <Card.Title>No project</Card.Title>
               </Card.Body>
             </Card>
+
             {this.props.isAuth && (
               <Button href={`/createProfile/${this.props.username}`}>
                 Edit Profile
               </Button>
             )}
+
             {this.props.isAuth && (
               <Button href={`/user/${this.props.username}/account`}>
                 Edit Account Details
+              </Button>
+            )}
+
+            {this.props.isAuth && (
+              <Button href={`/createProject/${this.props.username}`}>
+                Create Project
               </Button>
             )}
           </Container>

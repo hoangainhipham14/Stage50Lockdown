@@ -12,6 +12,10 @@ class AccountDetails extends Component {
     super(props);
 
     this.state = {
+      firstNamePrivate: "",
+      lastNamePrivate: "",
+      emailPrivate: "",
+      phoneNumberPrivate: "",
       user: "",
       username: this.props.match.params.username,
       firstName: "",
@@ -22,22 +26,28 @@ class AccountDetails extends Component {
       loading: true,
       submitwaiting: false,
       submitted: false,
+      changesMade: false,
     };
   }
 
   componentDidMount() {
     // Get user information stored in database when sign up
     axios
-      .get(`/api/user/${this.props.match.params.username}`)
+      .get(`/api/user/account/${this.props.match.params.username}`)
       .then((response) => {
         if (response.error) {
           console.log(response.error);
         } else {
+          console.log(response);
           this.setState({
             firstName: response.data.firstName,
             lastName: response.data.lastName,
             email: response.data.email,
             phoneNumber: response.data.phoneNumber,
+            firstNamePrivate: response.data.firstNamePrivate,
+            lastNamePrivate: response.data.lastNamePrivate,
+            emailPrivate: response.data.emailPrivate,
+            phoneNumberPrivate: response.data.phoneNumberPrivate,
             userExists: true,
             loading: false,
           });
@@ -66,6 +76,31 @@ class AccountDetails extends Component {
     });
   };
 
+  toggleEmailPrivacy = (e) => {
+    this.setState({
+      emailPrivate: !this.state.emailPrivate,
+    });
+  };
+
+  toggleFirstNamePrivacy = (e) => {
+    this.setState({
+      firstNamePrivate: !this.state.firstNamePrivate,
+    });
+  };
+
+  toggleLastNamePrivacy = (e) => {
+    console.log(this.state.lastNamePrivate);
+    this.setState({
+      lastNamePrivate: !this.state.lastNamePrivate,
+    });
+  };
+
+  togglePhoneNumberPrivacy = (e) => {
+    this.setState({
+      phoneNumberPrivate: !this.state.phoneNumberPrivate,
+    });
+  };
+
   // Submit event, update user information
   onSubmit = (e) => {
     // prevent page from reloading
@@ -82,6 +117,12 @@ class AccountDetails extends Component {
     formData.set("lastName", this.state.lastName);
     formData.set("email", this.state.email);
     formData.set("phoneNumber", this.state.phoneNumber);
+
+    // Same but a boolean for all the items for privacy
+    formData.set("firstNamePrivate", this.state.firstNamePrivate);
+    formData.set("lastNamePrivate", this.state.lastNamePrivate);
+    formData.set("emailPrivate", this.state.emailPrivate);
+    formData.set("phoneNumberPrivate", this.state.phoneNumberPrivate);
     // formData.set("username", this.state.username);
 
     // configururation for post request since we aren't just posting json
@@ -101,7 +142,14 @@ class AccountDetails extends Component {
             submitwaiting: false,
           });
         } else {
+          // Change this so the success message shows
           this.setState({
+            changesMade: true,
+            submitted: true,
+          });
+
+          /*
+          this.setState({            
             firstName: data.firstName,
             lastName: data.lastName,
             email: data.email,
@@ -110,6 +158,7 @@ class AccountDetails extends Component {
             submitwaiting: false,
             submitted: true,
           });
+          */
         }
       });
   };
@@ -119,6 +168,8 @@ class AccountDetails extends Component {
       return <Loading />;
     } else if (this.state.submitted) {
       return <Redirect to={`/profile/${this.state.username}`} />;
+    } else if (this.state.user === "") {
+      return null;
     } else if (this.state.username === this.state.user) {
       return (
         <Container>
@@ -139,6 +190,8 @@ class AccountDetails extends Component {
                   type="switch"
                   id="first name switch"
                   label="Private"
+                  checked={this.state.firstNamePrivate}
+                  onClick={this.toggleFirstNamePrivacy}
                 />
               </Form.Group>
 
@@ -153,6 +206,8 @@ class AccountDetails extends Component {
                   type="switch"
                   id="last name switch"
                   label="Private"
+                  checked={this.state.lastNamePrivate}
+                  onClick={this.toggleLastNamePrivacy}
                 />
               </Form.Group>
 
@@ -167,22 +222,10 @@ class AccountDetails extends Component {
                   type="switch"
                   id="phone number switch"
                   label="Private"
+                  checked={this.state.phoneNumberPrivate}
+                  onClick={this.togglePhoneNumberPrivacy}
                 />
               </Form.Group>
-
-              {/* <Form.Group controlId="username">
-                <Form.Label>User Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder={this.state.username}
-                  onChange={this.onChange}
-                />
-                <Form.Check
-                  type="switch"
-                  id="username switch"
-                  label="Private"
-                />
-              </Form.Group> */}
 
               <Form.Group controlId="email">
                 <Form.Label>Email</Form.Label>
@@ -191,7 +234,13 @@ class AccountDetails extends Component {
                   placeholder={this.state.email}
                   onChange={this.onChange}
                 />
-                <Form.Check type="switch" id="email switch" label="Private" />
+                <Form.Check
+                  type="switch"
+                  id="email switch"
+                  label="Private"
+                  checked={this.state.emailPrivate}
+                  onClick={this.toggleEmailPrivacy}
+                />
               </Form.Group>
 
               <div className="text-center">
@@ -205,6 +254,9 @@ class AccountDetails extends Component {
                 <Button variant="secondary" type="reset">
                   Discard Changes
                 </Button>
+                <Alert variant="success" show={this.state.changesMade}>
+                  {"Changes saved"}
+                </Alert>
               </div>
             </Form>
           </div>

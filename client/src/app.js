@@ -21,6 +21,7 @@ import CreateProject from "./components/project/CreateProject";
 import SingleProject from "./components/project/SingleProject";
 import LandingPage from "./components/landing-page/landingPage";
 import AccountDetails from "./components/profile/AccountDetails";
+import DisplayCarousel from "./components/profile/Carousel";
 import RequestPasswordReset from "./components/auth/requestRecovery";
 import PrivacyToggleButton from "./components/dashboard/PrivacyToggleButton";
 import UserSearchResults from "./components/search/UserSearchResults";
@@ -103,6 +104,8 @@ class App extends Component {
                 path="/projects/privacy/:projectId"
                 component={PrivacyToggleButton}
               />
+
+              <Route exact path="/carousel" component={DisplayCarousel} />
 
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
               <Route exact path="/search" component={UserSearchResults} />

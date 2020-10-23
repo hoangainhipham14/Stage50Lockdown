@@ -31,11 +31,12 @@ class CreateProfile extends Component {
   componentDidMount() {
     // Get user information stored in database when sign up
     axios
-      .get(`/api/user/${this.props.match.params.username}`)
+      .get(`/api/user/createProfile/${this.props.match.params.username}`)
       .then((response) => {
         if (response.error) {
           console.log(response.error);
         } else {
+          //console.log(response);
           this.setState({
             aboutUser: response.data.aboutUser,
             photoExist: response.data.photoExist,
@@ -70,6 +71,7 @@ class CreateProfile extends Component {
       .then((response) => {
         console.log("Success!");
         console.log(response.data);
+        this.setState({loading: false});
       })
       .catch((err) => {
         console.log("Failure!");
