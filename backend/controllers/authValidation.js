@@ -18,6 +18,9 @@ function validateSignup(data) {
   data.email = !isEmpty(data.email) ? data.email : "";
   data.password1 = !isEmpty(data.password1) ? data.password1 : "";
   data.password2 = !isEmpty(data.password2) ? data.password2 : "";
+  data.fbUserID = !isEmpty(data.fbUserID) ? data.fbUserID : "";
+  data.image = !isEmpty(data.image) ? data.image : "";
+  data.fbAccessToken = !isEmpty(data.fbAccessToken) ? data.fbAccessToken : "";
 
   // Regular Expression requirements
   const regexNum = new RegExp("(?=.*[0-9])");
@@ -56,14 +59,15 @@ function validateSignup(data) {
     !regexLower.test(data.password1) ||
     !regexUpper.test(data.password1)
   ) {
-    errors.password1 = "Password must contain at least one uppercase letter, one lowercase letter, and one number.";
+    errors.password1 =
+      "Password must contain at least one uppercase letter, one lowercase letter, and one number.";
   }
 
   // Check they are the same password
   if (data.password1 != data.password2) {
     errors.password2 = "Passwords are not the same";
   }
-  
+
   return {
     errors,
     isValid: isEmpty(errors),
