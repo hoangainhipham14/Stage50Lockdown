@@ -63,64 +63,61 @@ class App extends Component {
       <Provider store={store}>
         <Router>
           <div className="app">
-            <SimpleReactLightbox>
-              {/* Don't touch this wrapper, needed for gallery */}
-              <Navbar />
-              <Switch>
-                <Route exact path="/" component={LandingPage} />
-                <Route exact path="/signin" component={Signin} />
-                <Route exact path="/signup" component={Signup} />
-                <Route exact path="/profile/:username" component={Profile} />
-                <Route exact path="/createProject" component={CreateProject} />
-                <Route
-                  exact
-                  path="/projects/:projectId"
-                  component={SingleProject}
-                />
-                <Route
-                  exact
-                  path="/projects/:projectId/edit"
-                  component={EditProject}
-                />
-                <Route
-                  exact
-                  path="/projects/link/:link"
-                  component={SingleProject}
-                />
-                <Route
-                  exact
-                  path="/createProfile/:username"
-                  component={CreateProfile}
-                />
-                <Route
-                  exact
-                  path="/user/:username/account"
-                  component={AccountDetails}
-                />
-                <Route
-                  path="/forgot-password"
-                  component={RequestPasswordReset}
-                />
-                <Route
-                  exact
-                  path="/resetPassword/:token"
-                  component={ResetPassword}
-                />
-                <Route
-                  exact
-                  path="/projects/privacy/:projectId"
-                  component={PrivacyToggleButton}
-                />
+            {/* <SimpleReactLightbox> */}
+            {/* Don't touch this wrapper, needed for gallery */}
+            <Navbar />
+            <Switch>
+              <Route exact path="/" component={LandingPage} />
+              <Route exact path="/signin" component={Signin} />
+              <Route exact path="/signup" component={Signup} />
+              <Route exact path="/profile/:username" component={Profile} />
+              <Route exact path="/createProject" component={CreateProject} />
+              <Route
+                exact
+                path="/projects/:projectId"
+                component={SingleProject}
+              />
+              <Route
+                exact
+                path="/projects/:projectId/edit"
+                component={EditProject}
+              />
+              <Route
+                exact
+                path="/projects/link/:link"
+                component={SingleProject}
+              />
+              <Route
+                exact
+                path="/createProfile/:username"
+                component={CreateProfile}
+              />
+              <Route
+                exact
+                path="/user/:username/account"
+                component={AccountDetails}
+              />
+              <Route path="/forgot-password" component={RequestPasswordReset} />
+              <Route
+                exact
+                path="/resetPassword/:token"
+                component={ResetPassword}
+              />
+              <Route
+                exact
+                path="/projects/privacy/:projectId"
+                component={PrivacyToggleButton}
+              />
 
-                <Route exact path="/carousel" component={DisplayCarousel} />
+              <Route exact path="/carousel" component={DisplayCarousel} />
 
-                <PrivateRoute exact path="/dashboard" component={Dashboard} />
-                <Route exact path="/search" component={UserSearchResults} />
+              <PrivateRoute exact path="/dashboard" component={Dashboard} />
+              <Route exact path="/search" component={UserSearchResults} />
 
-                {/* This must stay at the bottom. Add any new routes above */}
-                <Route component={NoMatch} />
-              </Switch>
-            </SimpleReactLightbox>
+              {/* This must stay at the bottom. Add any new routes above */}
+              <Route component={NoMatch} />
+            </Switch>
+            {/* </SimpleReactLightbox> */}
           </div>
         </Router>
       </Provider>
