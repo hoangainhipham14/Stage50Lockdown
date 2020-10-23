@@ -271,7 +271,6 @@ exports.projectById = (req, res, next, id) => {
         });
       }
       req.project = project;
-
       next();
     });
 };
@@ -353,10 +352,9 @@ exports.allImages = (req, res, next) => {
 // Returns an array of projects the user has made (Provided it has the userId attached to it)
 exports.ProjectList = (req, res) => {
   const username = req.body.username;
-  console.log("username", username);
 
-  User.findOne({ username: username }).exec((err, user) => {
-    if (err) {
+  Project.find({ username: username }).exec((err, projects) => {
+    if (err || projects.length === 0) {
       return res.send({
         message: "Server error don't ask",
       });

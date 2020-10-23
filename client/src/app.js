@@ -22,10 +22,12 @@ import CreateProject, { EditProject } from "./components/project/CreateProject";
 import SingleProject from "./components/project/SingleProject";
 import LandingPage from "./components/landing-page/landingPage";
 import AccountDetails from "./components/profile/AccountDetails";
+import DisplayCarousel from "./components/profile/Carousel";
 import RequestPasswordReset from "./components/auth/requestRecovery";
 import PrivacyToggleButton from "./components/dashboard/PrivacyToggleButton";
 import UserSearchResults from "./components/search/UserSearchResults";
 import NoMatch from "./components/404/404";
+import CreateProfile from "./components/profile/CreateProfile";
 
 // check for token to keep user logged in
 if (localStorage.token) {
@@ -88,6 +90,11 @@ class App extends Component {
                 />
                 <Route
                   exact
+                  path="/createProfile/:username"
+                  component={CreateProfile}
+                />
+                <Route
+                  exact
                   path="/user/:username/account"
                   component={AccountDetails}
                 />
@@ -105,6 +112,8 @@ class App extends Component {
                   path="/projects/privacy/:projectId"
                   component={PrivacyToggleButton}
                 />
+
+                <Route exact path="/carousel" component={DisplayCarousel} />
 
                 <PrivateRoute exact path="/dashboard" component={Dashboard} />
                 <Route exact path="/search" component={UserSearchResults} />

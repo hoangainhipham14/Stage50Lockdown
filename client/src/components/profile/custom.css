@@ -1,0 +1,27 @@
+.carousel-inner {
+  background-color: grey !important;
+  height: 500px !important;
+  border-style: solid;
+  border-color: black;
+}
+
+.carousel-indicators li {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  margin: -20px 12px;
+  cursor: pointer;
+  background-color: white !important;
+}
+
+.carousel-caption {
+  top: 0;
+}
+.carousel {
+  width: 100%;
+  display: block;
+  margin-bottom: 30px;
+}
+link:link {
+  color: red;
+}

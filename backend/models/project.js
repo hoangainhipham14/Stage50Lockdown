@@ -83,6 +83,10 @@ const projectSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
+
+  username: {
+    type: String,
+  },
 });
 
 projectSchema.index({
