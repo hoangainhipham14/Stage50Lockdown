@@ -100,7 +100,9 @@ class AccountDetails extends Component {
   };
 
   render() {
-    if (this.state.username === this.state.user) {
+    if (this.state.user === "") {
+      return null;
+    } else if (this.state.username === this.state.user) {
       return (
         <Container>
           <div style={{ maxWidth: "30rem", margin: "0 auto" }}>
@@ -150,20 +152,6 @@ class AccountDetails extends Component {
                   label="Private"
                 />
               </Form.Group>
-
-              {/* <Form.Group controlId="username">
-                <Form.Label>User Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder={this.state.username}
-                  onChange={this.onChange}
-                />
-                <Form.Check
-                  type="switch"
-                  id="username switch"
-                  label="Private"
-                />
-              </Form.Group> */}
 
               <Form.Group controlId="email">
                 <Form.Label>Email</Form.Label>
