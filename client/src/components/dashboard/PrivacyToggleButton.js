@@ -46,7 +46,7 @@ class PrivacyToggleButton extends Component {
           <Form.Check
             type="switch"
             id="switch"
-            label="switch"
+            label=""
             onChange={this.onToggleClick}
           />
         </Form.Group>

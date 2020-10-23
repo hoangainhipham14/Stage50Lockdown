@@ -7,6 +7,7 @@ import {
   Badge,
   Col,
   Button,
+  Row,
 } from "react-bootstrap";
 
 // Just Change The Component it inherits to something that also passes down the project
@@ -19,7 +20,9 @@ class ProjectLink extends Component {
       errors: {},
       requiredTime: 30,
       generatedLink: "",
+      isPermanent: false,
     };
+    console.log(this.state);
   }
 
   onChange = (e) => {
@@ -27,6 +30,20 @@ class ProjectLink extends Component {
       [e.target.id]: e.target.value,
     });
   };
+
+  // Very similar to onSubmit
+  togglePermanentLink = (e) => { 
+    e.preventDefault();
+    console.log("Prior::" +this.state.isPermanent);
+
+    if(this.state.isPermanent === true){
+      this.setState({isPermanent: false});
+    }
+    if(this.state.isPermanent === false){
+      this.setState({isPermanent: true});
+    }
+    console.log(this.state.isPermanent);
+  }
 
   // Send a request to the database to switch the itemIsPublic bool
   onSubmit = (e) => {
@@ -45,6 +62,7 @@ class ProjectLink extends Component {
       .post(`/api/project/generateLink/`, {
         projectID: projectID,
         requiredTime: this.state.requiredTime,
+        isPermanent: this.state.isPermanent,
       })
       .then((response) => {
         if (response.error) {
@@ -93,13 +111,24 @@ class ProjectLink extends Component {
                 </Form.Group>
               </Col>
             </Form.Row>
-            <Form.Row class="center">
-              <div className="text-center">
+            <Row>    
+            <Col sm={4}>
                 <Button variant="primary" type="submit">
                   Generate Link
                 </Button>
-              </div>
-            </Form.Row>
+            </Col>
+
+            <Col sm={4}>
+              <Form.Group controlId="switchForPermLink">
+                <Form.Check
+                  type="switch"
+                  id="switchForPermLink"
+                  label="Make Link Permanent"
+                  onChange={this.togglePermanentLink}
+                />
+              </Form.Group>
+             </Col>  
+            </Row>
           </Form>
         </Card>
       </Container>

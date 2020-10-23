@@ -432,7 +432,16 @@ exports.generateProjectLink = (req, res) => {
   The time that they want the link to work for 
   */
   const projectID = req.body.projectID;
-  const requiredTime = req.body.requiredTime;
+  const isPermanent = req.body.isPermanent;
+  let requiredTime = req.body.requiredTime;
+
+  // Infinate time (Might be a problem in 100 years)
+  const infiniteTime = 52560000;
+
+    // Set the permenant time if it is a constant link
+  if(isPermanent == true){
+    requiredTime = infiniteTime;
+  }
 
   // Generate a link
   const projectLinkString =
@@ -451,6 +460,8 @@ exports.generateProjectLink = (req, res) => {
     link: projectLinkString,
     requiredTime: requiredTime,
   });
+
+  console.log("NEW LINK: " + newProjectLink);
 
   // Save the Schema and return a link
   newProjectLink
