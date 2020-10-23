@@ -30,14 +30,21 @@ const {
 // async means we don't need an enormous nested mess.
 exports.signup = async (req, res) => {
   // validate sign up data
-
-  console.log("Validating: " + JSON.stringify(req.body));
+  // Don't print account data to console
+  // console.log("Validating: " + JSON.stringify(req.body));
   const { errors, isValid } = validateSignup(req.body);
   if (!isValid) {
     return res.status(400).json(errors);
   }
 
-  const { firstName, lastName, username } = req.body;
+  const {
+    firstName,
+    lastName,
+    username,
+    fbUserID,
+    fbAccessToken,
+    image,
+  } = req.body;
   const email = req.body.email.toLowerCase();
   const phoneNumber = "";
   const password = req.body.password1;
@@ -56,6 +63,14 @@ exports.signup = async (req, res) => {
       username: "Username taken",
     });
   }
+  // check if Facebook link already exists
+  const fbAccessTokenExists = await User.findOne({ fbAccessToken });
+  const fbUserIDExists = await User.findOne({ fbUserID });
+  if (fbAccessTokenExists || fbUserIDExists) {
+    return res.status(400).json({
+      fbAccessToken: "Facebook account already exists",
+    });
+  }
 
   // create new user
   const newUser = new User({
@@ -64,6 +79,9 @@ exports.signup = async (req, res) => {
     username,
     email,
     phoneNumber,
+    fbUserID,
+    fbAccessToken,
+    image,
   });
   newUser.password = newUser.generateHash(password);
 
@@ -132,6 +150,54 @@ exports.signin = (req, res) => {
     if (!user.validPassword(password)) {
       return res.status(400).json({ passwordincorrect: "Incorrect password" });
     }
+
+    // check verified account
+    if (!user.isValidated) {
+      return res.status(400).json({
+        notvalidated:
+          "Your account has not yet been verified. Please check your email (including your spam folder) for instructions.",
+      });
+    }
+
+    const userSession = new UserSession();
+    userSession.userId = user._id;
+    userSession
+      .save()
+      .catch((err) => console.log("Error saving user session:", err));
+
+    // generate token
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
+
+    // use cookie to store token
+    // expiry = current epoch time (seconds) + length of year
+    const expiry = Date.now() / 1000 + 31556926;
+    res.cookie("token", token, { expiry });
+
+    // respond with token and also a subset of the user information
+    const { _id, firstName, lastName, username, email } = user;
+    // console.log("responding...");
+    return res.json({
+      token,
+      user: { _id, firstName, lastName, username, email },
+    });
+  });
+};
+
+exports.fbSignin = (req, res) => {
+  const { fbUserID, fbAccessToken } = req.body;
+
+  User.findOne({ fbUserID }).then((user) => {
+    // check user exists
+    if (!user) {
+      return res.status(400).json({ fbUserID: "Facebook account not found" });
+    }
+
+    // check Access Token
+    // if (user.fbAccessToken != fbAccessToken) {
+    //   console.log("User Access Token: " + user.fbAccessToken);
+    //   console.log("Access Token given: " + fbAccessToken);
+    //   return res.status(400).json({ fbAccessToken: "Invalid Access Token" });
+    // }
 
     // check verified account
     if (!user.isValidated) {

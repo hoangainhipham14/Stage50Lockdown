@@ -1,6 +1,9 @@
 import React, { Component } from "react";
-import { Link, withRouter } from "react-router-dom";
+import { Link } from "react-router-dom";
 import FacebookLogin from "react-facebook-login";
+import PropTypes from "prop-types";
+import { fbSigninUser } from "../../actions/authActions";
+import { connect } from "react-redux";
 import {
   Card,
   Form,
@@ -77,6 +80,13 @@ class DummySignUpForm extends Component {
       firstName: response.first_name,
       lastName: response.last_name,
     });
+
+    const userData = {
+      fbUserID: this.state.fbUserID,
+      fbAccessToken: this.state.fbAccessToken,
+    };
+
+    fbSigninUser(userData);
   };
 
   render() {
@@ -250,4 +260,15 @@ class BottomText extends Component {
   }
 }
 
-export default withRouter(LandingPage);
+LandingPage.propTypes = {
+  fbSigninUser: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+  errors: state.errors,
+});
+
+export default connect(mapStateToProps, { fbSigninUser })(LandingPage);
