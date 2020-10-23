@@ -238,7 +238,7 @@ exports.editProject = (req, res, next) => {
       } else {
         project.additionalFiles.push({
           fileRef: id,
-          fileName: image.name,
+          fileName: file.name,
         });
       }
     }
