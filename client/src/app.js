@@ -25,6 +25,7 @@ import RequestPasswordReset from "./components/auth/requestRecovery";
 import PrivacyToggleButton from "./components/dashboard/PrivacyToggleButton";
 import UserSearchResults from "./components/search/UserSearchResults";
 import NoMatch from "./components/404/404";
+import CreateProfile from "./components/profile/CreateProfile";
 
 // check for token to keep user logged in
 if (localStorage.token) {
@@ -47,8 +48,7 @@ if (localStorage.token) {
       // redirect to login
       window.location.href = "./";
     }
-  }
-  catch (err) {
+  } catch (err) {
     console.log("Invalid token");
     setAuthToken(false);
     localStorage.removeItem("token");
@@ -67,16 +67,25 @@ class App extends Component {
               <Route exact path="/signin" component={Signin} />
               <Route exact path="/signup" component={Signup} />
               <Route exact path="/profile/:username" component={Profile} />
-              <Route exact path="/createProject" component={CreateProject} />
+              <Route
+                exact
+                path="/createProject/:username"
+                component={CreateProject}
+              />
+              <Route
+                exact
+                path="/createProfile/:username"
+                component={CreateProfile}
+              />
               <Route
                 exact
                 path="/projects/:projectId"
                 component={SingleProject}
               />
-              <Route 
-              exact
-              path="/projects/link/:link"
-              component={SingleProject}
+              <Route
+                exact
+                path="/projects/link/:link"
+                component={SingleProject}
               />
               <Route
                 exact
@@ -94,7 +103,7 @@ class App extends Component {
                 path="/projects/privacy/:projectId"
                 component={PrivacyToggleButton}
               />
-              
+
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
               <Route exact path="/search" component={UserSearchResults} />
 

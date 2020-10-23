@@ -5,13 +5,14 @@ import { Card, Container, Col, Row, Alert } from "react-bootstrap";
 import axios from "axios";
 
 import ProjectList from "./ProjectList";
+import { getUsernameId } from "../layout/GetUsername";
 
 class Profile extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      username: this.props.match.params.username,
+      profileUserName: this.props.match.params.username,
       firstName: "",
       lastName: "",
       email: "",
@@ -20,10 +21,21 @@ class Profile extends Component {
       userId: this.props.auth.user._id,
       projects: [],
       projectExists: true,
+      aboutUserExists: true,
+      aboutUser: "",
+      photoExist: false,
+      isAuth: false,
     };
   }
 
   componentDidMount = () => {
+    getUsernameId(this.state.userId).then((data) => {
+      if (data === this.state.profileUserName)
+        this.setState({
+          isAuth: true,
+        });
+    });
+
     axios
       .get(`/api/user/${this.props.match.params.username}`)
       .then((response) => {
@@ -32,6 +44,7 @@ class Profile extends Component {
         } else if (response.data.message === "Profile does not exist") {
           this.setState({
             userExists: false,
+            photoExist: response.data.photoExist,
           });
         } else {
           this.setState({
@@ -39,17 +52,24 @@ class Profile extends Component {
             lastName: response.data.lastName,
             email: response.data.email,
             phoneNumber: response.data.phoneNumber,
+            aboutUser: response.data.aboutUser,
+            photoExist: response.data.photoExist,
           });
+
           if (this.state.phoneNumber === "") {
             this.setState({
               phoneNumberExists: false,
+            });
+          } else if (this.state.aboutUser === "") {
+            this.setState({
+              aboutUser: false,
             });
           }
         }
       });
 
     axios
-      .post(`/api/project/list`, { userID: this.state.userId })
+      .post(`/api/project/list`, { username: this.state.profileUserName })
       .then((response) => {
         if (response.error) {
           console.log("failure");
@@ -73,35 +93,54 @@ class Profile extends Component {
         <Container fluid>
           <Row>
             <Col className="col-sm d-flex ml-4">
-              <Card style={{ width: "20rem" }}>
-                <Card.Img variant="top" src="../../doraemon.png" />
-                <Card.Body>
-                  <Card.Title>
-                    {this.state.firstName} {this.state.lastName}
-                  </Card.Title>
-                  <Card.Subtitle>Email</Card.Subtitle>
-                  <Card.Text>{this.state.email}</Card.Text>
-                  <Card.Subtitle>Phone</Card.Subtitle>
-                  <Card.Text>
-                    {this.state.phoneNumberExists
-                      ? this.state.phoneNumber
-                      : " None"}
-                  </Card.Text>
-                </Card.Body>
-              </Card>
+              <div>
+                <Card style={{ width: "20rem", height: 350 }}>
+                  <Container className="d-flex justify-content-center">
+                    {this.state.photoExist ? (
+                      <Card.Img
+                        src={`/api/user/${this.state.profileUserName}/photo`}
+                        style={{ width: 200, height: 200 }}
+                      />
+                    ) : (
+                      <Card.Img
+                        src="../../default_photo.png"
+                        style={{ width: 200, height: 200 }}
+                      />
+                    )}
+                  </Container>
+                  <Card.Body>
+                    <Card.Title>
+                      {this.state.firstName} {this.state.lastName}
+                    </Card.Title>
+                    <Card.Subtitle>Email</Card.Subtitle>
+                    <Card.Text>{this.state.email}</Card.Text>
+                    <Card.Subtitle>Phone</Card.Subtitle>
+                    <Card.Text>
+                      {this.state.phoneNumberExists
+                        ? this.state.phoneNumber
+                        : " None"}
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
+              </div>
             </Col>
             <Col className="col-sm d-flex">
-              <Card style={{ width: "20rem" }}>
-                <Card.Header>About</Card.Header>
-                <Card.Body>
-                  Some quick example text to build on the card title and make up
-                  the bulk of the card's content.
-                </Card.Body>
-              </Card>
+              <div>
+                <Card style={{ width: "20rem" }}>
+                  <Card.Header>About</Card.Header>
+                  <Card.Body style={{ overflowY: "scroll", height: 299 }}>
+                    {this.state.aboutUserExists
+                      ? this.state.aboutUser
+                      : " None"}
+                  </Card.Body>
+                </Card>
+              </div>
             </Col>
             <ProjectList
               projects={this.state.projects}
               projectExists={this.state.projectExists}
+              username={this.state.profileUserName}
+              isAuth={this.state.isAuth}
             ></ProjectList>
           </Row>
         </Container>

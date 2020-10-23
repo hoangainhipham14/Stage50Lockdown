@@ -28,7 +28,7 @@ mongoose
   });
 
 // Logs all mongoose calls
-mongoose.set("debug", true);
+mongoose.set("debug", false);
 
 const authRoutes = require("./routes/auth");
 const projectRoutes = require("./routes/project");
