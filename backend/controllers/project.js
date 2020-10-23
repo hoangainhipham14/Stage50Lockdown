@@ -359,6 +359,17 @@ exports.ProjectList = (req, res) => {
   const username = req.body.username;
 
   User.findOne({ username: username }).exec((err, user) => {
+    if (err) {
+      console.log("ERROR:", err);
+      return res.status(500).json({
+        error: "Server error.",
+      });
+    } else if (!user) {
+      console.log("FAILED TO FIND USER");
+      return res.status(400).json({
+        error: "User does not exist.",
+      });
+    }
     Project.find({ _userId: user._id }, "_id title about created").exec(
       (err, projects) => {
         // console.log("user", user._id);
