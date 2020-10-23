@@ -46,7 +46,6 @@ exports.userPhoto = (req, res, next) => {
 // allows users to access privacy settings
 exports.getUserAccountDetails = (req, res) => {
 
-  req.params.username;
   User.findOne({ username: req.params.username }).exec((err, user) => {
 
     if (err || !user) {
@@ -112,12 +111,41 @@ exports.getUserProfile = (req, res) => {
 
     //console.log("Current Data: " + JSON.stringify(data));
     
-    req.data = data;
-    
+    req.data = data;  
     
     return res.json(req.data);
   });
 }
+
+/*
+getEditProfileDetails will return the data for the edit profile
+statement
+*/
+
+exports.getEditProfileDetails = (req, res) => {
+
+  User.findOne({ username: req.params.username }).exec((err, user) => {
+    if (err || !user) {
+      return res.send({
+        message: "Profile does not exist",
+      });
+    }
+
+    let data = { 
+      aboutUser: user.aboutUser,
+      photoExist: user.photoExist,
+    }
+    
+    
+    req.data = data;  
+    
+    return res.json(req.data);
+  });
+
+
+
+}
+
 
 
 

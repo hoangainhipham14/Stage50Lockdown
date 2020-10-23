@@ -30,6 +30,8 @@ class Profile extends Component {
 
   componentDidMount = () => {
     getUsernameId(this.state.userId).then((data) => {
+
+      //console.log("getUserNameId yealds: " + data);
       if (data === this.state.profileUserName)
         this.setState({
           isAuth: true,
@@ -47,6 +49,7 @@ class Profile extends Component {
             photoExist: response.data.photoExist,
           });
         } else {
+          //console.log(response);
           this.setState({
             firstName: response.data.firstName,
             lastName: response.data.lastName,

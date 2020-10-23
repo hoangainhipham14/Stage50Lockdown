@@ -28,7 +28,7 @@ mongoose
   });
 
 // Logs all mongoose calls
-mongoose.set("debug", false);
+mongoose.set("debug", true);
 
 const authRoutes = require("./routes/auth");
 const projectRoutes = require("./routes/project");
@@ -42,7 +42,7 @@ app.use("/api", searchRoutes);
 
 if (process.env.NODE_ENV === "production") {
   // Turn off mongoose debug mode
-  mongoose.set("debug", true);
+  mongoose.set("debug", false);
 
   app.use(express.static(path.join(__dirname, "../client/build")));
 

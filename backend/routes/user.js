@@ -9,12 +9,14 @@ const {
   userPhoto,
   getUserAccountDetails,
   getUserProfile,
+  getEditProfileDetails,
 } = require("../controllers/user");
 
 const { requireAuthentication } = require("../controllers/auth");
 
 router.get("/user/account/:username", requireAuthentication, getUserAccountDetails);
 router.get("/user/profile/:username", getUserProfile);
+router.get("/user/createProfile/:username", getEditProfileDetails)
 
 router.post("/user/:username", requireAuthentication, updateUser);
 router.get("/user/:username", getUser);
