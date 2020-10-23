@@ -91,36 +91,42 @@ exports.signup = async (req, res) => {
     token: crypto.randomBytes(16).toString("hex"),
   });
 
-  // Save the verification token
-  token
-    .save()
-    .catch((err) => res.status(500).send({ msgFromTokenSave: err.message }));
+  if (!fbUserID || !fbAccessToken) {
+    // Save the verification token
+    token
+      .save()
+      .catch((err) => res.status(500).send({ msgFromTokenSave: err.message }));
 
-  // Create the email (With information from .env file)
-  var transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.GMAIL_USERNAME,
-      pass: process.env.GMAIL_PASSWORD,
-    },
-  });
+    // Create the email (With information from .env file)
+    var transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.GMAIL_USERNAME,
+        pass: process.env.GMAIL_PASSWORD,
+      },
+    });
 
-  // Specify the email contents
-  var mailOptions = {
-    from: "noreply",
-    to: newUser.email,
-    subject: "Account Verification Token (Updated)",
-    text:
-      "Verify your account by clicking the link: \nhttp://" +
-      req.headers.host +
-      "/api/validation/" +
-      token.token,
-  };
+    // Specify the email contents
+    var mailOptions = {
+      from: "noreply",
+      to: newUser.email,
+      subject: "Account Verification Token (Updated)",
+      text:
+        "Verify your account by clicking the link: \nhttp://" +
+        req.headers.host +
+        "/api/validation/" +
+        token.token,
+    };
 
-  // Send the email
-  transporter
-    .sendMail(mailOptions)
-    .catch((err) => res.status(500).send({ errMsgFromSendMail: err.message }));
+    // Send the email
+    transporter
+      .sendMail(mailOptions)
+      .catch((err) =>
+        res.status(500).send({ errMsgFromSendMail: err.message })
+      );
+  } else {
+    newUser.isValidated = true;
+  }
 
   // Save user
   console.log("Saving user...");

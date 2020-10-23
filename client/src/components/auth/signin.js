@@ -133,12 +133,14 @@ class Signin extends Component {
                 show={
                   !isEmpty(errors.email) ||
                   !isEmpty(errors.emailnotfound) ||
-                  !isEmpty(errors.notvalidated)
+                  !isEmpty(errors.notvalidated) ||
+                  !isEmpty(errors.fbUserID)
                 }
               >
                 {errors.email}
                 {errors.emailnotfound}
                 {errors.notvalidated}
+                {errors.fbUserID}
               </Alert>
             </Form.Group>
             <Form.Group controlId="password">
