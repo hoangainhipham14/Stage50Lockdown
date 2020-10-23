@@ -14,14 +14,55 @@ const projectSchema = new Schema({
 
   body: {
     type: String,
-    required: true,
+    // let the user create body-less project, e.g. title + image + files idk
+    // required: true,
   },
 
-  image: {
-    data: Buffer,
-    contentType: String,
-    fileName: String,
+  // images: [
+  //   {
+  //     data: Buffer,
+  //     contentType: String,
+  //     fileName: String,
+  //   },
+  // ],
+
+  images: [
+    {
+      fileRef: {
+        type: ObjectId,
+        ref: "File",
+      },
+      fileName: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
+
+  mainImageIndex: {
+    type: Number,
   },
+
+  // additionalFiles: [
+  //   {
+  //     data: Buffer,
+  //     contentType: String,
+  //     fileName: String,
+  //   },
+  // ],
+
+  additionalFiles: [
+    {
+      fileRef: {
+        type: ObjectId,
+        ref: "File",
+      },
+      fileName: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
 
   postedBy: {
     type: ObjectId,
@@ -34,7 +75,7 @@ const projectSchema = new Schema({
   // Added this to determine if the item is ready for public viewing
   itemIsPublic: {
     type: Boolean,
-    default: false,
+    default: true,
   },
 
   // A way to connect the user to the project
@@ -46,6 +87,10 @@ const projectSchema = new Schema({
   username: {
     type: String,
   },
+});
+
+projectSchema.index({
+  _userId: 1,
 });
 
 module.exports = mongoose.model("Project", projectSchema);

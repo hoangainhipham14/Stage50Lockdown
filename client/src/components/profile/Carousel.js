@@ -8,12 +8,13 @@ class DisplayCarousel extends Component {
   render() {
     // display image of each project, show project title, part of about project text,
     // and link to each project to see more
+
     const projectCards = this.props.projects.map((project, idx) => (
-      <Carousel.Item>
+      <Carousel.Item key={idx}>
         <Container>
           <Image
             key={idx}
-            src={`/api/project/img/${project._id}`}
+            src={`/api/project/${project._id}/mainImage`}
             alt={project.title}
             style={{ height: 400, width: 400 }}
             className="float-right mt-5"

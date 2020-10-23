@@ -13,6 +13,7 @@ exports.userSearch = (req, res) => {
   )
     .sort({ score: { $meta: "textScore" } })
     .exec((err, results) => {
+      console.log(results);
       if (err) {
         return res.json({
           error: err,

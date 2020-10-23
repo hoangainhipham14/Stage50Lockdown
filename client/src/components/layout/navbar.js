@@ -20,7 +20,7 @@ function NavbarAccountLoggedOut() {
   return (
     <>
       <Nav className="mr-auto">
-        <LinkContainer to="/user/username/projects/5f76b981baff9a2f08be5e1f">
+        <LinkContainer to="/projects/5f9115b46e4c820db8a0d30d">
           <Nav.Link>Featured Project</Nav.Link>
         </LinkContainer>
       </Nav>

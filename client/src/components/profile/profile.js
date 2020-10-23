@@ -37,7 +37,6 @@ class Profile extends Component {
 
   componentDidMount = () => {
     getUsernameId(this.state.userId).then((data) => {
-      //console.log("getUserNameId yealds: " + data);
       if (data === this.state.profileUserName)
         this.setState({
           isAuth: true,
@@ -56,7 +55,6 @@ class Profile extends Component {
             loading: false,
           });
         } else {
-          //console.log(response);
           this.setState({
             firstName: response.data.firstName,
             lastName: response.data.lastName,
@@ -90,12 +88,13 @@ class Profile extends Component {
           console.log("failure");
           console.log(response.error);
         } else if (response.data.message === "Projects do not exist") {
+          console.log("response:", response);
           this.setState({
             projectExists: false,
             loading: false,
           });
         } else {
-          // console.log("response:");
+          console.log("response:", response);
           this.setState({
             projects: Array.from(response.data),
             loading: false,
@@ -150,9 +149,7 @@ class Profile extends Component {
                       <Card.Subtitle>
                         {this.state.phoneNumberPrivate ? "" : "Phone Number:"}
                       </Card.Subtitle>
-                      <Card.Text>
-                        {this.state.phoneNumber}
-                      </Card.Text>
+                      <Card.Text>{this.state.phoneNumber}</Card.Text>
                     </Card.Body>
                   </Card>
                 </div>
