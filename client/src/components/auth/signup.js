@@ -141,6 +141,8 @@ class Signup extends Component {
           onClick={this.componentClicked}
           callback={this.responseFacebook}
           onFailure={this.handleFailure}
+          cssClass="btnFacebook"
+          textButton="Sign up with Facebook"
         />
       );
     }
