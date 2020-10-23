@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { connect } from "react-redux";
-import { Alert, Container, Form, Button } from "react-bootstrap";
+import { Alert, Container, Form, Button, Spinner } from "react-bootstrap";
 import { getUsernameId } from "../layout/GetUsername";
 import PropTypes from "prop-types";
+import { Loading } from "../loading/Loading";
+import { Redirect } from "react-router-dom";
 
 class AccountDetails extends Component {
   constructor(props) {
@@ -17,6 +19,9 @@ class AccountDetails extends Component {
       email: "",
       phoneNumber: "",
       userExists: false,
+      loading: true,
+      submitwaiting: false,
+      submitted: false,
     };
   }
 
@@ -34,6 +39,7 @@ class AccountDetails extends Component {
             email: response.data.email,
             phoneNumber: response.data.phoneNumber,
             userExists: true,
+            loading: false,
           });
         }
       });
@@ -65,6 +71,10 @@ class AccountDetails extends Component {
     // prevent page from reloading
     e.preventDefault();
 
+    this.setState({
+      submitwaiting: true,
+    });
+
     // create the formdata object
     // we need to do this because JSON isn't sufficient for image sending
     const formData = new FormData();
@@ -87,6 +97,9 @@ class AccountDetails extends Component {
       .then((data) => {
         if (data.error) {
           console.log(data.error);
+          this.setState({
+            submitwaiting: false,
+          });
         } else {
           this.setState({
             firstName: data.firstName,
@@ -94,13 +107,19 @@ class AccountDetails extends Component {
             email: data.email,
             phoneNumber: data.phoneNumber,
             userExists: true,
+            submitwaiting: false,
+            submitted: true,
           });
         }
       });
   };
 
   render() {
-    if (this.state.username === this.state.user) {
+    if (this.state.loading) {
+      return <Loading />;
+    } else if (this.state.submitted) {
+      return <Redirect to={`/profile/${this.state.username}`} />;
+    } else if (this.state.username === this.state.user) {
       return (
         <Container>
           <div style={{ maxWidth: "30rem", margin: "0 auto" }}>
@@ -177,7 +196,11 @@ class AccountDetails extends Component {
 
               <div className="text-center">
                 <Button variant="success" type="submit">
-                  Save Changes
+                  {this.state.submitwaiting ? (
+                    <Spinner animation="border" size="sm" />
+                  ) : (
+                    <Container>Save Changes</Container>
+                  )}
                 </Button>
                 <Button variant="secondary" type="reset">
                   Discard Changes

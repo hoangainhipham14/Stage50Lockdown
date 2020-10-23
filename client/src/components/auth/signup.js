@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Form, Button, Alert, Container } from "react-bootstrap";
+import { Form, Button, Alert, Container, Spinner } from "react-bootstrap";
 import { Link, withRouter } from "react-router-dom";
 import isEmpty from "is-empty";
 import axios from "axios";
@@ -15,6 +15,7 @@ class Signup extends Component {
 
     this.state = {
       errors: {},
+      waiting: false,
     };
   }
 
@@ -49,6 +50,10 @@ class Signup extends Component {
   onSubmit = (e) => {
     e.preventDefault();
 
+    this.setState({
+      waiting: true,
+    });
+
     const newUser = {
       firstName: this.state.firstName,
       lastName: this.state.lastName,
@@ -79,6 +84,14 @@ class Signup extends Component {
         });
       });
   };
+
+  componentDidUpdate() {
+    if (!isEmpty(this.state.errors) && this.state.waiting) {
+      this.setState({
+        waiting: false,
+      });
+    }
+  }
 
   render() {
     const { errors } = this.state;
@@ -170,7 +183,11 @@ class Signup extends Component {
 
               <div className="text-center">
                 <Button variant="primary" type="submit">
-                  Sign Up
+                  {this.state.waiting ? (
+                    <Spinner animation="border" size="sm" />
+                  ) : (
+                    <Container>Sign Up</Container>
+                  )}
                 </Button>
               </div>
             </Form>

@@ -6,6 +6,7 @@ import axios from "axios";
 
 import ProjectList from "./ProjectList";
 import { getUsernameId } from "../layout/GetUsername";
+import { Loading } from "../loading/Loading";
 
 class Profile extends Component {
   constructor(props) {
@@ -25,6 +26,7 @@ class Profile extends Component {
       aboutUser: "",
       photoExist: false,
       isAuth: false,
+      loading: true,
     };
   }
 
@@ -45,6 +47,7 @@ class Profile extends Component {
           this.setState({
             userExists: false,
             photoExist: response.data.photoExist,
+            loading: false,
           });
         } else {
           this.setState({
@@ -54,6 +57,7 @@ class Profile extends Component {
             phoneNumber: response.data.phoneNumber,
             aboutUser: response.data.aboutUser,
             photoExist: response.data.photoExist,
+            loading: false,
           });
 
           if (this.state.phoneNumber === "") {
@@ -88,7 +92,9 @@ class Profile extends Component {
   };
 
   render() {
-    if (this.state.userExists) {
+    if (this.state.loading) {
+      return <Loading />;
+    } else if (this.state.userExists) {
       return (
         <Container fluid>
           <Row>

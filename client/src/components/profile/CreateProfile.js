@@ -12,7 +12,8 @@ import {
 } from "react-bootstrap";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { HCenter } from "../layout";
+// import { HCenter } from "../layout";
+import { Loading } from "../loading/Loading";
 
 class CreateProfile extends Component {
   constructor(props) {
@@ -113,9 +114,7 @@ class CreateProfile extends Component {
     return (
       <Container>
         {this.state.loading ? (
-          <HCenter>
-            <Spinner animation="grow" size="lg" />
-          </HCenter>
+          <Loading />
         ) : (
           <Row>
             <Col className="col-sm d-flex">
