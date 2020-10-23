@@ -40,7 +40,7 @@ class DummySignUpForm extends Component {
       // Facebook state
       fbIsLoggedIn: false,
       fbUserID: "",
-      fbPicture: "",
+      image: "",
       fbAccessToken: "",
     };
   }
@@ -65,19 +65,19 @@ class DummySignUpForm extends Component {
     this.setState({
       fbIsLoggedIn: true,
       fbUserID: response.userID,
-      fbPicture: response.picture.data.url,
+      image: response.picture.data.url,
       fbAccessToken: response.accessToken,
       email: response.email,
       firstName: response.first_name,
       lastName: response.last_name,
     });
 
-    const userData = {
-      fbUserID: this.state.fbUserID,
-      fbAccessToken: this.state.fbAccessToken,
-    };
+    // const userData = {
+    //   fbUserID: this.state.fbUserID,
+    //   fbAccessToken: this.state.fbAccessToken,
+    // };
 
-    fbSigninUser(userData);
+    // fbSigninUser(userData);
   };
 
   render() {
@@ -152,7 +152,7 @@ class DummySignUpForm extends Component {
                   lastName: this.state.lastName,
                   fbIsLoggedIn: this.state.fbIsLoggedIn,
                   fbUserID: this.state.fbUserID,
-                  fbPicture: this.state.fbPicture,
+                  image: this.state.image,
                   fbAccessToken: this.state.fbAccessToken,
                 },
               }}

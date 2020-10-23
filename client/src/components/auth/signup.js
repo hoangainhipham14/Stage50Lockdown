@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Form, Button, Alert, Container, Spinner } from "react-bootstrap";
 import { Link, withRouter } from "react-router-dom";
+import FacebookLogin from "react-facebook-login";
 import isEmpty from "is-empty";
 import axios from "axios";
 
@@ -31,6 +32,7 @@ class Signup extends Component {
         fbUserID: this.props.location.state.fbUserID,
         fbPicture: this.props.location.state.fbPicture,
         fbAccessToken: this.props.location.state.fbAccessToken,
+        image: this.props.location.state.image,
       });
     } catch (err) {
       console.log("no state passed in");
@@ -66,7 +68,7 @@ class Signup extends Component {
       password1: this.state.password1,
       password2: this.state.password2,
       fbUserID: this.state.fbUserID,
-      image: this.state.fbPicture,
+      image: this.state.image,
       fbAccessToken: this.state.fbAccessToken,
     };
 
@@ -100,8 +102,48 @@ class Signup extends Component {
     }
   }
 
+  componentClicked = () => {
+    console.log("clicked");
+  };
+
+  handleFailure = () => {
+    console.log("failure");
+  };
+
+  responseFacebook = (response) => {
+    console.log(response);
+    this.setState({
+      fbIsLoggedIn: true,
+      fbUserID: response.userID,
+      image: response.picture.data.url,
+      fbAccessToken: response.accessToken,
+      email: response.email,
+      firstName: response.first_name,
+      lastName: response.last_name,
+    });
+  };
+
   render() {
     const { errors } = this.state;
+
+    let fbContent;
+
+    if (this.state.fbIsLoggedIn) {
+      fbContent = console.log("Logged in");
+    } else {
+      fbContent = (
+        <FacebookLogin
+          // appId of ePortfolio
+          appId="820137652056192"
+          autoLoad={false}
+          fields="name,first_name, last_name,email,picture"
+          scope="public_profile, email"
+          onClick={this.componentClicked}
+          callback={this.responseFacebook}
+          onFailure={this.handleFailure}
+        />
+      );
+    }
 
     return (
       <Container>
@@ -196,6 +238,7 @@ class Signup extends Component {
                     <Container>Sign Up</Container>
                   )}
                 </Button>
+                {fbContent}
               </div>
             </Form>
           </div>

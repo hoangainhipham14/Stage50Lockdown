@@ -99,23 +99,18 @@ class Signin extends Component {
     const { errors } = this.state;
 
     let fbContent;
-
-    if (this.state.fbIsLoggedIn) {
-      fbContent = console.log("Logged in");
-    } else {
-      fbContent = (
-        <FacebookLogin
-          // appId of ePortfolio
-          appId="820137652056192"
-          autoLoad={false}
-          fields="name,first_name, last_name,email,picture"
-          scope="public_profile, email"
-          onClick={this.componentClicked}
-          callback={this.responseFacebook}
-          onFailure={this.handleFailure}
-        />
-      );
-    }
+    fbContent = (
+      <FacebookLogin
+        // appId of ePortfolio
+        appId="820137652056192"
+        autoLoad={false}
+        fields="name,first_name, last_name,email,picture"
+        scope="public_profile, email"
+        onClick={this.componentClicked}
+        callback={this.responseFacebook}
+        onFailure={this.handleFailure}
+      />
+    );
 
     return (
       <Container>
