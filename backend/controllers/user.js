@@ -91,8 +91,9 @@ exports.getUserProfile = (req, res) => {
       email: user.email,
       aboutUser: user.aboutUser,
       photoExist: user.photoExist,
+      emailPrivate: user.emailPrivate,
+      phoneNumberPrivate: user.phoneNumberPrivate,
     }
-    
     //console.log("Current Data: " + JSON.stringify(data));
 
     // Set any data to blank that is currently private
