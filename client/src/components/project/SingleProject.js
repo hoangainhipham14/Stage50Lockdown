@@ -10,13 +10,13 @@ import {
   Button,
 } from "react-bootstrap";
 import { Center, HCenter } from "../layout";
-import { SRLWrapper } from "simple-react-lightbox";
+// import { SRLWrapper } from "simple-react-lightbox";
 
 // sanitizer so we can safely render the body text as html after conversion
-const createDOMPurify = require("dompurify");
-const { JSDOM } = require("jsdom");
-const window = new JSDOM("").window;
-const DOMPurify = createDOMPurify(window);
+// const createDOMPurify = require("dompurify");
+// const { JSDOM } = require("jsdom");
+// const window = new JSDOM("").window;
+// const DOMPurify = createDOMPurify(window);
 
 class ImageWithLoading extends Component {
   state = { isLoaded: false };
@@ -114,7 +114,8 @@ class SingleProject extends Component {
       imagesNames,
       mainImageIndex,
     } = project;
-    const formattedBody = DOMPurify.sanitize(this.convertRTFtoHTML(body));
+    // const formattedBody = DOMPurify.sanitize(this.convertRTFtoHTML(body));
+    const formattedBody = body;
     // const posterId = project.postedBy ? `/user/${project.postedBy._id}` : "";
     // const posterName = project.postedBy ? project.postedBy.name : "Unknown";
 
@@ -204,9 +205,9 @@ class SingleProject extends Component {
           </Card.Body>
           <Row noGutters>
             <Card.Body>
-              <SRLWrapper>
-                <Row className="justify-content-md-center">{images}</Row>
-              </SRLWrapper>
+              {/* <SRLWrapper> */}
+              <Row className="justify-content-md-center">{images}</Row>
+              {/* </SRLWrapper> */}
             </Card.Body>
           </Row>
           <Card.Footer className="text-muted">{filesDisplay}</Card.Footer>
