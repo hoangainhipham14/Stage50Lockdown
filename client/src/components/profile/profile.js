@@ -151,9 +151,7 @@ class Profile extends Component {
                         {this.state.phoneNumberPrivate ? "" : "Phone Number:"}
                       </Card.Subtitle>
                       <Card.Text>
-                        {this.state.phoneNumberExists
-                          ? this.state.phoneNumber
-                          : " None"}
+                        {this.state.phoneNumber}
                       </Card.Text>
                     </Card.Body>
                   </Card>
