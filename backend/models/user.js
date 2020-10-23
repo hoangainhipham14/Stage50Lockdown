@@ -36,6 +36,16 @@ const userSchema = new Schema({
     // required: true,
   },
 
+  fbUserID: {
+    type: String,
+    unique: true,
+  },
+
+  fbAccessToken: {
+    type: String,
+    unique: true,
+  },
+
   image: {
     data: Buffer,
     contentType: String,
