@@ -88,9 +88,7 @@ class ProjectList extends Component {
             )}
 
             {this.props.isAuth && (
-              <Button href={`/createProject/${this.props.username}`}>
-                Create Project
-              </Button>
+              <Button href="/createProject">Create Project</Button>
             )}
           </Container>
         </Col>
