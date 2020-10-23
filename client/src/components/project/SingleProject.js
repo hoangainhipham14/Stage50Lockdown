@@ -12,11 +12,7 @@ import {
 import { Center, HCenter } from "../layout";
 import { SRLWrapper } from "simple-react-lightbox";
 
-// sanitizer so we can safely render the body text as html after conversion
-// const createDOMPurify = require("dompurify");
-// const { JSDOM } = require("jsdom");
-// const window = new JSDOM("").window;
-// const DOMPurify = createDOMPurify(window);
+const Purifier = require("html-purify");
 
 class ImageWithLoading extends Component {
   state = { isLoaded: false };
@@ -114,8 +110,8 @@ class SingleProject extends Component {
       imagesNames,
       mainImageIndex,
     } = project;
-    // const formattedBody = DOMPurify.sanitize(this.convertRTFtoHTML(body));
-    const formattedBody = this.convertRTFtoHTML(body);
+    const purifier = new Purifier();
+    const formattedBody = purifier.purify(this.convertRTFtoHTML(body));
     // const posterId = project.postedBy ? `/user/${project.postedBy._id}` : "";
     // const posterName = project.postedBy ? project.postedBy.name : "Unknown";
 
