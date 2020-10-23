@@ -594,8 +594,7 @@ export class EditProject extends Component {
   componentDidMount() {
     const projectId = this.props.match.params.projectId;
     console.log(projectId);
-    const func = (i) =>
-      `http://localhost:5000/api/project/${projectId}/image/${i}`;
+    const func = (i) => `/api/project/${projectId}/image/${i}`;
     singleProject(projectId).then((data) => {
       console.log(data);
       this.setState({

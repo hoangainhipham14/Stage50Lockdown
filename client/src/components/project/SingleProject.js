@@ -119,7 +119,7 @@ class SingleProject extends Component {
     // const posterName = project.postedBy ? project.postedBy.name : "Unknown";
 
     const files = additionalFilesNames.map((file, i) => {
-      const url = `http://localhost:5000/api/project/${this.state.projectId}/file/${i}`;
+      const url = `/api/project/${this.state.projectId}/file/${i}`;
       const displayName =
         file.length > 25 ? file.substring(0, 22) + "..." : file;
       return (
@@ -148,7 +148,7 @@ class SingleProject extends Component {
         <Col sm={3} className="col-image" key={i}>
           <Center>
             <ImageWithLoading
-              src={`http://localhost:5000/api/project/${this.state.projectId}/image/${i}`}
+              src={`/api/project/${this.state.projectId}/image/${i}`}
               className="w-100"
               alt={this.state.project.imagesNames[i]}
             />
@@ -188,7 +188,7 @@ class SingleProject extends Component {
                 <Col>
                   <Col lg={6} className="float-left">
                     <ImageWithLoading
-                      src={`http://localhost:5000/api/project/${this.state.projectId}/mainImage`}
+                      src={`/api/project/${this.state.projectId}/mainImage`}
                       alt=""
                       style={{ width: "100%" }}
                       thumbnail
