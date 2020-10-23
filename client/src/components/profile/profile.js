@@ -6,6 +6,7 @@ import axios from "axios";
 
 import ProjectList from "./ProjectList";
 import { getUsernameId } from "../layout/GetUsername";
+import { Loading } from "../loading/Loading";
 import DisplayCarousel from "../profile/Carousel";
 import { HCenter } from "../layout";
 
@@ -52,6 +53,7 @@ class Profile extends Component {
           this.setState({
             userExists: false,
             photoExist: response.data.photoExist,
+            loading: false,
           });
         } else {
           //console.log(response);
@@ -62,6 +64,7 @@ class Profile extends Component {
             phoneNumber: response.data.phoneNumber,
             aboutUser: response.data.aboutUser,
             photoExist: response.data.photoExist,
+            loading: false,
             emailPrivate: response.data.emailPrivate,
             phoneNumberPrivate: response.data.phoneNumberPrivate,
           });
@@ -102,7 +105,9 @@ class Profile extends Component {
   };
 
   render() {
-    if (this.state.userExists) {
+    if (this.state.loading) {
+      return <Loading />;
+    } else if (this.state.userExists) {
       return (
         <div>
           {this.state.loading ? (
@@ -146,9 +151,7 @@ class Profile extends Component {
                         {this.state.phoneNumberPrivate ? "" : "Phone Number:"}
                       </Card.Subtitle>
                       <Card.Text>
-                        {this.state.phoneNumberExists
-                          ? this.state.phoneNumber
-                          : " None"}
+                        {this.state.phoneNumber}
                       </Card.Text>
                     </Card.Body>
                   </Card>

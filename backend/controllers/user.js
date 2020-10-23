@@ -158,7 +158,7 @@ exports.getUser = (req, res) => {
 exports.getUsernameId = (req, res) => {
   // console.log("Get Username Id");
   // console.log(req);
-  User.findOne({ _id: req.params.id }, function (err, user) {
+  User.findById({ _id: req.params.id }, "username", function (err, user) {
     if (!user) {
       return res.status(400).send({
         msg: "This user does not exist",
