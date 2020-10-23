@@ -69,6 +69,7 @@ class CreateProfile extends Component {
       .then((response) => {
         console.log("Success!");
         console.log(response.data);
+        this.setState({loading: false});
       })
       .catch((err) => {
         console.log("Failure!");

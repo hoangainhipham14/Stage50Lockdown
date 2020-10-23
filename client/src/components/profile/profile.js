@@ -37,7 +37,7 @@ class Profile extends Component {
     });
 
     axios
-      .get(`/api/user/${this.props.match.params.username}`)
+      .get(`/api/user/profile/${this.props.match.params.username}`)
       .then((response) => {
         if (response.error) {
           console.log(response.error);

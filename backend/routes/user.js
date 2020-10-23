@@ -8,11 +8,13 @@ const {
   getUsernameId,
   userPhoto,
   getUserAccountDetails,
+  getUserProfile,
 } = require("../controllers/user");
 
 const { requireAuthentication } = require("../controllers/auth");
 
 router.get("/user/account/:username", requireAuthentication, getUserAccountDetails);
+router.get("/user/profile/:username", getUserProfile);
 
 router.post("/user/:username", requireAuthentication, updateUser);
 router.get("/user/:username", getUser);

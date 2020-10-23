@@ -30,6 +30,7 @@ exports.userByUsername = (req, res, next, username) => {
   });
 };
 
+
 exports.userPhoto = (req, res, next) => {
   if (req.profile.image.data) {
     res.set({
@@ -45,21 +46,79 @@ exports.userPhoto = (req, res, next) => {
 // allows users to access privacy settings
 exports.getUserAccountDetails = (req, res) => {
 
-  let data = {
-    _id: req.profile._id,
-    firstName: req.profile.firstName,
-    lastName: req.profile.lastName,
-    phoneNumber: req.profile.phoneNumber,
-    email: req.profile.email,
-    firstNamePrivate: req.profile.firstNamePrivate,
-    lastNamePrivate: req.profile.lastNamePrivate,
-    emailPrivate: req.profile.emailPrivate,
-    phoneNumberPrivate: req.profile.phoneNumberPrivate,
-  }
-  req.data = data;
+  req.params.username;
+  User.findOne({ username: req.params.username }).exec((err, user) => {
 
-  return res.json(req.data);
+    if (err || !user) {
+      return res.send({
+        message: "Profile does not exist",
+      });
+    }
+
+    let data = {
+      _id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      phoneNumber: user.phoneNumber,
+      email: user.email,
+      firstNamePrivate: user.firstNamePrivate,
+      lastNamePrivate: user.lastNamePrivate,
+      emailPrivate: user.emailPrivate,
+      phoneNumberPrivate: user.phoneNumberPrivate,
+    }
+    
+    req.data = data;
+    //console.log(req.data);
+    return res.json(req.data);
+  });
+
 }
+
+// getUserProfile displays the data that will be public on the profile page
+// of the user 
+exports.getUserProfile = (req, res) => {
+  
+  User.findOne({ username: req.params.username }).exec((err, user) => {
+    if (err || !user) {
+      return res.send({
+        message: "Profile does not exist",
+      });
+    }
+
+    let data = { 
+      firstName: user.firstName,
+      lastName: user.lastName,
+      phoneNumber: user.phoneNumber,
+      email: user.email,
+      aboutUser: user.aboutUser,
+      photoExist: user.photoExist,
+    }
+    
+    //console.log("Current Data: " + JSON.stringify(data));
+
+    // Set any data to blank that is currently private
+    if(user.firstNamePrivate == true){
+      data.firstName = "";
+    }
+    if(user.lastNamePrivate == true){
+      data.lastName = "";
+    }
+    if(user.emailPrivate == true){
+      data.email = "";
+    }
+    if(user.phoneNumberPrivate == true){
+      data.phoneNumber = "";
+    }
+
+    //console.log("Current Data: " + JSON.stringify(data));
+    
+    req.data = data;
+    
+    
+    return res.json(req.data);
+  });
+}
+
 
 
 // get user from database
@@ -67,22 +126,6 @@ exports.getUser = (req, res) => {
   
   //console.log(req.profile);
   // Filter out things that shouldnt be sent
-
-  /*
-  if(req.profile.firstNamePrivate == true){
-    req.profile.firstName = "";
-  }
-  if(req.profile.lastNamePrivate == true){
-    req.profile.lastName = "";
-  }
-  if(req.profile.emailPrivate == true){
-    req.profile.email = "";
-  }
-  if(req.profile.phoneNumberPrivate == true){
-    req.profile.phoneNUmber = "";
-  }
-  */
-
   console.log(req.profile);
   return res.json(req.profile);
 };
@@ -121,7 +164,7 @@ exports.updateUser = (req, res, next) => {
       fields = Object.assign(fields, imageObject);
     }
 
-    console.log("FIELDS: " + fields);
+    //console.log("FIELDS: " + fields);
 
     User.findOneAndUpdate(
       { username: req.username },

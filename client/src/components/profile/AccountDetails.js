@@ -21,13 +21,14 @@ class AccountDetails extends Component {
       email: "",
       phoneNumber: "",
       userExists: false,
+      changesMade: false,
     };
   }
 
   componentDidMount() {
     // Get user information stored in database when sign up
     axios
-      .get(`/api/user/${this.props.match.params.username}`)
+      .get(`/api/user/account/${this.props.match.params.username}`)
       .then((response) => {
         if (response.error) {
           console.log(response.error);
@@ -114,6 +115,7 @@ class AccountDetails extends Component {
     formData.set("phoneNumberPrivate", this.state.phoneNumberPrivate);
     // formData.set("username", this.state.username);
 
+
     // configururation for post request since we aren't just posting json
     const config = {
       headers: {
@@ -128,13 +130,21 @@ class AccountDetails extends Component {
         if (data.error) {
           console.log(data.error);
         } else {
-          this.setState({
+           
+          // Change this so the success message shows
+          this.setState({            
+            changesMade: true,
+          });
+
+          /*
+          this.setState({            
             firstName: data.firstName,
             lastName: data.lastName,
             email: data.email,
             phoneNumber: data.phoneNumber,
             userExists: true,
           });
+          */
         }
       });
   };
@@ -160,6 +170,7 @@ class AccountDetails extends Component {
                   type="switch"
                   id="first name switch"
                   label="Private"
+                  checked={this.state.firstNamePrivate}
                   onClick={this.toggleFirstNamePrivacy}
                 />
               </Form.Group>
@@ -175,6 +186,7 @@ class AccountDetails extends Component {
                   type="switch"
                   id="last name switch"
                   label="Private"
+                  checked={this.state.lastNamePrivate}
                   onClick={this.toggleLastNamePrivacy}
                 />
               </Form.Group>
@@ -190,6 +202,7 @@ class AccountDetails extends Component {
                   type="switch"
                   id="phone number switch"
                   label="Private"
+                  checked={this.state.phoneNumberPrivate}
                   onClick={this.togglePhoneNumberPrivacy}
                 />
               </Form.Group>
@@ -219,6 +232,7 @@ class AccountDetails extends Component {
                  type="switch"
                   id="email switch" 
                   label="Private" 
+                  checked={this.state.emailPrivate}
                   onClick={this.toggleEmailPrivacy}/>
               </Form.Group>
 
@@ -229,7 +243,9 @@ class AccountDetails extends Component {
                 <Button variant="secondary" type="reset">
                   Discard Changes
                 </Button>
+                <Alert variant="success" show={this.state.changesMade}>{"Changes saved"}</Alert>
               </div>
+              
             </Form>
           </div>
         </Container>
