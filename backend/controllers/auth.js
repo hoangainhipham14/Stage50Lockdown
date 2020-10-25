@@ -57,11 +57,13 @@ exports.signup = async (req, res) => {
     });
   }
   // check if Facebook link already exists
-  const fbUserIDExists = await User.findOne({ fbUserID });
-  if (fbUserIDExists) {
-    return res.status(400).json({
-      fbUserID: "Facebook account already exists",
-    });
+  if (fbUserID) {
+    const fbUserIDExists = await User.findOne({ fbUserID });
+    if (fbUserIDExists) {
+      return res.status(400).json({
+        fbUserID: "Facebook account already exists",
+      });
+    }
   }
 
   // create new user
@@ -185,7 +187,7 @@ exports.fbSignin = (req, res) => {
 
   User.findOne({ fbUserID }).then((user) => {
     // check user exists
-    if (!user) {
+    if (!user || fbUserID === "") {
       return res.status(400).json({ fbUserID: "Facebook account not found" });
     }
 
