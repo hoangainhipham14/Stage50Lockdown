@@ -31,7 +31,6 @@ class Signup extends Component {
         fbIsLoggedIn: this.props.location.state.fbIsLoggedIn,
         fbUserID: this.props.location.state.fbUserID,
         fbPicture: this.props.location.state.fbPicture,
-        fbAccessToken: this.props.location.state.fbAccessToken,
         image: this.props.location.state.image,
       });
     } catch (err) {
@@ -69,7 +68,6 @@ class Signup extends Component {
       password2: this.state.password2,
       fbUserID: this.state.fbUserID,
       image: this.state.image,
-      fbAccessToken: this.state.fbAccessToken,
     };
 
     // this.props.registerUser(newUser, this.props.history);
@@ -116,7 +114,6 @@ class Signup extends Component {
       fbIsLoggedIn: true,
       fbUserID: response.userID,
       image: response.picture.data.url,
-      fbAccessToken: response.accessToken,
       email: response.email,
       firstName: response.first_name,
       lastName: response.last_name,

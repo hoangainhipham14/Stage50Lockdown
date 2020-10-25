@@ -41,7 +41,6 @@ class DummySignUpForm extends Component {
       fbIsLoggedIn: false,
       fbUserID: "",
       image: "",
-      fbAccessToken: "",
     };
   }
 
@@ -66,18 +65,10 @@ class DummySignUpForm extends Component {
       fbIsLoggedIn: true,
       fbUserID: response.userID,
       image: response.picture.data.url,
-      fbAccessToken: response.accessToken,
       email: response.email,
       firstName: response.first_name,
       lastName: response.last_name,
     });
-
-    // const userData = {
-    //   fbUserID: this.state.fbUserID,
-    //   fbAccessToken: this.state.fbAccessToken,
-    // };
-
-    // fbSigninUser(userData);
   };
 
   render() {
@@ -155,7 +146,6 @@ class DummySignUpForm extends Component {
                   fbIsLoggedIn: this.state.fbIsLoggedIn,
                   fbUserID: this.state.fbUserID,
                   image: this.state.image,
-                  fbAccessToken: this.state.fbAccessToken,
                 },
               }}
             >

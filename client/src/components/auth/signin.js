@@ -23,7 +23,6 @@ class Signin extends Component {
       // Facebook state
       fbIsLoggedIn: false,
       fbUserID: "",
-      fbAccessToken: "",
     };
   }
 
@@ -77,12 +76,10 @@ class Signin extends Component {
     this.setState({
       fbIsLoggedIn: true,
       fbUserID: response.userID,
-      fbAccessToken: response.accessToken,
     });
 
     const userData = {
       fbUserID: this.state.fbUserID,
-      fbAccessToken: this.state.fbAccessToken,
     };
 
     this.props.fbSigninUser(userData);
