@@ -3,9 +3,12 @@ const express = require("express");
 const router = express.Router();
 
 // Controller imports
-const { userSearch } = require("../controllers/search");
+const { userSearch, projectSearch } = require("../controllers/search");
 
 // Search for a user
 router.post("/usersearch", userSearch);
+
+// Search for a project
+router.post("/projectsearch", projectSearch);
 
 module.exports = router;

@@ -89,8 +89,27 @@ const projectSchema = new Schema({
   },
 });
 
+// Text indexes for search
+projectSchema.index({
+  title: "text",
+  about: "text",
+  body: "text",
+});
+
+// idk how this works but it works
 projectSchema.index({
   _userId: 1,
+  title: 1,
+  about: 1,
+  body: 1,
+});
+
+projectSchema.on("index", function (err) {
+  if (err) {
+    console.error("Project index error: %s", err);
+  } else {
+    console.info("Project indexing complete");
+  }
 });
 
 module.exports = mongoose.model("Project", projectSchema);
