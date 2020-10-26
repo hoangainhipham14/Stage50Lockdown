@@ -1,8 +1,17 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { connect } from "react-redux";
-import { Alert, Container, Form, Button, Spinner } from "react-bootstrap";
+import {
+  Alert,
+  Container,
+  Form,
+  Button,
+  Spinner,
+  Popover,
+  OverlayTrigger,
+} from "react-bootstrap";
 import { getUsernameId } from "../layout/GetUsername";
+import { deleteUser } from "../../actions/authActions";
 import PropTypes from "prop-types";
 import { Loading } from "../loading/Loading";
 import { Redirect } from "react-router-dom";
@@ -130,20 +139,14 @@ class AccountDetails extends Component {
             changesMade: true,
             submitted: true,
           });
-
-          /*
-          this.setState({            
-            firstName: data.firstName,
-            lastName: data.lastName,
-            email: data.email,
-            phoneNumber: data.phoneNumber,
-            userExists: true,
-            submitwaiting: false,
-            submitted: true,
-          });
-          */
         }
       });
+  };
+
+  onAccountDeleteClick = (e) => {
+    e.preventDefault();
+    deleteUser(this.props.history);
+    this.props.history.push("/");
   };
 
   render() {
@@ -154,8 +157,28 @@ class AccountDetails extends Component {
     } else if (this.state.user === "") {
       return null;
     } else if (this.state.username === this.state.user) {
+      // Are you sure dialog
+      const popover = (
+        <Popover id="popover-basic">
+          <Popover.Title as="h3">
+            Are you sure you want to delete your account?
+          </Popover.Title>
+          <Popover.Content>
+            <p className="center">This action cannot be undone.</p>
+            <Button variant="danger" onClick={this.onAccountDeleteClick}>
+              Delete Account Forever
+            </Button>
+          </Popover.Content>
+        </Popover>
+      );
       return (
         <Container>
+          <OverlayTrigger trigger="click" placement="bottom" overlay={popover}>
+            <Button variant="danger" className="float-right">
+              Delete Account
+            </Button>
+          </OverlayTrigger>
+
           <div style={{ maxWidth: "30rem", margin: "0 auto" }}>
             <div className="text-center">
               <h2>Account Details</h2>

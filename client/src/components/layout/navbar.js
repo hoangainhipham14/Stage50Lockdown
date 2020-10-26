@@ -39,9 +39,6 @@ function NavbarAccountLoggedOut() {
 function NavbarAccountLoggedIn(props) {
   return (
     <>
-      <Nav className="mr-auto">
-        <Nav.Link href="/dashboard">Dashboard</Nav.Link>
-      </Nav>
       <Nav className="ml-auto">
         <Nav.Link href={`/profile/${props.username}`}>My Profile</Nav.Link>
         <Nav.Link onClick={props.onClickLogout}>Sign Out</Nav.Link>
