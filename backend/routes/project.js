@@ -31,7 +31,7 @@ router.get("/project/:projectId/images", allImages);
 
 router.get(
   "/project/:projectId",
-  requireAuthentication,
+  addAuthentication,
   hasAuthorisation,
   singleProject
 );
