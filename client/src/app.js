@@ -28,6 +28,7 @@ import PrivacyToggleButton from "./components/dashboard/PrivacyToggleButton";
 import SearchResults from "./components/search/SearchResults";
 import NoMatch from "./components/404/404";
 import CreateProfile from "./components/profile/CreateProfile";
+import PrivacyPolicy from "./components/landing-page/PrivacyPolicy";
 
 // check for token to keep user logged in
 if (localStorage.token) {
@@ -111,6 +112,11 @@ class App extends Component {
                   exact
                   path="/projects/privacy/:projectId"
                   component={PrivacyToggleButton}
+                />
+                <Route
+                  exact
+                  path="/privacypolicy"
+                  component={PrivacyPolicy}
                 />
 
                 <Route exact path="/carousel" component={DisplayCarousel} />
