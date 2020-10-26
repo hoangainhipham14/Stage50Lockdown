@@ -32,7 +32,7 @@ class ProjectList extends Component {
     if (this.props.projectExists) {
       // display scrollable projects
       return (
-        <div className="mt-3">
+        <div className="my-3">
           <Card>
             <Card.Header>Projects</Card.Header>
             <Container>
@@ -45,16 +45,12 @@ class ProjectList extends Component {
     } else {
       // display no project
       return (
-        <Col className="col-sm d-flex mb-5">
-          <Container>
-            <Card style={{ width: "45rem", height: maxHeight }}>
-              <Card.Header>Projects</Card.Header>
-              <Card.Body>
-                <Card.Title>No project</Card.Title>
-              </Card.Body>
-            </Card>
-          </Container>
-        </Col>
+        <Card className="my-3" style={{ width: "45rem" }}>
+          <Card.Header>Projects</Card.Header>
+          <Card.Body>
+            <Card.Title>No projects</Card.Title>
+          </Card.Body>
+        </Card>
       );
     }
   }
