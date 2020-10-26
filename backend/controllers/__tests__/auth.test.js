@@ -6,8 +6,25 @@ const {
 } = require("../authValidation");
 
 describe("Authentication Validation Tests -> validateSignup", function () {
+  it("Should Reject A Signup Request with a password that has no numbers or uppercase letters", function () {
+    const request0 = {
+      firstName: "Test",
+      lastName: "Test",
+      username: "test123",
+      email: "valid@gmail.com",
+      password1: "testtesttesttest",
+      password2: "testtesttesttest",
+    };
+    expect(validateSignup(request0)).toEqual({
+      errors: {
+        password1:
+          "Password must contain at least one uppercase letter, one lowercase letter, and one number.",
+      },
+      isValid: false,
+    });
+  });
 
-  it("Should Reject A Signup Request a second password that does not match the first", function () {
+  it("Should Reject A Signup Request a second password that does not match the first and an invalid email", function () {
     const request1 = {
       firstName: "Test",
       lastName: "Test",
@@ -17,10 +34,12 @@ describe("Authentication Validation Tests -> validateSignup", function () {
       password2: "testtesttesttestdsafsfdsfdsfdsf",
     };
     expect(validateSignup(request1)).toEqual({
-      errors: { email: "Email is invalid",
-      password1: "Password must contain at least one uppercase letter, one lowercase letter, and one number.",
-      password2: "Passwords are not the same",
-    },
+      errors: {
+        email: "Email is invalid",
+        password1:
+          "Password must contain at least one uppercase letter, one lowercase letter, and one number.",
+        password2: "Passwords are not the same",
+      },
       isValid: false,
     });
   });

@@ -9,9 +9,6 @@ const {
   generateProjectLink,
   connectLinkToProject,
 } = require("../project");
-;
-
-
 // Check they are all defined
 describe("Project Validation Tests -> Check the files exist", function () {
   it("should recognise all the functions exist", function () {
