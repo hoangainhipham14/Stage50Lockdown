@@ -191,12 +191,33 @@ class BottomText extends Component {
       <Row>
         <Col md>
           <h5>Share your work with friends and colleagues</h5>
+          <p style={{ textAlign: "justify", textJustify: "inter-word" }}>
+            By utilising the best technology there is in bootstrap and
+            JavaScript, we have been able to create a program that allows you to
+            safely save and show your work off to the wider world. With its ease
+            of access, you can invite anyone you see fit to be able to view your
+            work to come and see what you have created in your own time.
+          </p>
         </Col>
         <Col md>
           <h5>Keep your projects private until they are ready to share</h5>
+          <p style={{ textAlign: "justify", textJustify: "inter-word" }}>
+            With privacy being one of the core principles that has driven our
+            development, the project items that you create are private until you
+            decide otherwise, so there is no worrying about someone coming upon
+            your work without your strict approval.
+          </p>
         </Col>
         <Col md>
           <h5>Show off to potential employers</h5>
+          <p style={{ textAlign: "justify", textJustify: "inter-word" }}>
+            With the power of being able to share your work, you can display any
+            project that you may to any future employer, including an elegant
+            method of displaying images and text on a page that will allow you
+            to be able to showcase everything great that you have done whilst
+            giving you great mobility and ease of access to be able to navigate
+            easily throughout your profile.
+          </p>
         </Col>
       </Row>
     );
