@@ -152,6 +152,7 @@ class Signup extends Component {
             <p align="center">
               Already have an account? <Link to="/signin">Sign in</Link>
             </p>
+
             <Form onSubmit={this.onSubmit}>
               <Form.Group controlId="firstName">
                 <Form.Label>First name</Form.Label>
@@ -240,6 +241,9 @@ class Signup extends Component {
                 {fbContent}
               </div>
             </Form>
+            <Alert variant="success">
+              <p>Hey, don't forget to verify email</p>
+            </Alert>
           </div>
         </div>
       </Container>

@@ -108,7 +108,7 @@ exports.signup = async (req, res) => {
     var mailOptions = {
       from: "noreply",
       to: newUser.email,
-      subject: "Account Verification Token (Updated)",
+      subject: "Account Verification Token",
       text:
         "Verify your account by clicking the link: \nhttp://" +
         req.headers.host +
