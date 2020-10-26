@@ -101,7 +101,7 @@ class NavbarUserSearch extends Component {
           <Form.Group controlId="searchphrase">
             <FormControl
               type="text"
-              placeholder="Search for a user"
+              placeholder="Search..."
               className="mr-sm-1"
               size="sm"
               onChange={this.onChange}
