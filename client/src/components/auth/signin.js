@@ -161,7 +161,7 @@ class Signin extends Component {
               </Alert>
             </Form.Group>
             <div className="text-center">
-              <Button variant="primary" type="submit">
+              <Button className="display-btn" variant="primary" type="submit">
                 {this.state.waiting ? (
                   <Spinner animation="border" size="sm" />
                 ) : (

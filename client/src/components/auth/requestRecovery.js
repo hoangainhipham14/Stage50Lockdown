@@ -77,7 +77,7 @@ class RequestPasswordReset extends Component {
             </Form.Group>
 
             <div className="text-center">
-              <Button variant="primary" type="submit">
+              <Button className="display-btn" variant="primary" type="submit">
                 Send Recovery Email
               </Button>
             </div>

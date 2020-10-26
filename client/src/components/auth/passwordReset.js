@@ -74,7 +74,7 @@ class ResetPassword extends Component {
               {errors.msg}
             </Alert>
           </Form.Group>
-          <Button variant="primary" type="submit">
+          <Button className="display-btn" variant="primary" type="submit">
             Reset Password
           </Button>
         </Form>
