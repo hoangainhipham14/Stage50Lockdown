@@ -17,10 +17,6 @@ class PrivacyToggleButton extends Component {
 
   // Send a request to the database to switch the itemIsPublic bool
   onToggleClick = (e) => {
-    e.preventDefault();
-
-    console.log(JSON.stringify(this.state));
-
     //console.log("Button Clicked with id: " + projectId);
     axios
       .post(`/api/project/togglePrivacy/${this.state.projectId}`, {
@@ -42,11 +38,10 @@ class PrivacyToggleButton extends Component {
     return (
       <Container>
         <Form.Group controlId="switch">
-          <Form.Label>Toggle Privacy Of Item Here</Form.Label>
           <Form.Check
             type="switch"
             id="switch"
-            label=""
+            label="Project is public"
             onChange={this.onToggleClick}
           />
         </Form.Group>
