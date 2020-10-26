@@ -38,7 +38,6 @@ const userSchema = new Schema({
 
   fbUserID: {
     type: String,
-    unique: true,
   },
 
   image: {
