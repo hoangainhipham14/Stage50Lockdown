@@ -11,23 +11,26 @@ class ProjectList extends Component {
       maxHeight = 350;
     }
 
-    const projectCards = this.props.projects.map((project) => (
-      <ListGroup.Item key={project._id}>
-        <Card.Text style={{ textAlign: "right", fontSize: 13 }}>
-          {project.created}
-        </Card.Text>
-        <Card.Title>{project.title}</Card.Title>
-        <Card.Text>{project.about}</Card.Text>
-        {this.props.isAuth && (
-          <Link to={`/projects/privacy/${project._id}`}>
-            <Button>Change Privacy Settings</Button>
-          </Link>
-        )}
-        <Link to={`/projects/${project._id}`}>
-          <Button>More</Button>
-        </Link>
-      </ListGroup.Item>
-    ));
+    const projectCards = this.props.projects.map(
+      (project) =>
+        project.itemIsPublic && (
+          <ListGroup.Item key={project._id}>
+            <Card.Text style={{ textAlign: "right", fontSize: 13 }}>
+              {project.created}
+            </Card.Text>
+            <Card.Title>{project.title}</Card.Title>
+            <Card.Text>{project.about}</Card.Text>
+            {this.props.isAuth && (
+              <Link to={`/projects/privacy/${project._id}`}>
+                <Button>Change Privacy Settings</Button>
+              </Link>
+            )}
+            <Link to={`/projects/${project._id}`}>
+              <Button>More</Button>
+            </Link>
+          </ListGroup.Item>
+        )
+    );
 
     // if projects exist
     if (this.props.projectExists) {
