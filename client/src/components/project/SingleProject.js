@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link, Redirect } from "react-router-dom";
-import { singleProject, connectLinkToProject } from "./APIProject";
+import { connectLinkToProject } from "./APIProject";
 import {
   Card,
   Container,
@@ -11,6 +11,7 @@ import {
 } from "react-bootstrap";
 import { Center, HCenter } from "../layout";
 import { SRLWrapper } from "simple-react-lightbox";
+import axios from "axios";
 
 const Purifier = require("html-purify");
 
@@ -42,6 +43,7 @@ class SingleProject extends Component {
       project: "",
       projectId: "",
       images: [],
+      error: null,
     };
   }
 
@@ -70,22 +72,45 @@ class SingleProject extends Component {
       console.log("trying to access normally");
       const projectId = this.props.match.params.projectId;
       console.log("project id:", projectId);
-      singleProject(projectId).then((data) => {
-          console.log(data.error);
-          if (data.error) {
-            console.log(data.error);
-            // Redirect to home page
-          // Check if the project is null
-          } else if (data.error === null) {
-            //console.log("Project does not exist...");
-            this.setState({redirectToHome: true});
-          } else {
+      axios
+        .get(`/api/project/${projectId}`)
+        .then((response) => {
+          console.log(response);
           this.setState({
-            project: data,
+            project: response.data,
             projectId: projectId,
           });
-        }
-      });
+        })
+        .catch((err) => {
+          switch (err.response.status) {
+            case 403:
+              this.setState({
+                error: "Project is private.",
+              });
+              break;
+            case 404:
+              this.setState({
+                error: "Project does not exist.",
+              });
+              break;
+            default:
+              this.setState({
+                error: "Unknown error.",
+              });
+          }
+        });
+
+      // singleProject(projectId).then((data) => {
+      //   console.log(data);
+      //   if (data.error) {
+      //     console.log(data.error);
+      //   } else {
+      //     this.setState({
+      //       project: data,
+      //       projectId: projectId,
+      //     });
+      //   }
+      // });
     }
     console.log("Current State: " + JSON.stringify(this.state));
   };
@@ -94,12 +119,12 @@ class SingleProject extends Component {
     // replace **text** with <strong>text</strong>
     // Check if its defined first so that a deleted page
     // doesnt try to be replaced
-    if(txt){
-    txt = txt.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
-    // replace *text* with <i>text</i>
-    txt = txt.replace(/\*([^*]+)\*/g, "<i>$1</i>");
-    // replace [site](url) with <a href="url">site</a>
-    txt = txt.replace(/\[([^[]+)\]\(([^)]+)\)/g, "<a href='$2'>$1</a>");
+    if (txt) {
+      txt = txt.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+      // replace *text* with <i>text</i>
+      txt = txt.replace(/\*([^*]+)\*/g, "<i>$1</i>");
+      // replace [site](url) with <a href="url">site</a>
+      txt = txt.replace(/\[([^[]+)\]\(([^)]+)\)/g, "<a href='$2'>$1</a>");
     }
     return txt;
   };
@@ -107,6 +132,10 @@ class SingleProject extends Component {
   render() {
     if (this.state.redirectToHome) {
       return <Redirect to={`/`} />;
+    }
+
+    if (this.state.error) {
+      return <Container>{this.state.error}</Container>;
     }
 
     const { project } = this.state;
@@ -184,11 +213,6 @@ class SingleProject extends Component {
             <HCenter>
               <i>{about}</i>
             </HCenter>
-            <HCenter>
-              <Link to={`/projects/${this.state.projectId}/edit`}>
-                <Button>Edit Project</Button>
-              </Link>
-            </HCenter>
           </Card.Header>
           <Card.Body>
             {mainImageIndex !== null ? (
@@ -217,7 +241,21 @@ class SingleProject extends Component {
               </SRLWrapper>
             </Card.Body>
           </Row>
-          <Card.Footer className="text-muted">{filesDisplay}</Card.Footer>
+          <Card.Footer className="text-muted">
+            <Row>
+              <Col>{filesDisplay}</Col>
+              <Col>
+                {this.state.project.editingPrivileges ? (
+                  <Link
+                    to={`/projects/${this.state.projectId}/edit`}
+                    style={{ float: "right" }}
+                  >
+                    <Button>Edit Project</Button>
+                  </Link>
+                ) : null}
+              </Col>
+            </Row>
+          </Card.Footer>
         </Card>
       </Container>
     );

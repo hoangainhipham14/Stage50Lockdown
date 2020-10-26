@@ -23,7 +23,7 @@ const { deleteAllUserProjects } = require("../controllers/project");
 exports.signup = async (req, res) => {
   // validate sign up data
   // Don't print account data to console
- console.log("Validating: " + JSON.stringify(req.body));
+  console.log("Validating: " + JSON.stringify(req.body));
   const { errors, isValid } = validateSignup(req.body);
   if (!isValid) {
     return res.status(400).json(errors);
@@ -76,7 +76,7 @@ exports.signup = async (req, res) => {
     token: crypto.randomBytes(16).toString("hex"),
   });
 
-  console.log("CurrentFBId:" + (!fbUserID));
+  console.log("CurrentFBId:" + !fbUserID);
 
   if (!fbUserID) {
     // Save the verification token
@@ -557,8 +557,17 @@ exports.verify = (req, res) => {
     });
 };
 
+// if the token is valid, express jwt appends the verified users IDs in auth
+// key to request object
 exports.requireAuthentication = expressJwt({
   secret: process.env.JWT_SECRET,
+  userProperty: "auth",
+});
+
+// same as requireAuth, but continues with no token appended if invalid
+exports.addAuthentication = expressJwt({
+  secret: process.env.JWT_SECRET,
+  credentialsRequired: false,
   userProperty: "auth",
 });
 

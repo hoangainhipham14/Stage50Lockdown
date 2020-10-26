@@ -149,7 +149,9 @@ class DummySignUpForm extends Component {
                 },
               }}
             >
-              <Button variant="primary">Sign Up</Button>
+              <Button className="display-btn" variant="primary">
+                Sign Up
+              </Button>
             </Link>
             {fbContent}
           </Form>
@@ -179,6 +181,8 @@ class TopLeftText extends Component {
           >
             Email Us
           </a>
+
+          <Link to="/privacypolicy"><Button variant="primary">Privacy Policy</Button></Link>
         </HCenter>
       </Center>
     );
