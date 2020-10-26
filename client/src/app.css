@@ -92,6 +92,29 @@ button.close:focus {
   border-radius: 0.5rem;
 }
 
+.btnFacebook {
+  width: 180px;
+  height: 40px;
+  border-radius: 4px;
+  background: #3b5998;
+  color: white;
+  border: 0px transparent;
+  text-align: center;
+  margin: 5px;
+  display: inline-block;
+}
+.btnFacebook:hover {
+  background: #3b5998;
+  opacity: 0.6;
+}
+
+@media only screen and (max-width: 450px) {
+  .btnFacebook,
+  .btn {
+    width: 100%;
+  }
+}
+
 @import "~react-image-gallery/styles/css/image-gallery.css";
 .loading {
   position: absolute;
