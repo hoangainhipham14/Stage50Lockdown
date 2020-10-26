@@ -1,8 +1,12 @@
 const {
   createProject,
+  singleProject,
   projectById,
   image,
-  singleProject,
+  ProjectList,
+  toggleProjectPrivacy,
+  generateProjectLink,
+  connectLinkToProject,
 } = require("../project");
 
 //const regeneratorRuntime = require("regenerator-runtime");
@@ -18,5 +22,9 @@ describe("Project Validation Tests -> Check the files exist", function () {
     expect(projectById);
     expect(image);
     expect(singleProject);
+    expect(ProjectList);
+    expect(toggleProjectPrivacy);
+    expect(generateProjectLink);
+    expect(connectLinkToProject);
   });
 });
