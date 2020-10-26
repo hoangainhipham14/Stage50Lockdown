@@ -69,9 +69,9 @@ class ProjectLink extends Component {
           console.log("failure");
           console.log(response.error);
         } else {
-          console.log(response.data.link);
+          console.log(response);
           // Assign the link to the state
-          this.setState({ generatedLink: response.data.link });
+          this.setState({ generatedLink: response.data });
         }
       });
   };

@@ -66,6 +66,7 @@ class SingleProject extends Component {
             // This could possibly break lol
             projectId: data._id,
           });
+          console.log(this.state.projectId);
         }
       });
     } else {
@@ -85,6 +86,7 @@ class SingleProject extends Component {
         }
       });
     }
+    console.log("Current State: " + JSON.stringify(this.state));
   };
 
   convertRTFtoHTML = (txt) => {
@@ -104,7 +106,7 @@ class SingleProject extends Component {
 
     const { project } = this.state;
     if (!project) {
-      return <Container>Loading...</Container>;
+      return <Container>Loading....</Container>;
     }
     const {
       title,
