@@ -17,11 +17,13 @@ describe("Authentication Validation Tests -> validateSignup", function () {
       password2: "testtesttesttestdsafsfdsfdsfdsf",
     };
     expect(validateSignup(request1)).toEqual({
-      errors: { email: "Emails dont match" },
+      errors: { email: "Email is invalid",
+      password1: "Password must contain at least one uppercase letter, one lowercase letter, and one number.",
+      password2: "Passwords are not the same",
+    },
       isValid: false,
     });
   });
-
 
   it("Should Reject A Signup Request with an invalid email", function () {
     const request2 = {
@@ -29,8 +31,8 @@ describe("Authentication Validation Tests -> validateSignup", function () {
       lastName: "Test",
       username: "test123",
       email: "notvalid",
-      password1: "testtesttesttest",
-      password2: "testtesttesttest",
+      password1: "Testtesttesttest123123",
+      password2: "Testtesttesttest123123",
     };
     expect(validateSignup(request2)).toEqual({
       errors: { email: "Email is invalid" },
@@ -44,35 +46,35 @@ describe("Authentication Validation Tests -> validateSignup", function () {
       username: "test123",
       email: "valid@gmail.com",
       password1: "te",
-      password1: "te",
+      password2: "te",
     };
     expect(validateSignup(request3)).toEqual({
       errors: { password1: "Password must be at least 8 characters" },
       isValid: false,
     });
   });
-  it("Should Reject A Signin Request with no first name", function () {
+  it("Should Reject A Signup Request with no first name", function () {
     const request4 = {
       firstName: "",
       lastName: "Test",
       username: "test123",
       email: "valid@gmail.com",
-      password1: "testtesttesttest",
-      password2: "testtesttesttest",
+      password1: "testtesttesttest123A",
+      password2: "testtesttesttest123A",
     };
     expect(validateSignup(request4)).toEqual({
       errors: { firstName: "First name is required" },
       isValid: false,
     });
   });
-  it("Should Accept A Valid Signin Request", function () {
+  it("Should Accept A Valid Signup Request", function () {
     const request5 = {
       firstName: "Test",
       lastName: "Test",
       username: "test123",
       email: "valid@gmail.com",
-      password1: "testtesttesttest",
-      password2: "testtesttesttest",
+      password1: "testtesttesttest123A",
+      password2: "testtesttesttest123A",
     };
     expect(validateSignup(request5)).toEqual({
       errors: {},

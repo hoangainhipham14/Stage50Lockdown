@@ -1,3 +1,4 @@
+// Project functions
 const {
   createProject,
   singleProject,
@@ -8,14 +9,10 @@ const {
   generateProjectLink,
   connectLinkToProject,
 } = require("../project");
+;
 
-//const regeneratorRuntime = require("regenerator-runtime");
 
-//const server = require("../../server");
-const { expect } = require("chai");
-
-// In future would be able to test all the functions independantly whilst running the server
-
+// Check they are all defined
 describe("Project Validation Tests -> Check the files exist", function () {
   it("should recognise all the functions exist", function () {
     expect(createProject);
