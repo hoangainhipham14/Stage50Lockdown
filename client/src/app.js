@@ -28,6 +28,7 @@ import PrivacyToggleButton from "./components/dashboard/PrivacyToggleButton";
 import SearchResults from "./components/search/SearchResults";
 import NoMatch from "./components/404/404";
 import CreateProfile from "./components/profile/CreateProfile";
+import PrivacyPolicy from "./components/landing-page/PrivacyPolicy";
 
 // check for token to keep user logged in
 if (localStorage.token) {
