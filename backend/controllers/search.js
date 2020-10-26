@@ -36,7 +36,7 @@ exports.projectSearch = (req, res) => {
     { $text: { $search: searchphrase } },
     { score: { $meta: "textScore" } },
     // Return only these fields
-    { select: "title about username" }
+    { select: "title about username itemIsPublic" }
   )
     .sort({ score: { $meta: "textScore" } })
     .exec((err, results) => {
@@ -46,9 +46,15 @@ exports.projectSearch = (req, res) => {
           error: err,
         });
       } else {
+        let publicresults = [];
+        results.forEach((result) => {
+          if (result.itemIsPublic) {
+            publicresults.push(result);
+          }
+        });
         return res.json({
           searchphrase: searchphrase,
-          results: results,
+          results: publicresults,
         });
       }
     });
