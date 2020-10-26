@@ -20,7 +20,6 @@ function validateSignup(data) {
   data.password2 = !isEmpty(data.password2) ? data.password2 : "";
   data.fbUserID = !isEmpty(data.fbUserID) ? data.fbUserID : "";
   data.image = !isEmpty(data.image) ? data.image : "";
-  data.fbAccessToken = !isEmpty(data.fbAccessToken) ? data.fbAccessToken : "";
 
   // Regular Expression requirements
   const regexNum = new RegExp("(?=.*[0-9])");
