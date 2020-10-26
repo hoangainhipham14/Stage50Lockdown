@@ -14,7 +14,6 @@ import axios from "axios";
 
 import ProjectList from "./ProjectList";
 import { getUsernameId } from "../layout/GetUsername";
-import { Loading } from "../loading/Loading";
 import DisplayCarousel from "../profile/Carousel";
 import { HCenter } from "../layout";
 

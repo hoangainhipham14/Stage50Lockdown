@@ -15,7 +15,6 @@ import { HCenter } from "../layout";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
-import { singleProject } from "./APIProject";
 
 const acceptedImageTypes = ["jpg", "png", "jpeg"];
 

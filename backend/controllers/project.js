@@ -11,10 +11,7 @@ const fs = require("fs");
 const e = require("express");
 
 exports.hasAuthorisation = (req, res, next) => {
-  console.log("hasAuthorisation?");
   const projectPublic = req.project && req.project.itemIsPublic;
-  console.log(req.project);
-  console.log(req.auth);
   const isOwner =
     req.project && req.auth && req.project._userId._id == req.auth._id;
   if (projectPublic || isOwner) {
@@ -602,21 +599,17 @@ exports.connectLinkToProject = (req, res) => {
   });
 };
 
-// Exported differently as there is never an API call for this 
+// Exported differently as there is never an API call for this
 // function from the frontend
 function deleteAllUserProjects(userId) {
-
-  console.log("Deleting Projects with: " + userId)
-  Project.deleteMany({_userId: userId}, (err) => {
-    if (err){
+  console.log("Deleting Projects with: " + userId);
+  Project.deleteMany({ _userId: userId }, (err) => {
+    if (err) {
       console.log(err);
-    }
-    else
-    {
+    } else {
       console.log("Project deletion success for: " + userId);
     }
   });
-
 }
 
-module.exports.deleteAllUserProjects =  deleteAllUserProjects;
+module.exports.deleteAllUserProjects = deleteAllUserProjects;
