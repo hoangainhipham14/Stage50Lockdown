@@ -140,6 +140,7 @@ class MyNavbar extends Component {
   onClickLogout = (e) => {
     e.preventDefault();
     this.props.logoutUser();
+    this.props.history.push("/");
   };
 
   render() {

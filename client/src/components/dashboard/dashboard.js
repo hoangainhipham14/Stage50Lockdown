@@ -34,12 +34,14 @@ class Dashboard extends Component {
   onLogoutClick = (e) => {
     e.preventDefault();
     this.props.logoutUser();
+    this.props.history.push("/");
   };
 
   onAccountDeleteClick = (e) => {
     e.preventDefault();
     this.deleteUser(this.props.history);
     this.props.logoutUser();
+    this.props.history.push("/");
   };
 
   render() {
