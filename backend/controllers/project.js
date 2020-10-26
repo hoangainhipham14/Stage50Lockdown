@@ -21,6 +21,8 @@ exports.singleProject = (req, res) => {
   /*
   Changed this so were not sending data to the front end that is private
   */
+  //console.log(JSON.stringify(req.project));
+
   if (req.project.itemIsPublic) {
     const data = {
       title: req.project.title,
@@ -245,7 +247,6 @@ exports.editProject = (req, res, next) => {
     }
 
     // return res.status(400).json({ test: "success" });
-
     console.log("Saving...");
     project.save((err, result) => {
       if (err) {
@@ -263,17 +264,28 @@ exports.editProject = (req, res, next) => {
 
 // Project parameter field, finds the project in the database
 exports.projectById = (req, res, next, id) => {
-  Project.findById(id)
-    .populate("postedBy", "_id name")
-    .exec((err, project) => {
-      if (err || !project) {
-        return res.status(400).json({
-          error: err,
-        });
-      }
-      req.project = project;
-      next();
+  try {
+    Project.findById(id)
+      .populate("postedBy", "_id name")
+      .exec((err, project) => {
+        if (!project) {
+          return res.status(400).json({
+            error: "Project not found.",
+          });
+        } else if (err) {
+          console.log("ERROR:\n", err);
+          return res.stats(500).json({
+            error: "Server error.",
+          });
+        }
+        req.project = project;
+        next();
+      });
+  } catch (err) {
+    return res.status(400).json({
+      error: "Project not found.",
     });
+  }
 };
 
 // Return main image of project
@@ -405,24 +417,33 @@ exports.ProjectList = (req, res) => {
 // toggles the privacy setting of a particular project
 exports.toggleProjectPrivacy = (req, res) => {
   const projectID = req.body.projectID;
+  try {
+    req.project.itemIsPublic = !req.project.itemIsPublic;
+    req.project.save();
+    console.log(req.project);
+    return res.status(200);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Server error." });
+  }
 
-  Project.findById(projectID).exec((err, project) => {
-    if (err) {
-      return res.status(400).json({
-        error: err,
-      });
-    } else {
-      if (project.itemIsPublic) {
-        project.itemIsPublic = false;
-        project.save();
-        return res.status(200);
-      } else if (!project.itemIsPublic) {
-        project.itemIsPublic = true;
-        project.save();
-        return res.status(200);
-      }
-    }
-  });
+  // Project.findById(projectID).exec((err, project) => {
+  //   if (err) {
+  //     return res.status(400).json({
+  //       error: err,
+  //     });
+  //   } else {
+  //     if (project.itemIsPublic) {
+  //       project.itemIsPublic = false;
+  //       project.save();
+  //       return res.status(200);
+  //     } else if (!project.itemIsPublic) {
+  //       project.itemIsPublic = true;
+  //       project.save();
+  //       return res.status(200);
+  //     }
+  //   }
+  // });
 };
 
 // Generate a link for the user to reference a project even if it is private
@@ -433,41 +454,54 @@ exports.generateProjectLink = (req, res) => {
   The time that they want the link to work for 
   */
   const projectID = req.body.projectID;
-  const requiredTime = req.body.requiredTime;
+  const isPermanent = req.body.isPermanent;
+  let requiredTime = req.body.requiredTime;
+
+  // Infinate time (Might be a problem in 100 years)
+  const infiniteTime = 52560000;
+
+  // Set the permenant time if it is a constant link
+  if (isPermanent == true) {
+    requiredTime = infiniteTime;
+  }
 
   // Generate a link
-  const projectLinkString =
-    req.headers.host +
-    "/projects/link/" +
-    crypto.randomBytes(10).toString("hex");
+  let projectLink = crypto.randomBytes(10).toString("hex");
 
   // Check to make sure link hasnt been used before
-  if (ProjectLink.findOne({ link: projectLinkString }) == true) {
+  if (ProjectLink.findOne({ link: projectLink }) == true) {
     return res.status(400).json({ msg: "Link generated was already used" });
   }
 
   // Create that link in the database
   let newProjectLink = new ProjectLink({
     _projectId: projectID,
-    link: projectLinkString,
+    link: projectLink,
     requiredTime: requiredTime,
   });
+
+  console.log("NEW LINK: " + newProjectLink);
 
   // Save the Schema and return a link
   newProjectLink
     .save()
     .catch((err) => console.log("Error saving user session:", err));
   console.log("Link saved...");
-  return res.status(200).json(newProjectLink);
+
+  let fullLink =
+    "https://" + req.headers.host + "/projects/link/" + newProjectLink.link;
+  return res.status(200).json(fullLink);
 };
 
+////
 // This accepts a link provided by a user and returns a project even if it is private
+////
 exports.connectLinkToProject = (req, res) => {
   // Extract the project link from the end of the line
   // Note here the req.headers.host will change weather it is local or public
-  const projectLink = req.headers.host + "/projects/link/" + req.params.link;
+  const projectLink = req.params.link;
 
-  //console.log("Searching database with: " + projectLink);
+  console.log("Searching database with: " + projectLink);
 
   // Provided the link is valid, pass on the link to the particular project
   ProjectLink.findOne({ link: projectLink }).exec((err, link) => {
@@ -482,50 +516,59 @@ exports.connectLinkToProject = (req, res) => {
     //console.log("currTime: " + currTime);
     if (validTill < currTime) {
       console.log("Link has expired");
-      const falseData = {
-        title: "",
-        about: "",
-        body: "",
-        itemIsPublic: false,
-      };
-      return res.json(falseData);
+      return res.json({ error: "Expired Link" });
     }
 
     /*** Links are matching when they shouldnt ***/
     // Check for errors
     if (err) {
-      //console.log("error....");
+      console.log("error....");
       return res.status(400).json({
         error: err,
       });
     } else {
       const projectId = link._projectId;
-      //console.log("Matching link has been found... Searching for project with id: " + projectId);
 
+      /*
+      console.log(
+        "Matching link has been found... Searching for project with id: " +
+          projectId
+      );
+      */
+
+      // Essentially backing frontend queries on the backend
       // Find the project
       Project.findById(projectId).exec((err, project) => {
         if (err) {
-          return res.status(400).json({
-            error: err,
-          });
-        } else {
-          //console.log("Project: " + project);
-          // Return the project values that are relevant
+          console.log(JSON.stringify(err));
+          return res.status(400).json({ error: "Error occured" });
+        }
+        /*
+        Changed this so were not sending data to the front end that is private
+        */
+        //console.log(JSON.stringify(project));
+        if (project) {
           const data = {
             title: project.title,
             about: project.about,
             body: project.body,
-            // Preset this value to true so that the item can be viewed by the person
-            // with the link **Note this doesnt change the value on the DB
-            itemIsPublic: true,
-            additionalFiles: project.additionalFiles.map(
+
+            imagesNames: project.images.map((file) => file.fileName),
+            mainImageIndex: project.mainImageIndex,
+            additionalFilesNames: project.additionalFiles.map(
               (file) => file.fileName
             ),
-            // Pass the id of the project through as well as it doesnt come through inately with the link
+            itemIsPublic: true,
+            // Pass through the id as well as it doesnt come inately
             _id: projectId,
           };
-          // console.log(data);
+
           return res.json(data);
+        } else {
+          console.log("Project is private or does not exist.");
+          return res.status(400).json({
+            error: "Project does not exist",
+          });
         }
       });
     }

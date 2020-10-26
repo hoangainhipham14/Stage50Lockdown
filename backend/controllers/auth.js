@@ -23,7 +23,7 @@ const { deleteAllUserProjects } = require("../controllers/project");
 exports.signup = async (req, res) => {
   // validate sign up data
   // Don't print account data to console
-  // console.log("Validating: " + JSON.stringify(req.body));
+ console.log("Validating: " + JSON.stringify(req.body));
   const { errors, isValid } = validateSignup(req.body);
   if (!isValid) {
     return res.status(400).json(errors);
@@ -65,8 +65,8 @@ exports.signup = async (req, res) => {
     username,
     email,
     phoneNumber,
-    fbUserID,
     image,
+    fbUserID,
   });
   newUser.password = newUser.generateHash(password);
 
@@ -76,8 +76,13 @@ exports.signup = async (req, res) => {
     token: crypto.randomBytes(16).toString("hex"),
   });
 
+  console.log("CurrentFBId:" + (!fbUserID));
+
   if (!fbUserID) {
     // Save the verification token
+
+    // Fake user id to ensure it is filled in the db
+    newUser.fbUserID = crypto.randomBytes(32).toString("hex");
     token
       .save()
       .catch((err) => res.status(500).send({ msgFromTokenSave: err.message }));
@@ -95,7 +100,7 @@ exports.signup = async (req, res) => {
     var mailOptions = {
       from: "noreply",
       to: newUser.email,
-      subject: "Account Verification Token (Updated)",
+      subject: "Account Verification Token",
       text:
         "Verify your account by clicking the link: \nhttp://" +
         req.headers.host +
@@ -110,11 +115,15 @@ exports.signup = async (req, res) => {
         res.status(500).send({ errMsgFromSendMail: err.message })
       );
   } else {
+    newUser.fbUserID = fbUserID;
     newUser.isValidated = true;
   }
 
   // Save user
   console.log("Saving user...");
+
+  //console.log(JSON.stringify(newUser));
+
   newUser
     .save()
     .then((user) => res.json(user))
@@ -176,6 +185,8 @@ exports.signin = (req, res) => {
 
 exports.fbSignin = (req, res) => {
   const { fbUserID } = req.body;
+
+  console.log("fbSignIn");
 
   User.findOne({ fbUserID }).then((user) => {
     // check user exists
