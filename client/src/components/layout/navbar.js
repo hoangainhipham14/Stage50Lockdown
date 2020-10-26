@@ -19,11 +19,6 @@ import { Redirect, withRouter } from "react-router-dom";
 function NavbarAccountLoggedOut() {
   return (
     <>
-      <Nav className="mr-auto">
-        <LinkContainer to="/projects/5f9115b46e4c820db8a0d30d">
-          <Nav.Link>Featured Project</Nav.Link>
-        </LinkContainer>
-      </Nav>
       <Nav className="ml-auto">
         <LinkContainer to="/signin">
           <Nav.Link>Sign In</Nav.Link>
@@ -40,7 +35,7 @@ function NavbarAccountLoggedIn(props) {
   return (
     <>
       <Nav className="mr-auto">
-        <Nav.Link href="/dashboard">Dashboard</Nav.Link>
+        <Nav.Link href="/createProject">Create Project</Nav.Link>
       </Nav>
       <Nav className="ml-auto">
         <Nav.Link href={`/profile/${props.username}`}>My Profile</Nav.Link>
@@ -96,42 +91,40 @@ class NavbarUserSearch extends Component {
       );
     }
     return (
-      <Nav className="mr-auto">
-        <Form inline onSubmit={this.onSearchSubmit}>
-          <Form.Group controlId="searchphrase">
-            <FormControl
-              type="text"
-              placeholder="Search..."
-              className="mr-sm-1"
-              size="sm"
-              onChange={this.onChange}
-            />
-            <Button
-              variant="outline-secondary search-button"
-              size="sm"
-              type="submit"
+      <Form inline onSubmit={this.onSearchSubmit}>
+        <Form.Group controlId="searchphrase">
+          <FormControl
+            type="text"
+            placeholder="Search..."
+            className="mr-sm-1"
+            size="sm"
+            onChange={this.onChange}
+          />
+          <Button
+            variant="outline-secondary search-button"
+            size="sm"
+            type="submit"
+          >
+            <svg
+              width="1em"
+              height="1em"
+              viewBox="0 0 16 16"
+              className="bi bi-search"
+              fill="currentColor"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <svg
-                width="1em"
-                height="1em"
-                viewBox="0 0 16 16"
-                className="bi bi-search"
-                fill="currentColor"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"
-                />
-                <path
-                  fillRule="evenodd"
-                  d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"
-                />
-              </svg>
-            </Button>
-          </Form.Group>
-        </Form>
-      </Nav>
+              <path
+                fillRule="evenodd"
+                d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"
+              />
+              <path
+                fillRule="evenodd"
+                d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"
+              />
+            </svg>
+          </Button>
+        </Form.Group>
+      </Form>
     );
   }
 }

@@ -149,7 +149,9 @@ class DummySignUpForm extends Component {
                 },
               }}
             >
-              <Button variant="primary">Sign Up</Button>
+              <Button className="display-btn" variant="primary">
+                Sign Up
+              </Button>
             </Link>
             {fbContent}
           </Form>
@@ -167,7 +169,7 @@ class TopLeftText extends Component {
           <h1>ePortfolio</h1>
         </HCenter>
         <HCenter style={{ fontSize: "25px" }} className="py-2">
-          ePortfolio offers a convienient and simple way to show off your work.
+          ePortfolio offers a convenient and simple way to show off your work.
           Perfect for artists, students and professionals.
         </HCenter>
         <HCenter>
@@ -193,33 +195,26 @@ class BottomText extends Component {
       <Row>
         <Col md>
           <h5>Share your work with friends and colleagues</h5>
-          <p>
+          <p style={{ textAlign: "justify", textJustify: "inter-word" }}>
             By utilising the best technology there is in bootstrap and
             JavaScript, we have been able to create a program that allows you to
-            safely save and show your work off to the wider world. Additionally,
-            with its ease of access, you can invite anyone you see fit to be
-            able to view your work to come and see what you have created in your
-            own time. And if you are wanting to view the work of someone it is
-            almost too easy to be able to see a published item from your
-            colleague.
+            safely save and show your work off to the wider world. With its ease
+            of access, you can invite anyone you see fit to be able to view your
+            work to come and see what you have created in your own time.
           </p>
         </Col>
         <Col md>
           <h5>Keep your projects private until they are ready to share</h5>
-          <p>
+          <p style={{ textAlign: "justify", textJustify: "inter-word" }}>
             With privacy being one of the core principles that has driven our
             development, the project items that you create are private until you
             decide otherwise, so there is no worrying about someone coming upon
-            your work without your strict approval. Furthermore If you decide
-            you don’t want anyone to see your work anymore that is entirely
-            fine, just choose to set your work back to private and just like
-            that any mistakes you’ve made are only known by yourself and the
-            database that is subjectively secure.
+            your work without your strict approval.
           </p>
         </Col>
         <Col md>
           <h5>Show off to potential employers</h5>
-          <p>
+          <p style={{ textAlign: "justify", textJustify: "inter-word" }}>
             With the power of being able to share your work, you can display any
             project that you may to any future employer, including an elegant
             method of displaying images and text on a page that will allow you

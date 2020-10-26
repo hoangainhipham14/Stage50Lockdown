@@ -1,7 +1,7 @@
 html {
   overflow-x: hidden;
   margin-right: calc(-1 * (100vw - 100%));
-  margin-bottom: 3rem;
+  margin-bottom: 1rem;
 }
 
 .error-text {
@@ -15,7 +15,7 @@ hr {
   margin-bottom: 50px;
 }
 
-.btn {
+.display-btn {
   min-width: 10rem;
   margin: 0.5rem;
   max-width: calc(100% - 1rem);
