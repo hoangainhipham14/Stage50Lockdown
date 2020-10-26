@@ -263,17 +263,28 @@ exports.editProject = (req, res, next) => {
 
 // Project parameter field, finds the project in the database
 exports.projectById = (req, res, next, id) => {
-  Project.findById(id)
-    .populate("postedBy", "_id name")
-    .exec((err, project) => {
-      if (err || !project) {
-        return res.status(400).json({
-          error: err,
-        });
-      }
-      req.project = project;
-      next();
+  try {
+    Project.findById(id)
+      .populate("postedBy", "_id name")
+      .exec((err, project) => {
+        if (!project) {
+          return res.status(400).json({
+            error: "Project not found.",
+          });
+        } else if (err) {
+          console.log("ERROR:\n", err);
+          return res.stats(500).json({
+            error: "Server error.",
+          });
+        }
+        req.project = project;
+        next();
+      });
+  } catch (err) {
+    return res.status(400).json({
+      error: "Project not found.",
     });
+  }
 };
 
 // Return main image of project
@@ -405,24 +416,33 @@ exports.ProjectList = (req, res) => {
 // toggles the privacy setting of a particular project
 exports.toggleProjectPrivacy = (req, res) => {
   const projectID = req.body.projectID;
+  try {
+    req.project.itemIsPublic = !req.project.itemIsPublic;
+    req.project.save();
+    console.log(req.project);
+    return res.status(200);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Server error." });
+  }
 
-  Project.findById(projectID).exec((err, project) => {
-    if (err) {
-      return res.status(400).json({
-        error: err,
-      });
-    } else {
-      if (project.itemIsPublic) {
-        project.itemIsPublic = false;
-        project.save();
-        return res.status(200);
-      } else if (!project.itemIsPublic) {
-        project.itemIsPublic = true;
-        project.save();
-        return res.status(200);
-      }
-    }
-  });
+  // Project.findById(projectID).exec((err, project) => {
+  //   if (err) {
+  //     return res.status(400).json({
+  //       error: err,
+  //     });
+  //   } else {
+  //     if (project.itemIsPublic) {
+  //       project.itemIsPublic = false;
+  //       project.save();
+  //       return res.status(200);
+  //     } else if (!project.itemIsPublic) {
+  //       project.itemIsPublic = true;
+  //       project.save();
+  //       return res.status(200);
+  //     }
+  //   }
+  // });
 };
 
 // Generate a link for the user to reference a project even if it is private
@@ -467,7 +487,8 @@ exports.generateProjectLink = (req, res) => {
     .catch((err) => console.log("Error saving user session:", err));
   console.log("Link saved...");
 
-  let fullLink = "https://" + req.headers.host + "/projects/link/" + newProjectLink.link;
+  let fullLink =
+    "https://" + req.headers.host + "/projects/link/" + newProjectLink.link;
   return res.status(200).json(fullLink);
 };
 
