@@ -3,11 +3,13 @@ import { Link } from "react-router-dom";
 
 
 import { Container, Button, } from "react-bootstrap";
+import { Center } from "../layout";
 
 class PrivacyPolicy extends Component {
     render () {
         return (
         <Container>
+          <Center>
             <div>
             <h1>Privacy Policy </h1>
 
@@ -137,6 +139,7 @@ class PrivacyPolicy extends Component {
             >
             Email Us
             </a>
+            </Center>
         </Container>
       ); 
     }

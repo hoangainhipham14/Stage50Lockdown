@@ -113,6 +113,11 @@ class App extends Component {
                   path="/projects/privacy/:projectId"
                   component={PrivacyToggleButton}
                 />
+                <Route
+                  exact
+                  path="/privacypolicy"
+                  component={PrivacyPolicy}
+                />
 
                 <Route exact path="/carousel" component={DisplayCarousel} />
 
