@@ -8,6 +8,7 @@ const moment = require("moment");
 
 const formidable = require("formidable");
 const fs = require("fs");
+const e = require("express");
 
 // Responds with the project containing the data inside
 
@@ -530,3 +531,22 @@ exports.connectLinkToProject = (req, res) => {
     }
   });
 };
+
+// Exported differently as there is never an API call for this 
+// function from the frontend
+function deleteAllUserProjects(userId) {
+
+  console.log("Deleting Projects with: " + userId)
+  Project.deleteMany({_userId: userId}, (err) => {
+    if (err){
+      console.log(err);
+    }
+    else
+    {
+      console.log("Project deletion success for: " + userId);
+    }
+  });
+
+}
+
+module.exports.deleteAllUserProjects =  deleteAllUserProjects;
