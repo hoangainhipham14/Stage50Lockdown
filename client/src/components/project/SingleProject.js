@@ -117,11 +117,15 @@ class SingleProject extends Component {
 
   convertRTFtoHTML = (txt) => {
     // replace **text** with <strong>text</strong>
-    txt = txt.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
-    // replace *text* with <i>text</i>
-    txt = txt.replace(/\*([^*]+)\*/g, "<i>$1</i>");
-    // replace [site](url) with <a href="url">site</a>
-    txt = txt.replace(/\[([^[]+)\]\(([^)]+)\)/g, "<a href='$2'>$1</a>");
+    // Check if its defined first so that a deleted page
+    // doesnt try to be replaced
+    if (txt) {
+      txt = txt.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+      // replace *text* with <i>text</i>
+      txt = txt.replace(/\*([^*]+)\*/g, "<i>$1</i>");
+      // replace [site](url) with <a href="url">site</a>
+      txt = txt.replace(/\[([^[]+)\]\(([^)]+)\)/g, "<a href='$2'>$1</a>");
+    }
     return txt;
   };
 

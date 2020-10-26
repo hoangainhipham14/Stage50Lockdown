@@ -12,7 +12,8 @@ class ProjectList extends Component {
     }
 
     const projectCards = this.props.projects.map((project) => (
-      <ListGroup.Item key={project._id}>
+      <Link to={`/projects/${project._id}`}>
+      <ListGroup.Item key={project._id}>        
         <Card.Text style={{ textAlign: "right", fontSize: 13 }}>
           {project.created}
         </Card.Text>
@@ -26,6 +27,7 @@ class ProjectList extends Component {
           </Link>
         )}
       </ListGroup.Item>
+      </Link>
     ));
 
     // if projects exist

@@ -10,21 +10,13 @@ const nodemailer = require("nodemailer");
 const expressJwt = require("express-jwt");
 const jwt = require("jsonwebtoken");
 
-/*import {
-  validateSignup,
-  validateSignin,
-  validateRequestRecovery,
-} from "./authValidation";
-*/
-
 // File imports
-//import * as validateFunctions from "./authValidation";
-
 const {
   validateSignup,
   validateSignin,
   validateRequestRecovery,
 } = require("./authValidation");
+const { deleteAllUserProjects } = require("../controllers/project");
 
 // async function is the only change from the previous implementation.
 // async means we don't need an enormous nested mess.
@@ -581,6 +573,10 @@ exports.addAuthentication = expressJwt({
 
 exports.deleteUser = (req, res) => {
   const userId = req.auth._id;
+
+  // Clear out all the projects associated with the user
+  // This is in the project controller
+  deleteAllUserProjects(userId);
   // console.log(userId);
   User.findByIdAndDelete(userId, (err) => {
     if (err) {

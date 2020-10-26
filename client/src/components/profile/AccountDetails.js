@@ -12,8 +12,6 @@ class AccountDetails extends Component {
     super(props);
 
     this.state = {
-      firstNamePrivate: "",
-      lastNamePrivate: "",
       emailPrivate: "",
       phoneNumberPrivate: "",
       user: "",
@@ -44,8 +42,6 @@ class AccountDetails extends Component {
             lastName: response.data.lastName,
             email: response.data.email,
             phoneNumber: response.data.phoneNumber,
-            firstNamePrivate: response.data.firstNamePrivate,
-            lastNamePrivate: response.data.lastNamePrivate,
             emailPrivate: response.data.emailPrivate,
             phoneNumberPrivate: response.data.phoneNumberPrivate,
             userExists: true,
@@ -79,19 +75,6 @@ class AccountDetails extends Component {
   toggleEmailPrivacy = (e) => {
     this.setState({
       emailPrivate: !this.state.emailPrivate,
-    });
-  };
-
-  toggleFirstNamePrivacy = (e) => {
-    this.setState({
-      firstNamePrivate: !this.state.firstNamePrivate,
-    });
-  };
-
-  toggleLastNamePrivacy = (e) => {
-    console.log(this.state.lastNamePrivate);
-    this.setState({
-      lastNamePrivate: !this.state.lastNamePrivate,
     });
   };
 
@@ -186,13 +169,6 @@ class AccountDetails extends Component {
                   placeholder={this.state.firstName}
                   onChange={this.onChange}
                 />
-                <Form.Check
-                  type="switch"
-                  id="first name switch"
-                  label="Private"
-                  checked={this.state.firstNamePrivate}
-                  onClick={this.toggleFirstNamePrivacy}
-                />
               </Form.Group>
 
               <Form.Group controlId="lastName">
@@ -201,13 +177,6 @@ class AccountDetails extends Component {
                   type="text"
                   placeholder={this.state.lastName}
                   onChange={this.onChange}
-                />
-                <Form.Check
-                  type="switch"
-                  id="last name switch"
-                  label="Private"
-                  checked={this.state.lastNamePrivate}
-                  onClick={this.toggleLastNamePrivacy}
                 />
               </Form.Group>
 

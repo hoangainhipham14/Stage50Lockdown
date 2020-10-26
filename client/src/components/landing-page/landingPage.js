@@ -181,6 +181,8 @@ class TopLeftText extends Component {
           >
             Email Us
           </a>
+
+          <Link to="/privacypolicy"><Button variant="primary">Privacy Policy</Button></Link>
         </HCenter>
       </Center>
     );
