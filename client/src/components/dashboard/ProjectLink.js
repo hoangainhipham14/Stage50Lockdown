@@ -32,18 +32,18 @@ class ProjectLink extends Component {
   };
 
   // Very similar to onSubmit
-  togglePermanentLink = (e) => { 
+  togglePermanentLink = (e) => {
     e.preventDefault();
-    console.log("Prior::" +this.state.isPermanent);
+    console.log("Prior::" + this.state.isPermanent);
 
-    if(this.state.isPermanent === true){
-      this.setState({isPermanent: false});
+    if (this.state.isPermanent === true) {
+      this.setState({ isPermanent: false });
     }
-    if(this.state.isPermanent === false){
-      this.setState({isPermanent: true});
+    if (this.state.isPermanent === false) {
+      this.setState({ isPermanent: true });
     }
     console.log(this.state.isPermanent);
-  }
+  };
 
   // Send a request to the database to switch the itemIsPublic bool
   onSubmit = (e) => {
@@ -78,44 +78,44 @@ class ProjectLink extends Component {
 
   render() {
     return (
-      <Container>
-        <Card style={{ width: "40rem" }}>
-          <Card.Header>
-            Generate Share Link (Works even if the project is private)
-          </Card.Header>
-          <Form onSubmit={this.onSubmit}>
-            <Form.Row>
-              <Col sm={4}>
-                <Form.Group controlId="requiredTime">
-                  <Form.Label>
-                    <Badge variant="secondary">Link LifeSpan (Mins)</Badge>
-                  </Form.Label>
-                  <Form.Control
-                    type="text"
-                    defaultValue="30"
-                    onChange={this.onChange}
-                  />
-                </Form.Group>
-              </Col>
-              <Col sm={8}>
-                <Form.Group controlId="resultingLink">
-                  <Form.Label>
-                    <Badge variant="primary">Generated Link</Badge>
-                  </Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="A link will appear here..."
-                    onChange={this.onChange}
-                    value={this.state.generatedLink}
-                  />
-                </Form.Group>
-              </Col>
-            </Form.Row>
-            <Row>    
+      // <Container>
+      <Card style={{ width: "40rem" }}>
+        <Card.Header>
+          Generate Share Link (Works even if the project is private)
+        </Card.Header>
+        <Form onSubmit={this.onSubmit}>
+          <Form.Row>
             <Col sm={4}>
-                <Button variant="primary" type="submit">
-                  Generate Link
-                </Button>
+              <Form.Group controlId="requiredTime">
+                <Form.Label>
+                  <Badge variant="secondary">Link LifeSpan (Mins)</Badge>
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  defaultValue="30"
+                  onChange={this.onChange}
+                />
+              </Form.Group>
+            </Col>
+            <Col sm={8}>
+              <Form.Group controlId="resultingLink">
+                <Form.Label>
+                  <Badge variant="primary">Generated Link</Badge>
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="A link will appear here..."
+                  onChange={this.onChange}
+                  value={this.state.generatedLink}
+                />
+              </Form.Group>
+            </Col>
+          </Form.Row>
+          <Row>
+            <Col sm={4}>
+              <Button variant="primary" type="submit">
+                Generate Link
+              </Button>
             </Col>
 
             <Col sm={4}>
@@ -127,11 +127,11 @@ class ProjectLink extends Component {
                   onChange={this.togglePermanentLink}
                 />
               </Form.Group>
-             </Col>  
-            </Row>
-          </Form>
-        </Card>
-      </Container>
+            </Col>
+          </Row>
+        </Form>
+      </Card>
+      // </Container>
     );
   }
 }
