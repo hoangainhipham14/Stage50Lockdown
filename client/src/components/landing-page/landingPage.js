@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import FacebookLogin from "react-facebook-login";
+import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 import PropTypes from "prop-types";
 import { fbSigninUser } from "../../actions/authActions";
 import { connect } from "react-redux";
@@ -79,17 +79,36 @@ class DummySignUpForm extends Component {
       fbContent = console.log("Logged in");
     } else {
       fbContent = (
+        // <FacebookLogin
+        //   // appId of ePortfolio
+        //   appId="820137652056192"
+        //   autoLoad={false}
+        //   fields="name,first_name, last_name,email,picture"
+        //   scope="public_profile, email"
+        //   onClick={this.componentClicked}
+        //   callback={this.responseFacebook}
+        //   onFailure={this.handleFailure}
+        //   cssClass="btnFacebook"
+        //   // className="display-btn"
+        //   textButton="Sign up with Facebook"
+        // />
         <FacebookLogin
-          // appId of ePortfolio
           appId="820137652056192"
           autoLoad={false}
-          fields="name,first_name, last_name,email,picture"
-          scope="public_profile, email"
+          fields="name,first_name,last_name,email,picture"
+          scope="public_profile,email"
           onClick={this.componentClicked}
           callback={this.responseFacebook}
           onFailure={this.handleFailure}
-          cssClass="btnFacebook"
-          textButton="Sign up with Facebook"
+          render={(renderProps) => (
+            <Button
+              className="display-btn"
+              style={{ backgroundColor: "#3b5998", borderColor: "#3b5998" }}
+              onClick={renderProps.onClick}
+            >
+              Sign up with Facebook
+            </Button>
+          )}
         />
       );
     }
@@ -173,16 +192,20 @@ class TopLeftText extends Component {
           Perfect for artists, students and professionals.
         </HCenter>
         <HCenter>
-          <a
+          <Button
             href="mailto:stage50lockdown@gmail.com"
             target="_blank"
-            className="btn btn-primary"
+            className="btn btn-primary display-btn"
             rel="noopener noreferrer"
           >
             Email Us
-          </a>
+          </Button>
 
-          <Link to="/privacypolicy"><Button variant="primary">Privacy Policy</Button></Link>
+          <Link to="/privacypolicy">
+            <Button className="display-btn" variant="primary">
+              Privacy Policy
+            </Button>
+          </Link>
         </HCenter>
       </Center>
     );

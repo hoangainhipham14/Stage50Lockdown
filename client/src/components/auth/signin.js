@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import FacebookLogin from "react-facebook-login";
+import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 import { Form, Button, Alert, Container, Spinner } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
@@ -97,17 +97,35 @@ class Signin extends Component {
 
     let fbContent;
     fbContent = (
+      // <FacebookLogin
+      //   // appId of ePortfolio
+      //   appId="820137652056192"
+      //   autoLoad={false}
+      //   fields="name,first_name, last_name,email,picture"
+      //   scope="public_profile, email"
+      //   onClick={this.componentClicked}
+      //   callback={this.responseFacebook}
+      //   onFailure={this.handleFailure}
+      //   cssClass="btnFacebook"
+      //   textButton="Sign in with Facebook"
+      // />
       <FacebookLogin
-        // appId of ePortfolio
         appId="820137652056192"
         autoLoad={false}
-        fields="name,first_name, last_name,email,picture"
-        scope="public_profile, email"
+        fields="name,first_name,last_name,email,picture"
+        scope="public_profile,email"
         onClick={this.componentClicked}
         callback={this.responseFacebook}
         onFailure={this.handleFailure}
-        cssClass="btnFacebook"
-        textButton="Sign in with Facebook"
+        render={(renderProps) => (
+          <Button
+            className="display-btn"
+            style={{ backgroundColor: "#3b5998", borderColor: "#3b5998" }}
+            onClick={renderProps.onClick}
+          >
+            Sign in with Facebook
+          </Button>
+        )}
       />
     );
 
