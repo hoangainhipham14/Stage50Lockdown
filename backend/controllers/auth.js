@@ -29,14 +29,7 @@ exports.signup = async (req, res) => {
     return res.status(400).json(errors);
   }
 
-  const {
-    firstName,
-    lastName,
-    username,
-    fbUserID,
-    fbAccessToken,
-    image,
-  } = req.body;
+  const { firstName, lastName, username, fbUserID, image } = req.body;
   const email = req.body.email.toLowerCase();
   const phoneNumber = "";
   const password = req.body.password1;
@@ -56,12 +49,13 @@ exports.signup = async (req, res) => {
     });
   }
   // check if Facebook link already exists
-  const fbAccessTokenExists = await User.findOne({ fbAccessToken });
-  const fbUserIDExists = await User.findOne({ fbUserID });
-  if (fbAccessTokenExists || fbUserIDExists) {
-    return res.status(400).json({
-      fbAccessToken: "Facebook account already exists",
-    });
+  if (fbUserID) {
+    const fbUserIDExists = await User.findOne({ fbUserID });
+    if (fbUserIDExists) {
+      return res.status(400).json({
+        fbUserID: "Facebook account already exists",
+      });
+    }
   }
 
   // create new user
@@ -72,7 +66,6 @@ exports.signup = async (req, res) => {
     email,
     phoneNumber,
     fbUserID,
-    fbAccessToken,
     image,
   });
   newUser.password = newUser.generateHash(password);
@@ -83,7 +76,7 @@ exports.signup = async (req, res) => {
     token: crypto.randomBytes(16).toString("hex"),
   });
 
-  if (!fbUserID || !fbAccessToken) {
+  if (!fbUserID) {
     // Save the verification token
     token
       .save()
@@ -182,20 +175,13 @@ exports.signin = (req, res) => {
 };
 
 exports.fbSignin = (req, res) => {
-  const { fbUserID, fbAccessToken } = req.body;
+  const { fbUserID } = req.body;
 
   User.findOne({ fbUserID }).then((user) => {
     // check user exists
-    if (!user) {
+    if (!user || fbUserID === "") {
       return res.status(400).json({ fbUserID: "Facebook account not found" });
     }
-
-    // check Access Token
-    // if (user.fbAccessToken != fbAccessToken) {
-    //   console.log("User Access Token: " + user.fbAccessToken);
-    //   console.log("Access Token given: " + fbAccessToken);
-    //   return res.status(400).json({ fbAccessToken: "Invalid Access Token" });
-    // }
 
     // check verified account
     if (!user.isValidated) {
