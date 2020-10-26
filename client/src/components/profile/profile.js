@@ -1,7 +1,15 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Card, Container, Col, Row, Alert, Spinner } from "react-bootstrap";
+import {
+  Card,
+  Container,
+  Col,
+  Row,
+  Alert,
+  Spinner,
+  Button,
+} from "react-bootstrap";
 import axios from "axios";
 
 import ProjectList from "./ProjectList";
@@ -105,26 +113,26 @@ class Profile extends Component {
 
   render() {
     if (this.state.loading) {
-      return <Loading />;
+      return (
+        <HCenter>
+          <Spinner animation="grow" size="lg" />
+        </HCenter>
+      );
     } else if (this.state.userExists) {
       return (
-        <div>
-          {this.state.loading ? (
-            <HCenter>
-              <Spinner animation="grow" size="lg" />
-            </HCenter>
-          ) : (
+        <>
+          {this.state.projects.length > 0 && (
+            <DisplayCarousel
+              className="mt-3 mb-5"
+              projects={this.state.projects}
+              projectExists={this.state.projectExists}
+            ></DisplayCarousel>
+          )}
+          <Container>
             <Row>
-              {this.state.projects.length > 0 && (
-                <DisplayCarousel
-                  className="mt-3 mb-5"
-                  projects={this.state.projects}
-                  projectExists={this.state.projectExists}
-                ></DisplayCarousel>
-              )}
-              <Col className="col-sm d-flex ml-4 ">
+              <Col md={6}>
                 <div>
-                  <Card style={{ width: "20rem", height: 350 }}>
+                  <Card style={{ height: "25rem" }}>
                     <Container
                       className="d-flex justify-content-center"
                       style={{ borderBottom: "solid 1px #E0E0E0" }}
@@ -157,11 +165,11 @@ class Profile extends Component {
                   </Card>
                 </div>
               </Col>
-              <Col className="col-sm d-flex">
+              <Col md={6}>
                 <div>
-                  <Card style={{ width: "20rem" }}>
+                  <Card style={{ height: "25rem" }}>
                     <Card.Header>About</Card.Header>
-                    <Card.Body style={{ overflowY: "scroll", height: 299 }}>
+                    <Card.Body>
                       {this.state.aboutUserExists
                         ? this.state.aboutUser
                         : " None"}
@@ -169,16 +177,38 @@ class Profile extends Component {
                   </Card>
                 </div>
               </Col>
-              <ProjectList
-                projects={this.state.projects}
-                projectExists={this.state.projectExists}
-                username={this.state.profileUserName}
-                isAuth={this.state.isAuth}
-              ></ProjectList>
+              <HCenter>
+                {this.state.isAuth && (
+                  <Button
+                    className="display-btn"
+                    href={`/createProfile/${this.state.profileUserName}`}
+                  >
+                    Edit Profile
+                  </Button>
+                )}
+
+                {this.state.isAuth && (
+                  <Button
+                    className="display-btn"
+                    href={`/user/${this.state.profileUserName}/account`}
+                  >
+                    Edit Account Details
+                  </Button>
+                )}
+              </HCenter>
             </Row>
-          )}
-          ;
-        </div>
+            <Row>
+              <Col>
+                <ProjectList
+                  projects={this.state.projects}
+                  projectExists={this.state.projectExists}
+                  username={this.state.profileUserName}
+                  isAuth={this.state.isAuth}
+                />
+              </Col>
+            </Row>
+          </Container>
+        </>
       );
     } else {
       return (

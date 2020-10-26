@@ -13,22 +13,35 @@ const {
   singleImage,
   allImages,
   editProject,
+  isOwner,
+  hasAuthorisation,
 } = require("../controllers/project");
 
 const { userById } = require("../controllers/user");
-const { requireAuthentication } = require("../controllers/auth");
+const {
+  requireAuthentication,
+  addAuthentication,
+} = require("../controllers/auth");
 
 router.post("/project/create/:userId", requireAuthentication, createProject);
-// router.get("/projects", getProject);
-// router.get("/Projects/by/:userId", requireAuthentication, ProjectsByUser);
 router.get("/project/:projectId/mainImage", image);
 router.get("/project/:projectId/file/:index", singleFile);
 router.get("/project/:projectId/image/:index", singleImage);
 router.get("/project/:projectId/images", allImages);
 
-router.get("/project/:projectId", singleProject);
+router.get(
+  "/project/:projectId",
+  requireAuthentication,
+  hasAuthorisation,
+  singleProject
+);
 
-router.post("/project/:projectId/edit", editProject);
+router.post(
+  "/project/:projectId/edit",
+  requireAuthentication,
+  isOwner,
+  editProject
+);
 
 // this should post to exports.getProject
 router.post("/project/list", ProjectList);

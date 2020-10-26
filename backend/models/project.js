@@ -64,9 +64,10 @@ const projectSchema = new Schema({
     },
   ],
 
-  postedBy: {
-    type: ObjectId,
-  },
+  // postedBy: {
+  //   type: ObjectId,
+  //   ref: "User",
+  // },
 
   created: {
     type: String,

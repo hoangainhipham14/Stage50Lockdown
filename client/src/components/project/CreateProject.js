@@ -446,7 +446,11 @@ class CreateProject extends Component {
             <Row>
               <HCenter>
                 <div className="button-row">
-                  <Button variant="success" type="submit">
+                  <Button
+                    className="display-btn"
+                    variant="success"
+                    type="submit"
+                  >
                     Create Project
                   </Button>
                   <OverlayTrigger
@@ -455,7 +459,9 @@ class CreateProject extends Component {
                     placement="bottom"
                     overlay={discardPopover("Discard Project", this.goBack)}
                   >
-                    <Button variant="secondary">Discard Project</Button>
+                    <Button className="display-btn" variant="secondary">
+                      Discard Project
+                    </Button>
                   </OverlayTrigger>
                 </div>
               </HCenter>
@@ -537,8 +543,11 @@ export class EditProject extends Component {
         });
       })
       .catch((err) => {
-        console.log("Failre!");
+        console.log("Failure!");
         console.log(err);
+        this.setState({
+          error: "Unauthorized",
+        });
       });
   };
 
@@ -595,19 +604,43 @@ export class EditProject extends Component {
     const projectId = this.props.match.params.projectId;
     console.log(projectId);
     const func = (i) => `/api/project/${projectId}/image/${i}`;
-    singleProject(projectId).then((data) => {
-      console.log(data);
-      this.setState({
-        title: data.title,
-        about: data.about,
-        body: data.body,
-        oldImagesNames: data.imagesNames,
-        oldImagePopovers: generateImagePopovers(data.imagesNames.length, func),
-        oldAdditionalFilesNames: data.additionalFilesNames,
-        mainImageIndex: data.mainImageIndex,
-        projectId: projectId,
+
+    axios
+      .get(`/api/project/${projectId}`)
+      .then((response) => {
+        const project = response.data;
+        this.setState({
+          title: project.title,
+          about: project.about,
+          body: project.body,
+          oldImagesNames: project.imagesNames,
+          oldImagePopovers: generateImagePopovers(
+            project.imagesNames.length,
+            func
+          ),
+          oldAdditionalFilesNames: project.additionalFilesNames,
+          mainImageIndex: project.mainImageIndex,
+          projectId: projectId,
+        });
+      })
+      .catch((err) => {
+        switch (err.response.status) {
+          case 403:
+            this.setState({
+              error: "Project is private.",
+            });
+            break;
+          case 404:
+            this.setState({
+              error: "Project does not exist.",
+            });
+            break;
+          default:
+            this.setState({
+              error: "Unknown error.",
+            });
+        }
       });
-    });
   }
 
   toggleImageToDelete = (i) => () => {
@@ -689,6 +722,10 @@ export class EditProject extends Component {
   render() {
     if (this.state.submitSuccess) {
       return <Redirect to={`/projects/${this.state.projectId}`} />;
+    }
+
+    if (this.state.error) {
+      return <Container>{this.state.error}</Container>;
     }
 
     // collect the old additional images into an array of x-able items
@@ -939,7 +976,11 @@ export class EditProject extends Component {
             <Row>
               <HCenter>
                 <div className="button-row">
-                  <Button variant="success" type="submit">
+                  <Button
+                    variant="success"
+                    type="submit"
+                    className="display-btn"
+                  >
                     Confirm Changes
                   </Button>
                   <OverlayTrigger
@@ -948,7 +989,9 @@ export class EditProject extends Component {
                     placement="bottom"
                     overlay={discardPopover("Discard changes", this.goBack)}
                   >
-                    <Button variant="secondary">Discard Changes</Button>
+                    <Button className="display-btn" variant="secondary">
+                      Discard Changes
+                    </Button>
                   </OverlayTrigger>
                 </div>
               </HCenter>

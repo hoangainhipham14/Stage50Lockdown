@@ -9,6 +9,22 @@ const moment = require("moment");
 const formidable = require("formidable");
 const fs = require("fs");
 
+exports.hasAuthorisation = (req, res, next) => {
+  console.log("hasAuthorisation?");
+  const projectPublic = req.project && req.project.itemIsPublic;
+  console.log(req.project);
+  console.log(req.auth);
+  const isOwner =
+    req.project && req.auth && req.project._userId._id == req.auth._id;
+  if (projectPublic || isOwner) {
+    next();
+  } else {
+    return res.status(403).json({
+      error: "Project is private.",
+    });
+  }
+};
+
 // Responds with the project containing the data inside
 
 /* 3 Possibilies:
@@ -22,27 +38,57 @@ exports.singleProject = (req, res) => {
   */
   //console.log(JSON.stringify(req.project));
 
-  if (req.project.itemIsPublic) {
-    const data = {
-      title: req.project.title,
-      about: req.project.about,
-      body: req.project.body,
+  const isOwner =
+    req.project && req.auth && req.project._userId._id == req.auth._id;
 
-      imagesNames: req.project.images.map((file) => file.fileName),
-      mainImageIndex: req.project.mainImageIndex,
-      additionalFilesNames: req.project.additionalFiles.map(
-        (file) => file.fileName
-      ),
+  const data = {
+    title: req.project.title,
+    about: req.project.about,
+    body: req.project.body,
 
-      itemIsPublic: req.project.itemIsPublic,
-    };
-    return res.json(data);
-  } else {
-    console.log("Project is private or does not exist.");
-    return res.status(400).json({
-      error: "Project does not exist",
-    });
-  }
+    imagesNames: req.project.images.map((file) => file.fileName),
+    mainImageIndex: req.project.mainImageIndex,
+    additionalFilesNames: req.project.additionalFiles.map(
+      (file) => file.fileName
+    ),
+
+    itemIsPublic: req.project.itemIsPublic,
+
+    editingPrivileges: isOwner,
+  };
+  return res.json(data);
+
+  // if (req.project.itemIsPublic) {
+  //   const data = {
+  //     title: req.project.title,
+  //     about: req.project.about,
+  //     body: req.project.body,
+
+  //     imagesNames: req.project.images.map((file) => file.fileName),
+  //     mainImageIndex: req.project.mainImageIndex,
+  //     additionalFilesNames: req.project.additionalFiles.map(
+  //       (file) => file.fileName
+  //     ),
+
+  //     itemIsPublic: req.project.itemIsPublic,
+  //   };
+  //   return res.json(data);
+  // } else if (req.project) {
+  //   return res.status(403).json({
+  //     error: "Project is private.",
+  //   });
+  // } else {
+  //   return res.status(404).json({
+  //     error: "Project does not exist.",
+  //   });
+  // }
+
+  // else {
+  //   console.log("Project is private or does not exist.");
+  //   return res.status(400).json({
+  //     error: "Project does not exist",
+  //   });
+  // }
 };
 
 async function uploadFile(file) {
@@ -261,6 +307,19 @@ exports.editProject = (req, res, next) => {
   });
 };
 
+exports.isOwner = (req, res, next) => {
+  console.log("isOwner?");
+  console.log("req.auth:", req.auth);
+  let isOwner =
+    req.project && req.auth && req.project._userId._id == req.auth._id;
+  if (!isOwner) {
+    return res.status(403).json({
+      error: "Unauthorised.",
+    });
+  }
+  next();
+};
+
 // Project parameter field, finds the project in the database
 exports.projectById = (req, res, next, id) => {
   try {
@@ -399,50 +458,18 @@ exports.ProjectList = (req, res) => {
   });
 };
 
-// exports.ProjectList = (req, res) => {
-//   const username = req.body.username;
-
-//   Project.find({ username: username }).exec((err, projects) => {
-//     if (err || projects.length === 0) {
-//       return res.send({
-//         message: "Projects do not exist",
-//       });
-//     }
-//     req.projects = projects; //add
-//     return res.json(req.projects);
-//   });
-// };
-
 // toggles the privacy setting of a particular project
 exports.toggleProjectPrivacy = (req, res) => {
-  const projectID = req.body.projectID;
+  console.log("toggle!");
   try {
     req.project.itemIsPublic = !req.project.itemIsPublic;
     req.project.save();
     console.log(req.project);
-    return res.status(200);
+    return res.status(200).json({});
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: "Server error." });
+    return res.status(500).json({ error: "Server error." });
   }
-
-  // Project.findById(projectID).exec((err, project) => {
-  //   if (err) {
-  //     return res.status(400).json({
-  //       error: err,
-  //     });
-  //   } else {
-  //     if (project.itemIsPublic) {
-  //       project.itemIsPublic = false;
-  //       project.save();
-  //       return res.status(200);
-  //     } else if (!project.itemIsPublic) {
-  //       project.itemIsPublic = true;
-  //       project.save();
-  //       return res.status(200);
-  //     }
-  //   }
-  // });
 };
 
 // Generate a link for the user to reference a project even if it is private

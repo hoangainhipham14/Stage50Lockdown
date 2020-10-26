@@ -149,7 +149,9 @@ class DummySignUpForm extends Component {
                 },
               }}
             >
-              <Button variant="primary">Sign Up</Button>
+              <Button className="display-btn" variant="primary">
+                Sign Up
+              </Button>
             </Link>
             {fbContent}
           </Form>

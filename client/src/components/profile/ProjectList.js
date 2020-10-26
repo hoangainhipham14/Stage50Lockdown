@@ -16,16 +16,15 @@ class ProjectList extends Component {
         <Card.Text style={{ textAlign: "right", fontSize: 13 }}>
           {project.created}
         </Card.Text>
-        <Card.Title>{project.title}</Card.Title>
+        <Link to={`/projects/${project._id}`}>
+          <Card.Title>{project.title}</Card.Title>
+        </Link>
         <Card.Text>{project.about}</Card.Text>
         {this.props.isAuth && (
           <Link to={`/projects/privacy/${project._id}`}>
-            <Button>Change Privacy Settings</Button>
+            <Button variant="outline-primary">Change Privacy Settings</Button>
           </Link>
         )}
-        <Link to={`/projects/${project._id}`}>
-          <Button>More</Button>
-        </Link>
       </ListGroup.Item>
     ));
 
@@ -33,34 +32,14 @@ class ProjectList extends Component {
     if (this.props.projectExists) {
       // display scrollable projects
       return (
-        <Col className="col-sm d-flex mb-5">
-          <Container>
-            <Card style={{ width: "45rem", height: maxHeight }}>
-              <Card.Header>Projects</Card.Header>
-              <Container style={{ overflowY: "scroll", height: 301 }}>
-                <ListGroup className="list-group-flush">
-                  {projectCards}
-                </ListGroup>
-              </Container>
-            </Card>
-
-            {this.props.isAuth && (
-              <Button href={`/createProfile/${this.props.username}`}>
-                Edit Profile
-              </Button>
-            )}
-
-            {this.props.isAuth && (
-              <Button href={`/user/${this.props.username}/account`}>
-                Edit Account Details
-              </Button>
-            )}
-
-            {this.props.isAuth && (
-              <Button href="/createProject">Create Project</Button>
-            )}
-          </Container>
-        </Col>
+        <div className="mt-3">
+          <Card>
+            <Card.Header>Projects</Card.Header>
+            <Container>
+              <ListGroup className="list-group-flush">{projectCards}</ListGroup>
+            </Container>
+          </Card>
+        </div>
       );
       // }
     } else {
@@ -74,22 +53,6 @@ class ProjectList extends Component {
                 <Card.Title>No project</Card.Title>
               </Card.Body>
             </Card>
-
-            {this.props.isAuth && (
-              <Button href={`/createProfile/${this.props.username}`}>
-                Edit Profile
-              </Button>
-            )}
-
-            {this.props.isAuth && (
-              <Button href={`/user/${this.props.username}/account`}>
-                Edit Account Details
-              </Button>
-            )}
-
-            {this.props.isAuth && (
-              <Button href="/createProject">Create Project</Button>
-            )}
           </Container>
         </Col>
       );

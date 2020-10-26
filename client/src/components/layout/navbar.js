@@ -19,11 +19,6 @@ import { Redirect, withRouter } from "react-router-dom";
 function NavbarAccountLoggedOut() {
   return (
     <>
-      <Nav className="mr-auto">
-        <LinkContainer to="/projects/5f9115b46e4c820db8a0d30d">
-          <Nav.Link>Featured Project</Nav.Link>
-        </LinkContainer>
-      </Nav>
       <Nav className="ml-auto">
         <LinkContainer to="/signin">
           <Nav.Link>Sign In</Nav.Link>
@@ -40,7 +35,7 @@ function NavbarAccountLoggedIn(props) {
   return (
     <>
       <Nav className="mr-auto">
-        <Nav.Link href="/dashboard">Dashboard</Nav.Link>
+        <Nav.Link href="/createProject">Create Project</Nav.Link>
       </Nav>
       <Nav className="ml-auto">
         <Nav.Link href={`/profile/${props.username}`}>My Profile</Nav.Link>
@@ -96,22 +91,22 @@ class NavbarUserSearch extends Component {
       );
     }
     return (
-      <Nav className="mr-auto">
-        <Form inline onSubmit={this.onSearchSubmit}>
-          <Form.Group controlId="searchphrase">
-            <FormControl
-              type="text"
-              placeholder="Search for a user"
-              className="mr-sm-1"
-              size="sm"
-              onChange={this.onChange}
-            />
-            <Button variant="outline-secondary" size="sm" type="submit">
-              Search
-            </Button>
-          </Form.Group>
-        </Form>
-      </Nav>
+      // <Nav className="mr-auto">
+      <Form inline onSubmit={this.onSearchSubmit}>
+        <Form.Group controlId="searchphrase">
+          <FormControl
+            type="text"
+            placeholder="Search for a user"
+            className="mr-sm-1"
+            size="sm"
+            onChange={this.onChange}
+          />
+          <Button variant="outline-secondary" size="sm" type="submit">
+            Search
+          </Button>
+        </Form.Group>
+      </Form>
+      // </Nav>
     );
   }
 }
