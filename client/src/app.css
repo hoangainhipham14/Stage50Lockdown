@@ -1,6 +1,7 @@
 html {
   overflow-x: hidden;
   margin-right: calc(-1 * (100vw - 100%));
+  margin-bottom: 3rem;
 }
 
 .error-text {
@@ -27,4 +28,99 @@ hr {
 
 .form-container .alert {
   padding: 0.375rem 0.75rem;
+}
+
+.image-gallery-image {
+  height: 30rem !important;
+}
+
+.col-image {
+  padding: 0.5rem;
+}
+
+.col-image img {
+  border: 1px #dddddd solid;
+  border-radius: 0.5rem;
+}
+
+.col-image img:hover {
+  cursor: pointer;
+  opacity: 0.5;
+  transition-duration: 0.2s;
+}
+
+button.close:focus {
+  outline: none;
+}
+
+.project-form .form-label {
+  font-weight: 500;
+}
+
+.set-as-main,
+.unset-as-main {
+  float: right;
+  padding-right: 1rem;
+  font-size: 80%;
+}
+
+.set-as-main {
+  opacity: 0;
+}
+
+.unset-as-main {
+  opacity: 0.5;
+}
+
+.image-item:hover .set-as-main {
+  opacity: 0.5;
+}
+
+.set-as-main:hover,
+.unset-as-main:hover {
+  cursor: pointer;
+  opacity: 1 !important;
+}
+
+.close {
+  margin-top: -0.25rem !important;
+}
+
+.loading-image {
+  padding: 2rem;
+  border: 1px #dddddd solid;
+  border-radius: 0.5rem;
+}
+
+.btnFacebook {
+  width: 180px;
+  height: 40px;
+  border-radius: 4px;
+  background: #3b5998;
+  color: white;
+  border: 0px transparent;
+  text-align: center;
+  margin: 5px;
+  display: inline-block;
+}
+.btnFacebook:hover {
+  background: #3b5998;
+  opacity: 0.6;
+}
+
+@media only screen and (max-width: 450px) {
+  .btnFacebook,
+  .btn {
+    width: 100%;
+  }
+}
+
+@import "~react-image-gallery/styles/css/image-gallery.css";
+.loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  /* -moz-transform: translateX(-50%) translateY(-50%);
+  -webkit-transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%) translateY(-50%); */
 }

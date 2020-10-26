@@ -9,6 +9,10 @@ const {
   toggleProjectPrivacy,
   generateProjectLink,
   connectLinkToProject,
+  singleFile,
+  singleImage,
+  allImages,
+  editProject,
 } = require("../controllers/project");
 
 const { userById } = require("../controllers/user");
@@ -17,9 +21,14 @@ const { requireAuthentication } = require("../controllers/auth");
 router.post("/project/create/:userId", requireAuthentication, createProject);
 // router.get("/projects", getProject);
 // router.get("/Projects/by/:userId", requireAuthentication, ProjectsByUser);
-router.get("/project/img/:projectId", image);
+router.get("/project/:projectId/mainImage", image);
+router.get("/project/:projectId/file/:index", singleFile);
+router.get("/project/:projectId/image/:index", singleImage);
+router.get("/project/:projectId/images", allImages);
 
 router.get("/project/:projectId", singleProject);
+
+router.post("/project/:projectId/edit", editProject);
 
 // this should post to exports.getProject
 router.post("/project/list", ProjectList);
@@ -29,7 +38,9 @@ router.post("/project/togglePrivacy/:projectId", toggleProjectPrivacy);
 router.post("/project/generateLink", generateProjectLink);
 router.get("/project/link/:link", connectLinkToProject);
 
+// router.post("/upload", uploadFile);
 
 // router.param("userId", userById);
 router.param("projectId", projectById);
+
 module.exports = router;

@@ -4,6 +4,13 @@ import { Link } from "react-router-dom";
 
 class ProjectList extends Component {
   render() {
+    var maxHeight;
+    if (this.props.isAuth) {
+      maxHeight = 299;
+    } else {
+      maxHeight = 350;
+    }
+
     const projectCards = this.props.projects.map((project) => (
       <Link to={`/projects/${project._id}`}>
       <ListGroup.Item key={project._id}>        
@@ -12,8 +19,13 @@ class ProjectList extends Component {
         </Card.Text>
         <Card.Title>{project.title}</Card.Title>
         <Card.Text>{project.about}</Card.Text>
-        <Link to={`/projects/privacy/${project._id}`}>
-          <Button>Change Privacy Settings</Button>
+        {this.props.isAuth && (
+          <Link to={`/projects/privacy/${project._id}`}>
+            <Button>Change Privacy Settings</Button>
+          </Link>
+        )}
+        <Link to={`/projects/${project._id}`}>
+          <Button>More</Button>
         </Link>
       </ListGroup.Item>
       </Link>
@@ -21,41 +33,66 @@ class ProjectList extends Component {
 
     // if projects exist
     if (this.props.projectExists) {
-      // if numbers of projects are smaller than 4, display list of them fully
-      if (this.props.projects.length < 4) {
-        return (
-          <Col className="col-sm d-flex">
-            <Card style={{ width: "45rem" }}>
+      // display scrollable projects
+      return (
+        <Col className="col-sm d-flex mb-5">
+          <Container>
+            <Card style={{ width: "45rem", height: maxHeight }}>
               <Card.Header>Projects</Card.Header>
-              <ListGroup className="list-group-flush">{projectCards}</ListGroup>
-            </Card>
-          </Col>
-        );
-      } else {
-        // display scrollable projects
-        return (
-          <Col className="col-sm d-flex">
-            <Card style={{ width: "45rem" }}>
-              <Card.Header>Projects</Card.Header>
-              <Container style={{ overflowY: "scroll", maxHeight: 300 }}>
+              <Container style={{ overflowY: "scroll", height: 301 }}>
                 <ListGroup className="list-group-flush">
                   {projectCards}
                 </ListGroup>
               </Container>
             </Card>
-          </Col>
-        );
-      }
+
+            {this.props.isAuth && (
+              <Button href={`/createProfile/${this.props.username}`}>
+                Edit Profile
+              </Button>
+            )}
+
+            {this.props.isAuth && (
+              <Button href={`/user/${this.props.username}/account`}>
+                Edit Account Details
+              </Button>
+            )}
+
+            {this.props.isAuth && (
+              <Button href="/createProject">Create Project</Button>
+            )}
+          </Container>
+        </Col>
+      );
+      // }
     } else {
       // display no project
       return (
-        <Col className="col-sm d-flex">
-          <Card style={{ width: "45rem" }}>
-            <Card.Header>Projects</Card.Header>
-            <Card.Body>
-              <Card.Title>No project</Card.Title>
-            </Card.Body>
-          </Card>
+        <Col className="col-sm d-flex mb-5">
+          <Container>
+            <Card style={{ width: "45rem", height: maxHeight }}>
+              <Card.Header>Projects</Card.Header>
+              <Card.Body>
+                <Card.Title>No project</Card.Title>
+              </Card.Body>
+            </Card>
+
+            {this.props.isAuth && (
+              <Button href={`/createProfile/${this.props.username}`}>
+                Edit Profile
+              </Button>
+            )}
+
+            {this.props.isAuth && (
+              <Button href={`/user/${this.props.username}/account`}>
+                Edit Account Details
+              </Button>
+            )}
+
+            {this.props.isAuth && (
+              <Button href="/createProject">Create Project</Button>
+            )}
+          </Container>
         </Col>
       );
     }

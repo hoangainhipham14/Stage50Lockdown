@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Form, Button, Alert, Container } from "react-bootstrap";
+import FacebookLogin from "react-facebook-login";
+import { Form, Button, Alert, Container, Spinner } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 import PropTypes from "prop-types";
@@ -7,7 +8,7 @@ import { connect } from "react-redux";
 
 import isEmpty from "is-empty";
 
-import { signinUser } from "../../actions/authActions";
+import { signinUser, fbSigninUser } from "../../actions/authActions";
 
 class Signin extends Component {
   constructor(props) {
@@ -18,6 +19,10 @@ class Signin extends Component {
       email: "",
       password: "",
       errors: {},
+      waiting: false,
+      // Facebook state
+      fbIsLoggedIn: false,
+      fbUserID: "",
     };
   }
 
@@ -37,21 +42,74 @@ class Signin extends Component {
     this.setState({
       [e.target.id]: e.target.value,
     });
+
+    this.setState({
+      waiting: false,
+    });
   };
 
   onSubmit = (e) => {
     e.preventDefault();
 
+    this.setState({
+      waiting: true,
+    });
+
     const userData = {
       email: this.state.email,
       password: this.state.password,
     };
-
     this.props.signinUser(userData);
   };
 
+  componentClicked = () => {
+    console.log("clicked");
+  };
+
+  handleFailure = () => {
+    console.log("failure");
+  };
+
+  // Response from facebook recorded
+  responseFacebook = (response) => {
+    console.log(response);
+    this.setState({
+      fbIsLoggedIn: true,
+      fbUserID: response.userID,
+    });
+
+    const userData = {
+      fbUserID: this.state.fbUserID,
+    };
+
+    this.props.fbSigninUser(userData);
+  };
+  componentDidUpdate() {
+    if (!isEmpty(this.state.errors) && this.state.waiting) {
+      this.setState({
+        waiting: false,
+      });
+    }
+  }
+
   render() {
     const { errors } = this.state;
+
+    let fbContent;
+    fbContent = (
+      <FacebookLogin
+        // appId of ePortfolio
+        appId="820137652056192"
+        autoLoad={false}
+        fields="name,first_name, last_name,email,picture"
+        scope="public_profile, email"
+        onClick={this.componentClicked}
+        callback={this.responseFacebook}
+        onFailure={this.handleFailure}
+        cssClass="btnFacebook"
+        textButton="Sign in with Facebook"
+      />
+    );
 
     return (
       <Container>
@@ -74,12 +132,14 @@ class Signin extends Component {
                 show={
                   !isEmpty(errors.email) ||
                   !isEmpty(errors.emailnotfound) ||
-                  !isEmpty(errors.notvalidated)
+                  !isEmpty(errors.notvalidated) ||
+                  !isEmpty(errors.fbUserID)
                 }
               >
                 {errors.email}
                 {errors.emailnotfound}
                 {errors.notvalidated}
+                {errors.fbUserID}
               </Alert>
             </Form.Group>
             <Form.Group controlId="password">
@@ -102,8 +162,13 @@ class Signin extends Component {
             </Form.Group>
             <div className="text-center">
               <Button variant="primary" type="submit">
-                Sign In
+                {this.state.waiting ? (
+                  <Spinner animation="border" size="sm" />
+                ) : (
+                  <Container>Sign in</Container>
+                )}
               </Button>
+              {fbContent}
             </div>
             <p align="center">
               Forgot your password? Click{" "}
@@ -118,6 +183,7 @@ class Signin extends Component {
 
 Signin.propTypes = {
   signinUser: PropTypes.func.isRequired,
+  fbSigninUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired,
 };
@@ -127,6 +193,6 @@ const mapStateToProps = (state) => ({
   errors: state.errors,
 });
 
-export default connect(mapStateToProps, { signinUser })(Signin);
+export default connect(mapStateToProps, { signinUser, fbSigninUser })(Signin);
 
 // npm run hack.exe

@@ -20,7 +20,7 @@ function NavbarAccountLoggedOut() {
   return (
     <>
       <Nav className="mr-auto">
-        <LinkContainer to="/user/username/projects/5f76b981baff9a2f08be5e1f">
+        <LinkContainer to="/projects/5f9115b46e4c820db8a0d30d">
           <Nav.Link>Featured Project</Nav.Link>
         </LinkContainer>
       </Nav>
@@ -37,22 +37,12 @@ function NavbarAccountLoggedOut() {
 }
 
 function NavbarAccountLoggedIn(props) {
-  // console.log("Props " + props.username);
   return (
     <>
       <Nav className="mr-auto">
         <Nav.Link href="/dashboard">Dashboard</Nav.Link>
-        {/* <Nav.Link href="/upload">Upload</Nav.Link> */}
-        <Nav.Link href="/createProject">Create Project</Nav.Link>
-        {/* <Nav.Link href="/project/projectId">My Projects</Nav.Link> */}
-        {/* <LinkContainer to="/dashboard">
-          <Nav.Link>{props.user.firstName}</Nav.Link>
-        </LinkContainer> */}
       </Nav>
       <Nav className="ml-auto">
-        <Nav.Link href={`/user/${props.username}/account`}>
-          Account Details
-        </Nav.Link>
         <Nav.Link href={`/profile/${props.username}`}>My Profile</Nav.Link>
         <Nav.Link onClick={props.onClickLogout}>Sign Out</Nav.Link>
       </Nav>
@@ -138,11 +128,13 @@ class MyNavbar extends Component {
 
   componentDidMount = () => {
     const id = this.props.auth.user._id;
-    getUsernameId(id).then((data) => {
-      this.setState({
-        username: data,
+    if (id) {
+      getUsernameId(id).then((data) => {
+        this.setState({
+          username: data,
+        });
       });
-    });
+    }
   };
 
   onClickLogout = (e) => {

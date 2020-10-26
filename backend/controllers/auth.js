@@ -30,14 +30,14 @@ const {
 // async means we don't need an enormous nested mess.
 exports.signup = async (req, res) => {
   // validate sign up data
-
-  console.log("Validating: " + JSON.stringify(req.body));
+  // Don't print account data to console
+  // console.log("Validating: " + JSON.stringify(req.body));
   const { errors, isValid } = validateSignup(req.body);
   if (!isValid) {
     return res.status(400).json(errors);
   }
 
-  const { firstName, lastName, username } = req.body;
+  const { firstName, lastName, username, fbUserID, image } = req.body;
   const email = req.body.email.toLowerCase();
   const phoneNumber = "";
   const password = req.body.password1;
@@ -56,6 +56,15 @@ exports.signup = async (req, res) => {
       username: "Username taken",
     });
   }
+  // check if Facebook link already exists
+  if (fbUserID) {
+    const fbUserIDExists = await User.findOne({ fbUserID });
+    if (fbUserIDExists) {
+      return res.status(400).json({
+        fbUserID: "Facebook account already exists",
+      });
+    }
+  }
 
   // create new user
   const newUser = new User({
@@ -64,6 +73,8 @@ exports.signup = async (req, res) => {
     username,
     email,
     phoneNumber,
+    fbUserID,
+    image,
   });
   newUser.password = newUser.generateHash(password);
 
@@ -73,36 +84,42 @@ exports.signup = async (req, res) => {
     token: crypto.randomBytes(16).toString("hex"),
   });
 
-  // Save the verification token
-  token
-    .save()
-    .catch((err) => res.status(500).send({ msgFromTokenSave: err.message }));
+  if (!fbUserID) {
+    // Save the verification token
+    token
+      .save()
+      .catch((err) => res.status(500).send({ msgFromTokenSave: err.message }));
 
-  // Create the email (With information from .env file)
-  var transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.GMAIL_USERNAME,
-      pass: process.env.GMAIL_PASSWORD,
-    },
-  });
+    // Create the email (With information from .env file)
+    var transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.GMAIL_USERNAME,
+        pass: process.env.GMAIL_PASSWORD,
+      },
+    });
 
-  // Specify the email contents
-  var mailOptions = {
-    from: "noreply",
-    to: newUser.email,
-    subject: "Account Verification Token (Updated)",
-    text:
-      "Verify your account by clicking the link: \nhttp://" +
-      req.headers.host +
-      "/api/validation/" +
-      token.token,
-  };
+    // Specify the email contents
+    var mailOptions = {
+      from: "noreply",
+      to: newUser.email,
+      subject: "Account Verification Token (Updated)",
+      text:
+        "Verify your account by clicking the link: \nhttp://" +
+        req.headers.host +
+        "/api/validation/" +
+        token.token,
+    };
 
-  // Send the email
-  transporter
-    .sendMail(mailOptions)
-    .catch((err) => res.status(500).send({ errMsgFromSendMail: err.message }));
+    // Send the email
+    transporter
+      .sendMail(mailOptions)
+      .catch((err) =>
+        res.status(500).send({ errMsgFromSendMail: err.message })
+      );
+  } else {
+    newUser.isValidated = true;
+  }
 
   // Save user
   console.log("Saving user...");
@@ -131,6 +148,47 @@ exports.signin = (req, res) => {
     // check password
     if (!user.validPassword(password)) {
       return res.status(400).json({ passwordincorrect: "Incorrect password" });
+    }
+
+    // check verified account
+    if (!user.isValidated) {
+      return res.status(400).json({
+        notvalidated:
+          "Your account has not yet been verified. Please check your email (including your spam folder) for instructions.",
+      });
+    }
+
+    const userSession = new UserSession();
+    userSession.userId = user._id;
+    userSession
+      .save()
+      .catch((err) => console.log("Error saving user session:", err));
+
+    // generate token
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
+
+    // use cookie to store token
+    // expiry = current epoch time (seconds) + length of year
+    const expiry = Date.now() / 1000 + 31556926;
+    res.cookie("token", token, { expiry });
+
+    // respond with token and also a subset of the user information
+    const { _id, firstName, lastName, username, email } = user;
+    // console.log("responding...");
+    return res.json({
+      token,
+      user: { _id, firstName, lastName, username, email },
+    });
+  });
+};
+
+exports.fbSignin = (req, res) => {
+  const { fbUserID } = req.body;
+
+  User.findOne({ fbUserID }).then((user) => {
+    // check user exists
+    if (!user || fbUserID === "") {
+      return res.status(400).json({ fbUserID: "Facebook account not found" });
     }
 
     // check verified account
