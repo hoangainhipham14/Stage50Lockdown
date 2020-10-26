@@ -1,7 +1,6 @@
 import React from "react";
 
 export function Center(props) {
-  console.log(props);
   return (
     <div
       style={{
@@ -18,7 +17,7 @@ export function Center(props) {
 
 export function HCenter(props) {
   return (
-    <div className="text-center">
+    <div className="text-center w-100">
       <div {...props}>{props.children}</div>
     </div>
   );

@@ -50,6 +50,34 @@ export const signinUser = (userData) => (dispatch) => {
     });
 };
 
+// Facebook Sign in user
+export const fbSigninUser = (userData) => (dispatch) => {
+  axios
+    .post("/api/fbSignin", userData)
+    .then((res) => {
+      // Save to local storage
+      console.log("Login success with res.data =", res.data);
+      // save token to local storage
+      const { token } = res.data;
+      localStorage.setItem("token", token);
+      // set the token to the authentication header
+      setAuthToken(token);
+      // decode token to get user data
+      const decoded = jwt_decode(token);
+      console.log(decoded);
+      // set the current user
+      dispatch(setCurrentUser(decoded));
+    })
+    .catch((err) => {
+      console.log(err);
+      console.log("Sign in error:", err.response.data);
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data,
+      });
+    });
+};
+
 export const setCurrentUser = (decoded) => {
   return {
     type: SET_CURRENT_USER,
@@ -72,6 +100,9 @@ export const logoutUser = () => (dispatch) => {
 export const deleteUser = (history) => {
   // const logoutUser = logoutUser;
   // console.log("Clicked");
+
+  // send a request to delete the projects as well
+
   axios
     .delete("/api/deleteuser")
     .then((res) => {

@@ -1,17 +1,17 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { connect } from "react-redux";
-import { Alert, Container, Form, Button } from "react-bootstrap";
+import { Alert, Container, Form, Button, Spinner } from "react-bootstrap";
 import { getUsernameId } from "../layout/GetUsername";
 import PropTypes from "prop-types";
+import { Loading } from "../loading/Loading";
+import { Redirect } from "react-router-dom";
 
 class AccountDetails extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      firstNamePrivate: "",
-      lastNamePrivate: "",
       emailPrivate: "",
       phoneNumberPrivate: "",
       user: "",
@@ -21,6 +21,9 @@ class AccountDetails extends Component {
       email: "",
       phoneNumber: "",
       userExists: false,
+      loading: true,
+      submitwaiting: false,
+      submitted: false,
       changesMade: false,
     };
   }
@@ -39,11 +42,10 @@ class AccountDetails extends Component {
             lastName: response.data.lastName,
             email: response.data.email,
             phoneNumber: response.data.phoneNumber,
-            firstNamePrivate: response.data.firstNamePrivate,
-            lastNamePrivate: response.data.lastNamePrivate,
             emailPrivate: response.data.emailPrivate,
             phoneNumberPrivate: response.data.phoneNumberPrivate,
             userExists: true,
+            loading: false,
           });
         }
       });
@@ -72,33 +74,24 @@ class AccountDetails extends Component {
 
   toggleEmailPrivacy = (e) => {
     this.setState({
-      emailPrivate: !(this.state.emailPrivate)
-      });
-  }
-
-  toggleFirstNamePrivacy = (e) => {
-    this.setState({
-      firstNamePrivate: !(this.state.firstNamePrivate)
-      });
-  }
-
-  toggleLastNamePrivacy = (e) => {
-    console.log(this.state.lastNamePrivate);
-    this.setState({
-      lastNamePrivate: !(this.state.lastNamePrivate)
-      });
-  }
+      emailPrivate: !this.state.emailPrivate,
+    });
+  };
 
   togglePhoneNumberPrivacy = (e) => {
     this.setState({
-      phoneNumberPrivate: !(this.state.phoneNumberPrivate)
-      });
-  }
+      phoneNumberPrivate: !this.state.phoneNumberPrivate,
+    });
+  };
 
   // Submit event, update user information
   onSubmit = (e) => {
     // prevent page from reloading
     e.preventDefault();
+
+    this.setState({
+      submitwaiting: true,
+    });
 
     // create the formdata object
     // we need to do this because JSON isn't sufficient for image sending
@@ -107,14 +100,13 @@ class AccountDetails extends Component {
     formData.set("lastName", this.state.lastName);
     formData.set("email", this.state.email);
     formData.set("phoneNumber", this.state.phoneNumber);
-    
+
     // Same but a boolean for all the items for privacy
     formData.set("firstNamePrivate", this.state.firstNamePrivate);
     formData.set("lastNamePrivate", this.state.lastNamePrivate);
     formData.set("emailPrivate", this.state.emailPrivate);
     formData.set("phoneNumberPrivate", this.state.phoneNumberPrivate);
     // formData.set("username", this.state.username);
-
 
     // configururation for post request since we aren't just posting json
     const config = {
@@ -129,11 +121,14 @@ class AccountDetails extends Component {
       .then((data) => {
         if (data.error) {
           console.log(data.error);
+          this.setState({
+            submitwaiting: false,
+          });
         } else {
-           
           // Change this so the success message shows
-          this.setState({            
+          this.setState({
             changesMade: true,
+            submitted: true,
           });
 
           /*
@@ -143,6 +138,8 @@ class AccountDetails extends Component {
             email: data.email,
             phoneNumber: data.phoneNumber,
             userExists: true,
+            submitwaiting: false,
+            submitted: true,
           });
           */
         }
@@ -150,7 +147,13 @@ class AccountDetails extends Component {
   };
 
   render() {
-    if (this.state.username === this.state.user) {
+    if (this.state.loading) {
+      return <Loading />;
+    } else if (this.state.submitted) {
+      return <Redirect to={`/profile/${this.state.username}`} />;
+    } else if (this.state.user === "") {
+      return null;
+    } else if (this.state.username === this.state.user) {
       return (
         <Container>
           <div style={{ maxWidth: "30rem", margin: "0 auto" }}>
@@ -166,13 +169,6 @@ class AccountDetails extends Component {
                   placeholder={this.state.firstName}
                   onChange={this.onChange}
                 />
-                <Form.Check
-                  type="switch"
-                  id="first name switch"
-                  label="Private"
-                  checked={this.state.firstNamePrivate}
-                  onClick={this.toggleFirstNamePrivacy}
-                />
               </Form.Group>
 
               <Form.Group controlId="lastName">
@@ -181,13 +177,6 @@ class AccountDetails extends Component {
                   type="text"
                   placeholder={this.state.lastName}
                   onChange={this.onChange}
-                />
-                <Form.Check
-                  type="switch"
-                  id="last name switch"
-                  label="Private"
-                  checked={this.state.lastNamePrivate}
-                  onClick={this.toggleLastNamePrivacy}
                 />
               </Form.Group>
 
@@ -207,20 +196,6 @@ class AccountDetails extends Component {
                 />
               </Form.Group>
 
-              {/* <Form.Group controlId="username">
-                <Form.Label>User Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder={this.state.username}
-                  onChange={this.onChange}
-                />
-                <Form.Check
-                  type="switch"
-                  id="username switch"
-                  label="Private"
-                />
-              </Form.Group> */}
-
               <Form.Group controlId="email">
                 <Form.Label>Email</Form.Label>
                 <Form.Control
@@ -229,23 +204,29 @@ class AccountDetails extends Component {
                   onChange={this.onChange}
                 />
                 <Form.Check
-                 type="switch"
-                  id="email switch" 
-                  label="Private" 
+                  type="switch"
+                  id="email switch"
+                  label="Private"
                   checked={this.state.emailPrivate}
-                  onClick={this.toggleEmailPrivacy}/>
+                  onClick={this.toggleEmailPrivacy}
+                />
               </Form.Group>
 
               <div className="text-center">
                 <Button variant="success" type="submit">
-                  Save Changes
+                  {this.state.submitwaiting ? (
+                    <Spinner animation="border" size="sm" />
+                  ) : (
+                    <Container>Save Changes</Container>
+                  )}
                 </Button>
                 <Button variant="secondary" type="reset">
                   Discard Changes
                 </Button>
-                <Alert variant="success" show={this.state.changesMade}>{"Changes saved"}</Alert>
+                <Alert variant="success" show={this.state.changesMade}>
+                  {"Changes saved"}
+                </Alert>
               </div>
-              
             </Form>
           </div>
         </Container>

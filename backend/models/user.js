@@ -36,6 +36,11 @@ const userSchema = new Schema({
     // required: true,
   },
 
+  fbUserID: {
+    type: String,
+    unique: true,
+  },
+
   image: {
     data: Buffer,
     contentType: String,
@@ -62,17 +67,6 @@ const userSchema = new Schema({
     default: "",
   },
 
-  // Booleans to manage privacy
-  firstNamePrivate: {
-    type: Boolean,
-    default: false,
-  },
-
-  lastNamePrivate: {
-    type: Boolean,
-    default: false,
-  },
-
   emailPrivate: {
     type: Boolean,
     default: false,
@@ -89,7 +83,6 @@ userSchema.index({
   firstName: "text",
   lastName: "text",
   username: "text",
-  email: "text",
 });
 
 userSchema.methods.generateHash = function (password) {

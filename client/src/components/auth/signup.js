@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import { Form, Button, Alert, Container } from "react-bootstrap";
+import { Form, Button, Alert, Container, Spinner } from "react-bootstrap";
 import { Link, withRouter } from "react-router-dom";
+import FacebookLogin from "react-facebook-login";
 import isEmpty from "is-empty";
 import axios from "axios";
 
@@ -15,6 +16,7 @@ class Signup extends Component {
 
     this.state = {
       errors: {},
+      waiting: false,
     };
   }
 
@@ -26,6 +28,10 @@ class Signup extends Component {
         username: this.props.location.state.username,
         firstName: this.props.location.state.firstName,
         lastName: this.props.location.state.lastName,
+        fbIsLoggedIn: this.props.location.state.fbIsLoggedIn,
+        fbUserID: this.props.location.state.fbUserID,
+        fbPicture: this.props.location.state.fbPicture,
+        image: this.props.location.state.image,
       });
     } catch (err) {
       console.log("no state passed in");
@@ -49,6 +55,10 @@ class Signup extends Component {
   onSubmit = (e) => {
     e.preventDefault();
 
+    this.setState({
+      waiting: true,
+    });
+
     const newUser = {
       firstName: this.state.firstName,
       lastName: this.state.lastName,
@@ -56,6 +66,8 @@ class Signup extends Component {
       email: this.state.email,
       password1: this.state.password1,
       password2: this.state.password2,
+      fbUserID: this.state.fbUserID,
+      image: this.state.image,
     };
 
     // this.props.registerUser(newUser, this.props.history);
@@ -80,8 +92,57 @@ class Signup extends Component {
       });
   };
 
+  componentDidUpdate() {
+    if (!isEmpty(this.state.errors) && this.state.waiting) {
+      this.setState({
+        waiting: false,
+      });
+    }
+  }
+
+  componentClicked = () => {
+    console.log("clicked");
+  };
+
+  handleFailure = () => {
+    console.log("failure");
+  };
+
+  responseFacebook = (response) => {
+    console.log(response);
+    this.setState({
+      fbIsLoggedIn: true,
+      fbUserID: response.userID,
+      image: response.picture.data.url,
+      email: response.email,
+      firstName: response.first_name,
+      lastName: response.last_name,
+    });
+  };
+
   render() {
     const { errors } = this.state;
+
+    let fbContent;
+
+    if (this.state.fbIsLoggedIn) {
+      fbContent = console.log("Logged in");
+    } else {
+      fbContent = (
+        <FacebookLogin
+          // appId of ePortfolio
+          appId="820137652056192"
+          autoLoad={false}
+          fields="name,first_name, last_name,email,picture"
+          scope="public_profile, email"
+          onClick={this.componentClicked}
+          callback={this.responseFacebook}
+          onFailure={this.handleFailure}
+          cssClass="btnFacebook"
+          textButton="Sign up with Facebook"
+        />
+      );
+    }
 
     return (
       <Container>
@@ -170,8 +231,13 @@ class Signup extends Component {
 
               <div className="text-center">
                 <Button variant="primary" type="submit">
-                  Sign Up
+                  {this.state.waiting ? (
+                    <Spinner animation="border" size="sm" />
+                  ) : (
+                    <Container>Sign Up</Container>
+                  )}
                 </Button>
+                {fbContent}
               </div>
             </Form>
           </div>

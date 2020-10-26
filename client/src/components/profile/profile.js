@@ -6,6 +6,7 @@ import axios from "axios";
 
 import ProjectList from "./ProjectList";
 import { getUsernameId } from "../layout/GetUsername";
+import { Loading } from "../loading/Loading";
 import DisplayCarousel from "../profile/Carousel";
 import { HCenter } from "../layout";
 
@@ -36,7 +37,6 @@ class Profile extends Component {
 
   componentDidMount = () => {
     getUsernameId(this.state.userId).then((data) => {
-      //console.log("getUserNameId yealds: " + data);
       if (data === this.state.profileUserName)
         this.setState({
           isAuth: true,
@@ -52,9 +52,9 @@ class Profile extends Component {
           this.setState({
             userExists: false,
             photoExist: response.data.photoExist,
+            loading: false,
           });
         } else {
-          //console.log(response);
           this.setState({
             firstName: response.data.firstName,
             lastName: response.data.lastName,
@@ -62,6 +62,7 @@ class Profile extends Component {
             phoneNumber: response.data.phoneNumber,
             aboutUser: response.data.aboutUser,
             photoExist: response.data.photoExist,
+            loading: false,
             emailPrivate: response.data.emailPrivate,
             phoneNumberPrivate: response.data.phoneNumberPrivate,
           });
@@ -87,12 +88,13 @@ class Profile extends Component {
           console.log("failure");
           console.log(response.error);
         } else if (response.data.message === "Projects do not exist") {
+          console.log("response:", response);
           this.setState({
             projectExists: false,
             loading: false,
           });
         } else {
-          // console.log("response:");
+          console.log("response:", response);
           this.setState({
             projects: Array.from(response.data),
             loading: false,
@@ -102,7 +104,9 @@ class Profile extends Component {
   };
 
   render() {
-    if (this.state.userExists) {
+    if (this.state.loading) {
+      return <Loading />;
+    } else if (this.state.userExists) {
       return (
         <div>
           {this.state.loading ? (
@@ -148,11 +152,7 @@ class Profile extends Component {
                       <Card.Subtitle>
                         {this.state.phoneNumberPrivate ? "" : "Phone Number:"}
                       </Card.Subtitle>
-                      <Card.Text>
-                        {this.state.phoneNumberExists
-                          ? this.state.phoneNumber
-                          : " None"}
-                      </Card.Text>
+                      <Card.Text>{this.state.phoneNumber}</Card.Text>
                     </Card.Body>
                   </Card>
                 </div>

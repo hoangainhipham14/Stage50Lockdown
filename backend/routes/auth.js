@@ -4,6 +4,7 @@ const {
   signup,
   signin,
   signout,
+  fbSignin,
   recoverPassword,
   requestRecovery,
   validation,
@@ -17,6 +18,7 @@ const { requireAuthentication } = require("../controllers/auth");
 router.post("/signin", signin);
 router.post("/signup", signup);
 router.get("/signout", signout);
+router.post("/fbSignin", fbSignin);
 
 // Password recovery
 router.post("/requestRecovery", requestRecovery);
