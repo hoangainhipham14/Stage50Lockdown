@@ -16,7 +16,11 @@ class LandingPage extends Component {
             <TopLeftText />
           </Col>
           <Col md>
-            <DummySignUpForm />
+            {this.props.auth && this.props.auth.isAuthenticated ? (
+              <GetStartedSignedIn username={this.props.auth.user.username} />
+            ) : (
+              <DummySignUpForm />
+            )}
           </Col>
         </Row>
         <hr color="#808080" />
@@ -180,6 +184,31 @@ class DummySignUpForm extends Component {
   }
 }
 
+class GetStartedSignedIn extends Component {
+  render() {
+    return (
+      <div className="h-100">
+        <Center>
+          <div>
+            <Link to="/createProject">
+              <Button variant="dark" className="display-btn p-4">
+                New Project
+              </Button>
+            </Link>
+          </div>
+          <div>
+            <Link to={`/profile/${this.props.username}`}>
+              <Button variant="outline-dark" className="display-btn p-4">
+                My Profile
+              </Button>
+            </Link>
+          </div>
+        </Center>
+      </div>
+    );
+  }
+}
+
 class TopLeftText extends Component {
   render() {
     return (
@@ -195,14 +224,15 @@ class TopLeftText extends Component {
           <Button
             href="mailto:stage50lockdown@gmail.com"
             target="_blank"
-            className="btn btn-primary display-btn"
+            className="display-btn"
+            variant="outline-primary"
             rel="noopener noreferrer"
           >
             Email Us
           </Button>
 
           <Link to="/privacypolicy">
-            <Button className="display-btn" variant="primary">
+            <Button className="display-btn" variant="outline-primary">
               Privacy Policy
             </Button>
           </Link>

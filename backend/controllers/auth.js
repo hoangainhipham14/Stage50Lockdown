@@ -166,7 +166,10 @@ exports.signin = (req, res) => {
       .catch((err) => console.log("Error saving user session:", err));
 
     // generate token
-    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
+    const token = jwt.sign(
+      { _id: user._id, username: user.username },
+      process.env.JWT_SECRET
+    );
 
     // use cookie to store token
     // expiry = current epoch time (seconds) + length of year

@@ -28,7 +28,7 @@ class Signin extends Component {
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.auth.isAuthenticated) {
-      this.props.history.push("/dashboard");
+      this.props.history.push("/");
     }
 
     if (nextProps.errors) {
