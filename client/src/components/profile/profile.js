@@ -125,6 +125,7 @@ class Profile extends Component {
               className="mt-3 mb-5"
               projects={this.state.projects}
               projectExists={this.state.projectExists}
+              isAuth={this.state.isAuth}
             ></DisplayCarousel>
           )}
           <Container>
