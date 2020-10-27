@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Form, Button, Alert, Container, Spinner } from "react-bootstrap";
 import { Link, withRouter } from "react-router-dom";
-import FacebookLogin from "react-facebook-login";
+import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 import isEmpty from "is-empty";
 import axios from "axios";
 
@@ -129,17 +129,35 @@ class Signup extends Component {
       fbContent = console.log("Logged in");
     } else {
       fbContent = (
+        // <FacebookLogin
+        //   // appId of ePortfolio
+        //   appId="820137652056192"
+        //   autoLoad={false}
+        //   fields="name,first_name, last_name,email,picture"
+        //   scope="public_profile, email"
+        //   onClick={this.componentClicked}
+        //   callback={this.responseFacebook}
+        //   onFailure={this.handleFailure}
+        //   cssClass="btnFacebook"
+        //   textButton="Sign up with Facebook"
+        // />
         <FacebookLogin
-          // appId of ePortfolio
           appId="820137652056192"
           autoLoad={false}
-          fields="name,first_name, last_name,email,picture"
-          scope="public_profile, email"
+          fields="name,first_name,last_name,email,picture"
+          scope="public_profile,email"
           onClick={this.componentClicked}
           callback={this.responseFacebook}
           onFailure={this.handleFailure}
-          cssClass="btnFacebook"
-          textButton="Sign up with Facebook"
+          render={(renderProps) => (
+            <Button
+              className="display-btn"
+              style={{ backgroundColor: "#3b5998", borderColor: "#3b5998" }}
+              onClick={renderProps.onClick}
+            >
+              Sign up with Facebook
+            </Button>
+          )}
         />
       );
     }
@@ -231,7 +249,19 @@ class Signup extends Component {
               </Form.Group>
 
               <div className="text-center">
-                <Button className="display-btn" variant="primary" type="submit">
+                <Button
+                  style={
+                    this.state.fbIsLoggedIn
+                      ? {
+                          backgroundColor: "#3b5998",
+                          borderColor: "#3b5998",
+                        }
+                      : {}
+                  }
+                  className="display-btn"
+                  variant="primary"
+                  type="submit"
+                >
                   {this.state.waiting ? (
                     <Spinner animation="border" size="sm" />
                   ) : (
@@ -242,7 +272,7 @@ class Signup extends Component {
               </div>
             </Form>
             <Alert variant="success">
-              <p>Hey, don't forget to verify email</p>
+              Hey, don't forget to verify your email.
             </Alert>
           </div>
         </div>

@@ -215,7 +215,7 @@ exports.editProject = (req, res, next) => {
     const mainImageIsNew = JSON.parse(fields.mainImageIsNew);
     const imagesToDelete = JSON.parse(fields.imagesToDelete);
     let mainImageIndex;
-    if (!mainImageIndexRel) {
+    if (mainImageIndexRel === null) {
       mainImageIndex = null;
     } else {
       if (mainImageIsNew) {

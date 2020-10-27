@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import FacebookLogin from "react-facebook-login";
+import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 import PropTypes from "prop-types";
 import { fbSigninUser } from "../../actions/authActions";
 import { connect } from "react-redux";
@@ -16,7 +16,11 @@ class LandingPage extends Component {
             <TopLeftText />
           </Col>
           <Col md>
-            <DummySignUpForm />
+            {this.props.auth && this.props.auth.isAuthenticated ? (
+              <GetStartedSignedIn username={this.props.auth.user.username} />
+            ) : (
+              <DummySignUpForm />
+            )}
           </Col>
         </Row>
         <hr color="#808080" />
@@ -79,17 +83,36 @@ class DummySignUpForm extends Component {
       fbContent = console.log("Logged in");
     } else {
       fbContent = (
+        // <FacebookLogin
+        //   // appId of ePortfolio
+        //   appId="820137652056192"
+        //   autoLoad={false}
+        //   fields="name,first_name, last_name,email,picture"
+        //   scope="public_profile, email"
+        //   onClick={this.componentClicked}
+        //   callback={this.responseFacebook}
+        //   onFailure={this.handleFailure}
+        //   cssClass="btnFacebook"
+        //   // className="display-btn"
+        //   textButton="Sign up with Facebook"
+        // />
         <FacebookLogin
-          // appId of ePortfolio
           appId="820137652056192"
           autoLoad={false}
-          fields="name,first_name, last_name,email,picture"
-          scope="public_profile, email"
+          fields="name,first_name,last_name,email,picture"
+          scope="public_profile,email"
           onClick={this.componentClicked}
           callback={this.responseFacebook}
           onFailure={this.handleFailure}
-          cssClass="btnFacebook"
-          textButton="Sign up with Facebook"
+          render={(renderProps) => (
+            <Button
+              className="display-btn"
+              style={{ backgroundColor: "#3b5998", borderColor: "#3b5998" }}
+              onClick={renderProps.onClick}
+            >
+              Sign up with Facebook
+            </Button>
+          )}
         />
       );
     }
@@ -161,6 +184,31 @@ class DummySignUpForm extends Component {
   }
 }
 
+class GetStartedSignedIn extends Component {
+  render() {
+    return (
+      <div className="h-100">
+        <Center>
+          <div>
+            <Link to="/createProject">
+              <Button variant="dark" className="display-btn p-4">
+                New Project
+              </Button>
+            </Link>
+          </div>
+          <div>
+            <Link to={`/profile/${this.props.username}`}>
+              <Button variant="outline-dark" className="display-btn p-4">
+                My Profile
+              </Button>
+            </Link>
+          </div>
+        </Center>
+      </div>
+    );
+  }
+}
+
 class TopLeftText extends Component {
   render() {
     return (
@@ -173,16 +221,21 @@ class TopLeftText extends Component {
           Perfect for artists, students and professionals.
         </HCenter>
         <HCenter>
-          <a
+          <Button
             href="mailto:stage50lockdown@gmail.com"
             target="_blank"
-            className="btn btn-primary"
+            className="display-btn"
+            variant="outline-primary"
             rel="noopener noreferrer"
           >
             Email Us
-          </a>
+          </Button>
 
-          <Link to="/privacypolicy"><Button variant="primary">Privacy Policy</Button></Link>
+          <Link to="/privacypolicy">
+            <Button className="display-btn" variant="outline-primary">
+              Privacy Policy
+            </Button>
+          </Link>
         </HCenter>
       </Center>
     );

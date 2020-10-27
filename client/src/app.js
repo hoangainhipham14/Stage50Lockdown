@@ -16,8 +16,6 @@ import ResetPassword from "./components/auth/passwordReset";
 import Signin from "./components/auth/signin";
 import Signup from "./components/auth/signup";
 import Navbar from "./components/layout/navbar";
-import PrivateRoute from "./components/private-route/privateRoute";
-import Dashboard from "./components/dashboard/dashboard";
 import CreateProject, { EditProject } from "./components/project/CreateProject";
 import SingleProject from "./components/project/SingleProject";
 import LandingPage from "./components/landing-page/landingPage";
@@ -121,7 +119,6 @@ class App extends Component {
 
                 <Route exact path="/carousel" component={DisplayCarousel} />
 
-                <PrivateRoute exact path="/dashboard" component={Dashboard} />
                 <Route exact path="/search" component={SearchResults} />
 
                 {/* This must stay at the bottom. Add any new routes above */}
