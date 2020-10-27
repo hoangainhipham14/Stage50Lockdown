@@ -4,24 +4,29 @@ import { Link } from "react-router-dom";
 
 class ProjectList extends Component {
   render() {
-    const projectCards = this.props.projects.map((project) => (
-      <Link to={`/projects/${project._id}`}>
-        <ListGroup.Item key={project._id}>
-          <Card.Text style={{ textAlign: "right", fontSize: 13 }}>
-            {project.created}
-          </Card.Text>
+    const projectCards = this.props.projects.map(
+      (project) =>
+        project.itemIsPublic && (
           <Link to={`/projects/${project._id}`}>
-            <Card.Title>{project.title}</Card.Title>
+            <ListGroup.Item key={project._id}>
+              <Card.Text style={{ textAlign: "right", fontSize: 13 }}>
+                {project.created}
+              </Card.Text>
+              <Link to={`/projects/${project._id}`}>
+                <Card.Title>{project.title}</Card.Title>
+              </Link>
+              <Card.Text>{project.about}</Card.Text>
+              {this.props.isAuth && (
+                <Link to={`/projects/privacy/${project._id}`}>
+                  <Button variant="outline-primary">
+                    Change Privacy Settings
+                  </Button>
+                </Link>
+              )}
+            </ListGroup.Item>
           </Link>
-          <Card.Text>{project.about}</Card.Text>
-          {this.props.isAuth && (
-            <Link to={`/projects/privacy/${project._id}`}>
-              <Button variant="outline-primary">Change Privacy Settings</Button>
-            </Link>
-          )}
-        </ListGroup.Item>
-      </Link>
-    ));
+        )
+    );
 
     // if projects exist
     if (this.props.projectExists) {
