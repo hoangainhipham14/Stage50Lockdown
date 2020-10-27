@@ -74,8 +74,6 @@ class Profile extends Component {
             phoneNumberPrivate: response.data.phoneNumberPrivate,
           });
 
-          //console.log(this.state);
-
           if (this.state.phoneNumber === "") {
             this.setState({
               phoneNumberExists: false,
@@ -111,6 +109,22 @@ class Profile extends Component {
   };
 
   render() {
+    var i = 0;
+
+    var projectPublic = false;
+    if (this.state.projects.length > 0) {
+      for (i = 0; i < this.state.projects.length; i++) {
+        if (this.state.projects[i].itemIsPublic === true) {
+          projectPublic = true;
+          break;
+        }
+      }
+    }
+
+    if (this.state.isAuth) {
+      projectPublic = true;
+    }
+
     if (this.state.loading) {
       return (
         <HCenter>
@@ -120,7 +134,7 @@ class Profile extends Component {
     } else if (this.state.userExists) {
       return (
         <>
-          {this.state.projects.length > 0 && (
+          {projectPublic && this.state.projects.length > 0 && (
             <DisplayCarousel
               className="mt-3 mb-5"
               projects={this.state.projects}
@@ -204,6 +218,7 @@ class Profile extends Component {
                   projectExists={this.state.projectExists}
                   username={this.state.profileUserName}
                   isAuth={this.state.isAuth}
+                  projectPublic={projectPublic}
                 />
               </Col>
             </Row>
