@@ -247,12 +247,12 @@ class AccountDetails extends Component {
 
               <Form.Group>
                 <Alert variant="warning">
-                    Have Profile Appear In User Searches
+                    Profile Privacy
                 </Alert>
                 <Form.Check 
                   type="switch"
                   id="profile Privacy"
-                  label={this.state.profilePrivate ?  "No" : "Yes"}
+                  label={this.state.profilePrivate ?  "Public" : "Private"}
                   checked={this.state.profilePrivate}
                   onClick={this.toggleProfilePrivacy}
                 />

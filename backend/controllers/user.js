@@ -3,6 +3,7 @@ const formidable = require("formidable");
 const fs = require("fs");
 const _ = require("lodash");
 
+
 exports.userById = (req, res, next, id) => {
   User.findById(id).exec((err, user) => {
     if (err || !user) {
@@ -84,6 +85,18 @@ exports.getUserProfile = (req, res) => {
         message: "Profile does not exist",
       });
     }
+    
+    const isUser = req.profile && req.auth && req.profile._id == req.auth._id; 
+
+    //console.log("------\n"+req.profileprivate);
+    //console.log("------\n"+isUser);
+
+    // Check if the profile is private and another user is trying to access it 
+    if(!isUser && user.profilePrivate){
+      return res.status(403).json({
+        message: "Project is private",
+      });
+    }
 
     let data = { 
       firstName: user.firstName,
@@ -112,7 +125,8 @@ exports.getUserProfile = (req, res) => {
     }
 
     //console.log("Current Data: " + JSON.stringify(data));
-    
+    //response.data.message === "Profile is private"
+
     req.data = data;  
     
     return res.json(req.data);

@@ -44,7 +44,7 @@ router.post(
 );
 
 // this should post to exports.getProject
-router.post("/project/list", ProjectList);
+router.post("/project/list", addAuthentication, ProjectList);
 router.post("/project/togglePrivacy/:projectId", toggleProjectPrivacy);
 
 // This should connect a link to a project for a user
