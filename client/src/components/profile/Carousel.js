@@ -14,7 +14,7 @@ class DisplayCarousel extends Component {
           {project.images.length === 0 && (
             <Image
               key={idx}
-              src="../../default_photo.png"
+              src="../../Placeholder.png"
               alt={project.title}
               style={{ height: 400, width: 400 }}
               className="float-right mt-5"
