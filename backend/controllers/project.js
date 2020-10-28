@@ -443,7 +443,7 @@ exports.ProjectList = (req, res) => {
         error: "User does not exist.",
       });
     } else if (user.profilePrivate && !isUser) {
-      return res.json({message: "Profile is private"});
+      return res.status(403).json({message: "Profile is private"});
     }
     Project.find({ _userId: user._id }, "_id title about created").exec(
       (err, projects) => {

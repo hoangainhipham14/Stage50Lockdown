@@ -67,13 +67,14 @@ class Profile extends Component {
 
         // Case where the profile is private
         } else if (response.data.message === "Profile is private") {
-            console.log("response:", response);
+            console.log("response and resetting userexists:", response);
             this.setState({
-              projectExists: false,
+              userExists: false,
               loading: false,
             });
         // Otherwise display the profile
         } else {
+          console.log("Success");
           this.setState({
             firstName: response.data.firstName,
             lastName: response.data.lastName,
@@ -110,7 +111,7 @@ class Profile extends Component {
 
         // Check if project exists
         } else if (response.data.message === "Projects do not exist") {
-          console.log("response:", response);
+          console.log("responseerror:", response);
           this.setState({
             projectExists: false,
             loading: false,
@@ -118,7 +119,7 @@ class Profile extends Component {
         
         // Check if the profile is private
         } else if (response.data.message === "Profile is private") {
-          console.log("response:", response);
+          console.log("responseerror:", response);
           this.setState({
             projectExists: false,
             loading: false,
@@ -126,13 +127,16 @@ class Profile extends Component {
   
         // Otherwise display the project
         } else {
-          console.log("response:", response);
+          console.log("responsefinal:", response);
           this.setState({
             projects: Array.from(response.data),
             loading: false,
           });
         }
       });
+  
+  console.log("----------\n Current State \n ---------------")
+  console.log(this.state);
   };
 
   render() {

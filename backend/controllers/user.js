@@ -78,8 +78,9 @@ exports.getUserAccountDetails = (req, res) => {
 // getUserProfile displays the data that will be public on the profile page
 // of the user 
 exports.getUserProfile = (req, res) => {
-  
+  //console.log("Entering GetUserProfile...");
   User.findOne({ username: req.params.username }).exec((err, user) => {
+
     if (err || !user) {
       return res.send({
         message: "Profile does not exist",
@@ -93,8 +94,8 @@ exports.getUserProfile = (req, res) => {
 
     // Check if the profile is private and another user is trying to access it 
     if(!isUser && user.profilePrivate){
-      return res.status(403).json({
-        message: "Project is private",
+      return res.json({
+        message: "Profile is private",
       });
     }
 
