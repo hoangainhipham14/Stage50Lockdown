@@ -109,7 +109,7 @@ class SearchResults extends Component {
           <Row>
             <Col>
               <h1>
-                Seach results for:{" "}
+                Search results for:{" "}
                 <i>{this.props.location.state.searchphrase}</i>
               </h1>
             </Col>

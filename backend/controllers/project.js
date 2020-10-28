@@ -439,20 +439,22 @@ exports.ProjectList = (req, res) => {
         error: "User does not exist.",
       });
     }
-    Project.find({ _userId: user._id }, "_id title about created").exec(
-      (err, projects) => {
-        // console.log("user", user._id);
-        // console.log("projects", projects);
-        if (err || projects.length === 0) {
-          return res.send({
-            message: "Projects do not exist",
-          });
-        }
-
-        req.projects = projects; //add
-        return res.json(req.projects);
+    Project.find(
+      { _userId: user._id },
+      "_id title about created itemIsPublic"
+    ).exec((err, projects) => {
+      // console.log("user", user._id);
+      // console.log("projects", projects);
+      if (err || projects.length === 0) {
+        return res.send({
+          message: "Projects do not exist",
+        });
       }
-    );
+
+      req.projects = projects; //add
+      console.log(projects);
+      return res.json(req.projects);
+    });
   });
 };
 
