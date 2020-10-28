@@ -23,6 +23,7 @@ class AccountDetails extends Component {
     this.state = {
       emailPrivate: "",
       phoneNumberPrivate: "",
+      profilePrivate: "",
       user: "",
       username: this.props.match.params.username,
       firstName: "",
@@ -53,6 +54,7 @@ class AccountDetails extends Component {
             phoneNumber: response.data.phoneNumber,
             emailPrivate: response.data.emailPrivate,
             phoneNumberPrivate: response.data.phoneNumberPrivate,
+            profilePrivate: response.data.profilePrivate,
             userExists: true,
             loading: false,
           });
@@ -93,6 +95,13 @@ class AccountDetails extends Component {
     });
   };
 
+  toggleProfilePrivacy = (e) => {
+    this.setState({
+      profilePrivate: !this.state.profilePrivate,
+    });
+  };
+
+
   // Submit event, update user information
   onSubmit = (e) => {
     // prevent page from reloading
@@ -115,6 +124,7 @@ class AccountDetails extends Component {
     formData.set("lastNamePrivate", this.state.lastNamePrivate);
     formData.set("emailPrivate", this.state.emailPrivate);
     formData.set("phoneNumberPrivate", this.state.phoneNumberPrivate);
+    formData.set("profilePrivate", this.state.profilePrivate);
     // formData.set("username", this.state.username);
 
     // configururation for post request since we aren't just posting json
@@ -213,7 +223,7 @@ class AccountDetails extends Component {
                 <Form.Check
                   type="switch"
                   id="phone number switch"
-                  label="Private"
+                  label={this.state.phoneNumberPrivate ? "Public" : "Private"}
                   checked={this.state.phoneNumberPrivate}
                   onClick={this.togglePhoneNumberPrivacy}
                 />
@@ -229,9 +239,22 @@ class AccountDetails extends Component {
                 <Form.Check
                   type="switch"
                   id="email switch"
-                  label="Private"
+                  label={this.state.emailPrivate ? "Private" : "Public"}
                   checked={this.state.emailPrivate}
                   onClick={this.toggleEmailPrivacy}
+                />
+              </Form.Group>
+
+              <Form.Group>
+                <Alert variant="warning">
+                    Have Profile Appear In User Searches
+                </Alert>
+                <Form.Check 
+                  type="switch"
+                  id="profile Privacy"
+                  label={this.state.profilePrivate ?  "No" : "Yes"}
+                  checked={this.state.profilePrivate}
+                  onClick={this.toggleProfilePrivacy}
                 />
               </Form.Group>
 

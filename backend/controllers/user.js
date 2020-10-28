@@ -64,6 +64,7 @@ exports.getUserAccountDetails = (req, res) => {
       lastNamePrivate: user.lastNamePrivate,
       emailPrivate: user.emailPrivate,
       phoneNumberPrivate: user.phoneNumberPrivate,
+      profilePrivate: user.profilePrivate,
     }
     
     req.data = data;
