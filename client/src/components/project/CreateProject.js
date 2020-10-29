@@ -72,41 +72,26 @@ function discardPopover(message, cb) {
   );
 }
 
-// const formattingPopover = (
-//   <Popover style={{ maxWidth: "none" }}>
-//     <Popover.Title as="h3">Formatting help</Popover.Title>
-//     <Popover.Content className="py-0 px-1">
-//       <Table size="sm">
-//         <thead>
-//           <tr>
-//             <th>You type:</th>
-//             <th>You see:</th>
-//           </tr>
-//         </thead>
-//         <tbody>
-//           <tr>
-//             <td>*italics*</td>
-//             <td>
-//               <i>italics</i>
-//             </td>
-//           </tr>
-//           <tr>
-//             <td>**bold**</td>
-//             <td>
-//               <strong>bold</strong>
-//             </td>
-//           </tr>
-//           <tr>
-//             <td>[Google](https://google.com)</td>
-//             <td>
-//               <a href="https://google.com">Google</a>
-//             </td>
-//           </tr>
-//         </tbody>
-//       </Table>
-//     </Popover.Content>
-//   </Popover>
-// );
+const formattingPopover = (
+  <Popover style={{ maxWidth: "20em" }}>
+    <Popover.Title as="h3">Formatting help</Popover.Title>
+    {/* <Popover.Content className="py-0 px-1"> */}
+    <Popover.Content>
+      <ul>
+        <li>Click the + symbol to see formatting options.</li>
+        <li>
+          The<strong> info notice, warning notice, and tip notice </strong>
+          formatting options will not render as intended.{" "}
+        </li>
+        <li>All standard markdown options are available to use. </li>
+        <li>
+          If you see a \ at the end of your text, be sure to check there are no
+          trailing newlines at the end of your text.
+        </li>
+      </ul>
+    </Popover.Content>
+  </Popover>
+);
 
 const deleteItem = <>&times;</>;
 const restoreItem = <span style={{ fontSize: "80%" }}>&#8635;</span>;
@@ -395,7 +380,7 @@ class CreateProject extends Component {
                     onChange={this.onBodyChange}
                     placeholder="More information about your project"
                   />
-                  {/* <OverlayTrigger
+                  <OverlayTrigger
                     trigger="click"
                     rootClose
                     placement="bottom"
@@ -410,7 +395,7 @@ class CreateProject extends Component {
                     >
                       formatting help
                     </span>
-                  </OverlayTrigger> */}
+                  </OverlayTrigger>
                 </Form.Group>
               </Col>
               <Col lg={6}>
@@ -911,7 +896,7 @@ export class EditProject extends Component {
                     placeholder="More information about your project"
                     value={this.state.body}
                   />
-                  {/* <OverlayTrigger
+                  <OverlayTrigger
                     trigger="click"
                     rootClose
                     placement="bottom"
@@ -926,7 +911,7 @@ export class EditProject extends Component {
                     >
                       formatting help
                     </span>
-                  </OverlayTrigger> */}
+                  </OverlayTrigger>
                 </Form.Group>
               </Col>
               <Col lg={6}>
