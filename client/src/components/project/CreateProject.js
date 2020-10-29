@@ -8,13 +8,13 @@ import {
   Popover,
   Row,
   Col,
-  Table,
   Image as BootstrapImage,
 } from "react-bootstrap";
 import { HCenter } from "../layout";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
+import Editor from "rich-markdown-editor";
 
 const acceptedImageTypes = ["jpg", "png", "jpeg"];
 
@@ -72,41 +72,41 @@ function discardPopover(message, cb) {
   );
 }
 
-const formattingPopover = (
-  <Popover style={{ maxWidth: "none" }}>
-    <Popover.Title as="h3">Formatting help</Popover.Title>
-    <Popover.Content className="py-0 px-1">
-      <Table size="sm">
-        <thead>
-          <tr>
-            <th>You type:</th>
-            <th>You see:</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>*italics*</td>
-            <td>
-              <i>italics</i>
-            </td>
-          </tr>
-          <tr>
-            <td>**bold**</td>
-            <td>
-              <strong>bold</strong>
-            </td>
-          </tr>
-          <tr>
-            <td>[Google](https://google.com)</td>
-            <td>
-              <a href="https://google.com">Google</a>
-            </td>
-          </tr>
-        </tbody>
-      </Table>
-    </Popover.Content>
-  </Popover>
-);
+// const formattingPopover = (
+//   <Popover style={{ maxWidth: "none" }}>
+//     <Popover.Title as="h3">Formatting help</Popover.Title>
+//     <Popover.Content className="py-0 px-1">
+//       <Table size="sm">
+//         <thead>
+//           <tr>
+//             <th>You type:</th>
+//             <th>You see:</th>
+//           </tr>
+//         </thead>
+//         <tbody>
+//           <tr>
+//             <td>*italics*</td>
+//             <td>
+//               <i>italics</i>
+//             </td>
+//           </tr>
+//           <tr>
+//             <td>**bold**</td>
+//             <td>
+//               <strong>bold</strong>
+//             </td>
+//           </tr>
+//           <tr>
+//             <td>[Google](https://google.com)</td>
+//             <td>
+//               <a href="https://google.com">Google</a>
+//             </td>
+//           </tr>
+//         </tbody>
+//       </Table>
+//     </Popover.Content>
+//   </Popover>
+// );
 
 const deleteItem = <>&times;</>;
 const restoreItem = <span style={{ fontSize: "80%" }}>&#8635;</span>;
@@ -211,6 +211,12 @@ class CreateProject extends Component {
           [name]: e.target.value,
         });
     }
+  };
+
+  onBodyChange = (e) => {
+    this.setState({
+      body: e(),
+    });
   };
 
   onSubmit = (e) => {
@@ -377,14 +383,19 @@ class CreateProject extends Component {
                 </Form.Group>
 
                 <Form.Group controlId="body">
-                  <Form.Label>Body Text</Form.Label>
-                  <Form.Control
+                  <Form.Label>Text</Form.Label>
+                  {/* <Form.Control
                     as="textarea"
                     rows="7"
                     placeholder="More information about your project"
                     onChange={this.onChange}
+                  /> */}
+                  <Editor
+                    id="body"
+                    onChange={this.onBodyChange}
+                    placeholder="More information about your project"
                   />
-                  <OverlayTrigger
+                  {/* <OverlayTrigger
                     trigger="click"
                     rootClose
                     placement="bottom"
@@ -399,7 +410,7 @@ class CreateProject extends Component {
                     >
                       formatting help
                     </span>
-                  </OverlayTrigger>
+                  </OverlayTrigger> */}
                 </Form.Group>
               </Col>
               <Col lg={6}>
@@ -480,6 +491,7 @@ export class EditProject extends Component {
       title: "",
       about: "",
       body: "",
+      updatedbody: "",
       newImages: [],
       newAdditionalFiles: [],
       oldImagesNames: [],
@@ -494,12 +506,16 @@ export class EditProject extends Component {
   onSubmit = (e) => {
     e.preventDefault();
 
+    // this.setState({
+    //   body: this.state.updatedbody,
+    // });
+
     const formData = new FormData();
 
     // text fields
     formData.set("title", this.state.title);
     formData.set("about", this.state.about);
-    formData.set("body", this.state.body);
+    formData.set("body", this.state.updatedbody);
 
     // main image
     formData.set("mainImageIndex", this.state.mainImageIndex);
@@ -599,6 +615,12 @@ export class EditProject extends Component {
     }
   };
 
+  onBodyChange = (e) => {
+    this.setState({
+      updatedbody: e(),
+    });
+  };
+
   componentDidMount() {
     const projectId = this.props.match.params.projectId;
     console.log(projectId);
@@ -612,6 +634,7 @@ export class EditProject extends Component {
           title: project.title,
           about: project.about,
           body: project.body,
+          updatedbody: project.body,
           oldImagesNames: project.imagesNames,
           oldImagePopovers: generateImagePopovers(
             project.imagesNames.length,
@@ -874,15 +897,21 @@ export class EditProject extends Component {
                 </Form.Group>
 
                 <Form.Group controlId="body">
-                  <Form.Label>Body Text</Form.Label>
-                  <Form.Control
+                  <Form.Label>Text</Form.Label>
+                  {/* <Form.Control
                     as="textarea"
                     rows="7"
                     placeholder="More information about your project"
                     onChange={this.onChange}
                     value={this.state.body}
+                  /> */}
+                  <Editor
+                    id="body"
+                    onChange={this.onBodyChange}
+                    placeholder="More information about your project"
+                    value={this.state.body}
                   />
-                  <OverlayTrigger
+                  {/* <OverlayTrigger
                     trigger="click"
                     rootClose
                     placement="bottom"
@@ -897,7 +926,7 @@ export class EditProject extends Component {
                     >
                       formatting help
                     </span>
-                  </OverlayTrigger>
+                  </OverlayTrigger> */}
                 </Form.Group>
               </Col>
               <Col lg={6}>
