@@ -211,10 +211,10 @@ class TermsOfService extends Component {
             <h3>Limitation on Actions</h3>
 
             <p>
-              You agree that regardless of any statue or law to the contrary,
-              any claim or cuase of action arising out of or related to these
+              You agree that regardless of any statute or law to the contrary,
+              any claim or cause of action arising out of or related to these
               Terms or your access and use of ePortfolio App must be filed
-              within one year after such claim or cuase of action arises, or be
+              within one year after such claim or cause of action arises, or be
               forever barred.
             </p>
 
