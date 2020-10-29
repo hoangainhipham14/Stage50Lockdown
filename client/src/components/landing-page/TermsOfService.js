@@ -4,6 +4,7 @@ import { Container } from "react-bootstrap";
 import { Center } from "../layout";
 // Sample Terms of Service take from
 // https://www.d2l.com/legal/eportfolio-mobile-application-eula/
+// https://pratt.digication.com/app/terms
 
 class TermsOfService extends Component {
   render() {
@@ -205,6 +206,16 @@ class TermsOfService extends Component {
               applicable laws, (2) any data you submit using the ePortfolio App,
               (3) any breach of privacy claims made by you and (4) your use of,
               misuse of or inability to use the ePortfolio App.
+            </p>
+
+            <h3>Limitation on Actions</h3>
+
+            <p>
+              You agree that regardless of any statue or law to the contrary,
+              any claim or cuase of action arising out of or related to these
+              Terms or your access and use of ePortfolio App must be filed
+              within one year after such claim or cuase of action arises, or be
+              forever barred.
             </p>
 
             <h3>Termination</h3>
