@@ -108,6 +108,24 @@ const formattingPopover = (
   </Popover>
 );
 
+const invalidFilePopover = (
+  <Popover id="popover-basic">
+   <Popover.Title as="h3">There was a problem uploading content</Popover.Title>
+    <Popover.Content>
+      Invalid file
+    </Popover.Content>
+   </Popover>
+);
+
+const fileTooLargePopover = (
+    <Popover id="popover-basic">
+     <Popover.Title as="h3">There was a problem uploading content</Popover.Title>
+      <Popover.Content>
+        File Too Large
+      </Popover.Content>
+     </Popover>
+);
+
 const deleteItem = <>&times;</>;
 const restoreItem = <span style={{ fontSize: "80%" }}>&#8635;</span>;
 
@@ -158,6 +176,7 @@ class CreateProject extends Component {
       additionalFiles: [],
       submitSuccess: false,
       projectId: null,
+      showModal: false,
     };
   }
 
@@ -414,11 +433,13 @@ class CreateProject extends Component {
                       id="images"
                       onChange={this.onChange}
                     />
+                    
                     <label className="custom-file-label" htmlFor="images">
                       Choose files
                     </label>
                   </div>
                   <div className="mt-2 pl-2">{images}</div>
+
                 </Form.Group>
 
                 <Form.Group controlId="additionalFiles">
@@ -488,6 +509,7 @@ export class EditProject extends Component {
       filesToDelete: new Set(),
       mainImageIndex: null,
       mainImageIsNew: false,
+      showModal: false,
     };
   }
 
@@ -997,6 +1019,7 @@ export class EditProject extends Component {
             </Row>
           </Form>
         </div>
+      
       </Container>
     );
   }
