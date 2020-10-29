@@ -28,6 +28,7 @@ import NoMatch from "./components/404/404";
 import CreateProfile from "./components/profile/CreateProfile";
 import PrivacyPolicy from "./components/landing-page/PrivacyPolicy";
 import ChangePassword from "./components/auth/changePassword";
+import TermsOfService from "./components/landing-page/TermsOfService";
 
 // check for token to keep user logged in
 if (localStorage.token) {
@@ -113,6 +114,11 @@ class App extends Component {
                   component={PrivacyToggleButton}
                 />
                 <Route exact path="/privacypolicy" component={PrivacyPolicy} />
+                <Route
+                  exact
+                  path="/termsofservice"
+                  component={TermsOfService}
+                />
 
                 <Route exact path="/carousel" component={DisplayCarousel} />
 

@@ -83,19 +83,6 @@ class DummySignUpForm extends Component {
       fbContent = console.log("Logged in");
     } else {
       fbContent = (
-        // <FacebookLogin
-        //   // appId of ePortfolio
-        //   appId="820137652056192"
-        //   autoLoad={false}
-        //   fields="name,first_name, last_name,email,picture"
-        //   scope="public_profile, email"
-        //   onClick={this.componentClicked}
-        //   callback={this.responseFacebook}
-        //   onFailure={this.handleFailure}
-        //   cssClass="btnFacebook"
-        //   // className="display-btn"
-        //   textButton="Sign up with Facebook"
-        // />
         <FacebookLogin
           appId="820137652056192"
           autoLoad={false}
@@ -234,6 +221,12 @@ class TopLeftText extends Component {
           <Link to="/privacypolicy">
             <Button className="display-btn" variant="outline-primary">
               Privacy Policy
+            </Button>
+          </Link>
+
+          <Link to="/termsofservice">
+            <Button className="display-btn" variant="outline-primary">
+              Terms of Service
             </Button>
           </Link>
         </HCenter>

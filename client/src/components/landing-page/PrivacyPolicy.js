@@ -19,7 +19,7 @@ class PrivacyPolicy extends Component {
 
             <p>
               We have adopted the Australian Privacy Principles (APPs) contained
-              in the Privacy Act 1988 (Cth) (the Privacy Act). The NPPs govern
+              in the Privacy Act 1988 (Cth) (the Privacy Act). The APPs govern
               the way in which we collect, use, disclose, store, secure and
               dispose of your Personal Information.
             </p>
