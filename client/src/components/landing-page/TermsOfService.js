@@ -109,6 +109,20 @@ class TermsOfService extends Component {
               or inaccurate.
             </p>
 
+            <h3>Advertised and/or Linked Websites</h3>
+
+            <p>
+              Any internet sites that are advertised and/or linked through
+              ePortfolio App are provided only as a matter of convenience and
+              are not endorsed by us, and we are not responsible for any
+              content, products or services on or available from such sites. A
+              third-party providing products, services or content advertised
+              and/or linked through ePortfolio App may require your agreement to
+              different terms or additional subscription terms or other license
+              prior to your access or use of such additional products, services
+              or content.
+            </p>
+
             <h3>Data Restrictions</h3>
 
             <p>
