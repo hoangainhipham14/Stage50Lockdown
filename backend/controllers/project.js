@@ -424,7 +424,7 @@ exports.ProjectList = (req, res) => {
     }
     Project.find(
       { _userId: user._id },
-      "_id title about created mainImageIndex images carouselImageIndex"
+      "_id title about created mainImageIndex images carouselImageIndex itemIsPublic"
     ).exec((err, projects) => {
       // console.log("user", user._id);
       // console.log("projects", projects);
