@@ -76,6 +76,17 @@ class TermsOfService extends Component {
               law.
             </p>
 
+            <h3>Children's Privacy</h3>
+
+            <p>
+              By accepting these Terms, you represent and warrant to us that
+              either: (i) you are 13 years of age or older; or (ii) if you or
+              your child is under 13, that you have either obtained or given
+              parental consent to your or your child’s school for the collection
+              of the personal information necessary to register for and use
+              ePortfolio App.
+            </p>
+
             <h3>Security Measures</h3>
 
             <p>
