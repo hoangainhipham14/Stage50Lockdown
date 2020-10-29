@@ -595,3 +595,48 @@ exports.deleteUser = (req, res) => {
     }
   });
 };
+
+exports.changePassword = (req, res) => {
+  const passwordNo1 = req.body.passwordNo1;
+  const passwordNo2 = req.body.passwordNo2;
+
+  const regexNum = new RegExp("(?=.*[0-9])");
+  const regexLower = new RegExp("(?=.*[a-z])");
+  const regexUpper = new RegExp("(?=.*[A-Z])");
+
+  if (passwordNo1 !== passwordNo2) {
+    return res.status(400).send({
+      msg: "Passwords do not match",
+    });
+  } else if (passwordNo1.length < 8) {
+    return res.status(400).send({
+      msg: "Password must be at least 8 characters long",
+    });
+  } else if (
+    !regexNum.test(passwordNo1) ||
+    !regexLower.test(passwordNo1) ||
+    !regexUpper.test(passwordNo1)
+  ) {
+    return res.status(400).send({
+      msg:
+        "Password must contain at least one uppercase letter, one lowercase letter, and one number.",
+    });
+  }
+
+  User.findById(req.auth._id, (err, user) => {
+    if (err) {
+      return res.status(400).send(err);
+    } else {
+      user.password = user.generateHash(passwordNo1);
+      user.save((err) => {
+        if (err) {
+          return res.status(400).send(err);
+        } else {
+          return res.status(200).send({
+            success: true,
+          });
+        }
+      });
+    }
+  });
+};

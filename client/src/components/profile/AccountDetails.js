@@ -14,7 +14,7 @@ import { getUsernameId } from "../layout/GetUsername";
 import { deleteUser } from "../../actions/authActions";
 import PropTypes from "prop-types";
 import { Loading } from "../loading/Loading";
-import { Redirect } from "react-router-dom";
+import { Redirect, Link } from "react-router-dom";
 
 class AccountDetails extends Component {
   constructor(props) {
@@ -178,6 +178,9 @@ class AccountDetails extends Component {
               Delete Account
             </Button>
           </OverlayTrigger>
+          <Link to="/changepassword">
+            <Button variant="secondary">Change password</Button>
+          </Link>
 
           <div style={{ maxWidth: "30rem", margin: "0 auto" }}>
             <div className="text-center">
