@@ -18,7 +18,7 @@ class TermsOfService extends Component {
               showcase individual projects. These ("Terms") govern your access
               and use of our ePortfolio App, content and services. By
               registering for or using ePortfolio App, you agree to abide by
-              these Terms. These Terms consitute a legally binding agreement
+              these Terms. These Terms constitute a legally binding agreement
               between you and Stage50lockdown, the provider of ePortfolio App.
               In the Terms of Service, the terms "you" and "your" refer to you,
               an individual user of ePortfolio. These Terms of Service exempt
@@ -85,7 +85,7 @@ class TermsOfService extends Component {
               compromise any security measures of other products or systems.
             </p>
 
-            <h3>Objectional Content and Errors</h3>
+            <h3>Objectionable Content and Errors</h3>
 
             <p>
               You understand that in using the ePortfolio App you may encounter
@@ -105,7 +105,7 @@ class TermsOfService extends Component {
               or communicate; (ii) contain viruses, time bombs or other
               malicious computer code; (iii) infringe another's intellectual
               property rights (including copyrights); (iv) are unlawful,
-              harmful, threatenting, abusive, harassing, defamatory, vulgar,
+              harmful, threatening, abusive, harassing, defamatory, vulgar,
               obscene, invasive of another's privacy, hateful, or racially,
               ethnically or otherwise objectionable; or (v) adversely affect
               ePortfolio App. In addition, you may not use the service to
