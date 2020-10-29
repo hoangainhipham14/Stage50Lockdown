@@ -27,6 +27,7 @@ import SearchResults from "./components/search/SearchResults";
 import NoMatch from "./components/404/404";
 import CreateProfile from "./components/profile/CreateProfile";
 import PrivacyPolicy from "./components/landing-page/PrivacyPolicy";
+import ChangePassword from "./components/auth/changePassword";
 
 // check for token to keep user logged in
 if (localStorage.token) {
@@ -111,15 +112,16 @@ class App extends Component {
                   path="/projects/privacy/:projectId"
                   component={PrivacyToggleButton}
                 />
-                <Route
-                  exact
-                  path="/privacypolicy"
-                  component={PrivacyPolicy}
-                />
+                <Route exact path="/privacypolicy" component={PrivacyPolicy} />
 
                 <Route exact path="/carousel" component={DisplayCarousel} />
 
                 <Route exact path="/search" component={SearchResults} />
+                <Route
+                  exact
+                  path="/changepassword"
+                  component={ChangePassword}
+                />
 
                 {/* This must stay at the bottom. Add any new routes above */}
                 <Route component={NoMatch} />
