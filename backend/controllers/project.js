@@ -614,4 +614,20 @@ function deleteAllUserProjects(userId) {
   });
 }
 
+exports.deleteProject = (req, res) => {
+  Project.findByIdAndDelete(req.project._id).exec((err, project) => {
+    if (err) {
+      console.log("Error deleting: ", err);
+      return res.status(400).json({
+        error: err,
+      });
+    } else {
+      console.log("Deleted: ", project);
+      res.status(200).json({
+        message: "Deleted: " + JSON.stringify(project),
+      });
+    }
+  });
+};
+
 module.exports.deleteAllUserProjects = deleteAllUserProjects;

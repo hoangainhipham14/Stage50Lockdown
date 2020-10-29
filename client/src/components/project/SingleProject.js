@@ -8,6 +8,7 @@ import {
   Row,
   Col,
   Button,
+  Modal,
 } from "react-bootstrap";
 import { Center, HCenter } from "../layout";
 import { SRLWrapper } from "simple-react-lightbox";
@@ -44,6 +45,8 @@ class SingleProject extends Component {
       projectId: "",
       images: [],
       error: null,
+      redirectToHome: false,
+      showModal: false,
     };
   }
 
@@ -127,6 +130,26 @@ class SingleProject extends Component {
       txt = txt.replace(/\[([^[]+)\]\(([^)]+)\)/g, "<a href='//$2'>$1</a>");
     }
     return txt;
+  };
+
+  deleteProject = () => {
+    axios.delete(`/api/project/${this.state.projectId}/delete`).then((err) => {
+      this.setState({
+        redirectToHome: true,
+      });
+    });
+  };
+
+  handleShow = () => {
+    this.setState({
+      showModal: true,
+    });
+  };
+
+  handleClose = () => {
+    this.setState({
+      showModal: false,
+    });
   };
 
   render() {
@@ -246,12 +269,38 @@ class SingleProject extends Component {
               <Col>{filesDisplay}</Col>
               <Col>
                 {this.state.project.editingPrivileges ? (
-                  <Link
-                    to={`/projects/${this.state.projectId}/edit`}
-                    style={{ float: "right" }}
-                  >
-                    <Button>Edit Project</Button>
-                  </Link>
+                  <>
+                    <Link
+                      to={`/projects/${this.state.projectId}/edit`}
+                      style={{ float: "right" }}
+                    >
+                      <Button>Edit Project</Button>
+                    </Link>
+                    <Button
+                      variant="danger"
+                      className="float-right"
+                      onClick={this.handleShow}
+                    >
+                      Delete Project
+                    </Button>
+                    <Modal
+                      show={this.state.showModal}
+                      onHide={this.handleClose}
+                    >
+                      <Modal.Header closeButton>
+                        <Modal.Title>
+                          Are you sure you want to delete this project?
+                        </Modal.Title>
+                      </Modal.Header>
+                      <Modal.Body>This action cannot be undone!</Modal.Body>
+                      <Modal.Footer>
+                        <Button onClick={this.handleClose}>Cancel</Button>
+                        <Button onClick={this.deleteProject} variant="danger">
+                          Delete
+                        </Button>
+                      </Modal.Footer>
+                    </Modal>
+                  </>
                 ) : null}
               </Col>
             </Row>
