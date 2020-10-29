@@ -250,6 +250,13 @@ class TermsOfService extends Component {
           </a>
 
           <p>
+            You acknowledge that you have read these Terms and understand them,
+            and that by accessing ePortfolio App, you agree to be bound by these
+            Terms and any amendments to these Terms that we post to ePortfolio
+            App.
+          </p>
+
+          <p>
             <b>Terms of Service is up-to-date as of 30th of October, 2020</b>
           </p>
         </Center>
