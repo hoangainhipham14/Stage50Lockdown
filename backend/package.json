@@ -32,7 +32,7 @@
     "mongoose": "^5.10.3",
     "nodemailer": "^6.4.11",
     "validator": "^10.9.0",
-    "express-jwt": "^5.3.3"
+    "express-jwt": "^6.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.11.4",
