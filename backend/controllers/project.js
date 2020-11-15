@@ -8,10 +8,10 @@ const moment = require("moment");
 
 const formidable = require("formidable");
 const fs = require("fs");
+const e = require("express");
 
 exports.hasAuthorisation = (req, res, next) => {
   const projectPublic = req.project && req.project.itemIsPublic;
-  
   const isOwner =
     req.project && req.auth && req.project._userId._id == req.auth._id;
   if (projectPublic || isOwner) {
@@ -46,6 +46,7 @@ exports.singleProject = (req, res) => {
 
     imagesNames: req.project.images.map((file) => file.fileName),
     mainImageIndex: req.project.mainImageIndex,
+    carouselImageIndex: req.project.carouselImageIndex,
     additionalFilesNames: req.project.additionalFiles.map(
       (file) => file.fileName
     ),
@@ -55,38 +56,6 @@ exports.singleProject = (req, res) => {
     editingPrivileges: isOwner,
   };
   return res.json(data);
-
-  // if (req.project.itemIsPublic) {
-  //   const data = {
-  //     title: req.project.title,
-  //     about: req.project.about,
-  //     body: req.project.body,
-
-  //     imagesNames: req.project.images.map((file) => file.fileName),
-  //     mainImageIndex: req.project.mainImageIndex,
-  //     additionalFilesNames: req.project.additionalFiles.map(
-  //       (file) => file.fileName
-  //     ),
-
-  //     itemIsPublic: req.project.itemIsPublic,
-  //   };
-  //   return res.json(data);
-  // } else if (req.project) {
-  //   return res.status(403).json({
-  //     error: "Project is private.",
-  //   });
-  // } else {
-  //   return res.status(404).json({
-  //     error: "Project does not exist.",
-  //   });
-  // }
-
-  // else {
-  //   console.log("Project is private or does not exist.");
-  //   return res.status(400).json({
-  //     error: "Project does not exist",
-  //   });
-  // }
 };
 
 async function uploadFile(file) {
@@ -121,6 +90,7 @@ exports.createProject = (req, res, next) => {
       about: fields.about,
       body: fields.body,
       mainImageIndex: JSON.parse(fields.mainImageIndex),
+      carouselImageIndex: JSON.parse(fields.carouselImageIndex),
       _userId: fields._userId,
     });
 
@@ -159,9 +129,6 @@ exports.createProject = (req, res, next) => {
     project.additionalFiles = fileRefs;
 
     // return res.status(400).json({ test: "success" });
-
-    // TALK TO NHI ABOUT THIS
-    // project = _.extend(project, fields);
 
     // add MM/DD/YYYY
     today = Date.now();
@@ -208,12 +175,12 @@ exports.editProject = (req, res, next) => {
     project.title = fields.title;
     project.about = fields.about;
     project.body = fields.body;
-
     // update the index of the main image
     // yes, i know this is fucking disgusting.
     const mainImageIndexRel = JSON.parse(fields.mainImageIndex);
     const mainImageIsNew = JSON.parse(fields.mainImageIsNew);
     const imagesToDelete = JSON.parse(fields.imagesToDelete);
+
     let mainImageIndex;
     if (mainImageIndexRel === null) {
       mainImageIndex = null;
@@ -227,6 +194,22 @@ exports.editProject = (req, res, next) => {
       }
     }
     project.mainImageIndex = mainImageIndex;
+
+    // update the index of the carousel image
+    const carouselImageIndexRel = JSON.parse(fields.carouselImageIndex);
+    const carouselImageIsNew = JSON.parse(fields.carouselImageIsNew);
+
+    let carouselImageIndex = null;
+    if (carouselImageIndexRel !== null) {
+      if (carouselImageIsNew) {
+        const numOldImagesAfterUpdate =
+          project.images.length - imagesToDelete.length;
+        carouselImageIndex = numOldImagesAfterUpdate + carouselImageIndexRel;
+      } else {
+        carouselImageIndex = carouselImageIndexRel;
+      }
+    }
+    project.carouselImageIndex = carouselImageIndex;
 
     // remove additional images removed by the user
     imagesToDelete.forEach((i) => {
@@ -428,10 +411,6 @@ exports.ProjectList = (req, res) => {
   const username = req.body.username;
 
   User.findOne({ username: username }).exec((err, user) => {
-
-    const isUser = req.auth && user._id == req.auth._id; 
-    //console.log("-----projectlist----------" + JSON.stringify(req.auth));
-
     if (err) {
       console.log("ERROR:", err);
       return res.status(500).json({
@@ -442,12 +421,10 @@ exports.ProjectList = (req, res) => {
       return res.status(400).json({
         error: "User does not exist.",
       });
-    } else if (user.profilePrivate && !isUser) {
-      return res.status(403).json({message: "Profile is private"});
     }
     Project.find(
       { _userId: user._id },
-      "_id title about created itemIsPublic"
+      "_id title about created mainImageIndex images carouselImageIndex itemIsPublic"
     ).exec((err, projects) => {
       // console.log("user", user._id);
       // console.log("projects", projects);
@@ -458,7 +435,6 @@ exports.ProjectList = (req, res) => {
       }
 
       req.projects = projects; //add
-      console.log(projects);
       return res.json(req.projects);
     });
   });

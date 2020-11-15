@@ -10,7 +10,6 @@ const {
   validation,
   resendValidation,
   deleteUser,
-  changePassword,
 } = require("../controllers/auth");
 
 const { requireAuthentication } = require("../controllers/auth");
@@ -24,9 +23,6 @@ router.post("/fbSignin", fbSignin);
 // Password recovery
 router.post("/requestRecovery", requestRecovery);
 router.post("/recoverPassword", recoverPassword);
-
-// Authenticated password changing
-router.post("/changepassword", requireAuthentication, changePassword);
 
 // Email validation
 router.get("/validation/:token", validation);

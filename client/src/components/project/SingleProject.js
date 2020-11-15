@@ -13,10 +13,8 @@ import {
 import { Center, HCenter } from "../layout";
 import { SRLWrapper } from "simple-react-lightbox";
 import axios from "axios";
-import ReactMarkdown from "react-markdown";
-import gfm from "remark-gfm";
 
-// const Purifier = require("html-purify");
+const Purifier = require("html-purify");
 
 class ImageWithLoading extends Component {
   state = { isLoaded: false };
@@ -74,13 +72,13 @@ class SingleProject extends Component {
       });
     } else {
       // Otherwise go through the standard procedure
-      console.log("trying to access normally");
+      // console.log("trying to access normally");
       const projectId = this.props.match.params.projectId;
-      console.log("project id:", projectId);
+      // console.log("project id:", projectId);
       axios
         .get(`/api/project/${projectId}`)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           this.setState({
             project: response.data,
             projectId: projectId,
@@ -104,20 +102,8 @@ class SingleProject extends Component {
               });
           }
         });
-
-      // singleProject(projectId).then((data) => {
-      //   console.log(data);
-      //   if (data.error) {
-      //     console.log(data.error);
-      //   } else {
-      //     this.setState({
-      //       project: data,
-      //       projectId: projectId,
-      //     });
-      //   }
-      // });
     }
-    console.log("Current State: " + JSON.stringify(this.state));
+    // console.log("Current State: " + JSON.stringify(this.state));
   };
 
   convertRTFtoHTML = (txt) => {
@@ -175,10 +161,8 @@ class SingleProject extends Component {
       imagesNames,
       mainImageIndex,
     } = project;
-
-    // const purifier = new Purifier();
-    // const markdowntohtml = markdown.toHTML(body);
-    // const formattedBody = purifier.purify(markdowntohtml);
+    const purifier = new Purifier();
+    const formattedBody = purifier.purify(this.convertRTFtoHTML(body));
     // const posterId = project.postedBy ? `/user/${project.postedBy._id}` : "";
     // const posterName = project.postedBy ? project.postedBy.name : "Unknown";
 
@@ -221,16 +205,14 @@ class SingleProject extends Component {
       );
     }
 
-    // const bodyJSX = (
-    //   <div>
-    //     <span
-    //       style={{ whiteSpace: "pre-line" }}
-    //       dangerouslySetInnerHTML={{ __html: formattedBody }}
-    //     ></span>
-    //   </div>
-    // );
-
-    console.log(body);
+    const bodyJSX = (
+      <div>
+        <span
+          style={{ whiteSpace: "pre-line" }}
+          dangerouslySetInnerHTML={{ __html: formattedBody }}
+        ></span>
+      </div>
+    );
 
     return (
       <Container>
@@ -256,12 +238,11 @@ class SingleProject extends Component {
                       className="img-responsive"
                     />
                   </Col>
-                  {/* {bodyJSX} */}
-                  <ReactMarkdown plugins={[gfm]}>{body}</ReactMarkdown>
+                  {bodyJSX}
                 </Col>
               </Row>
             ) : (
-              <ReactMarkdown plugins={[gfm]}>{body}</ReactMarkdown>
+              bodyJSX
             )}
           </Card.Body>
           <Row noGutters>
