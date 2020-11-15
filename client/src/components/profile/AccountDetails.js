@@ -14,7 +14,7 @@ import { getUsernameId } from "../layout/GetUsername";
 import { deleteUser } from "../../actions/authActions";
 import PropTypes from "prop-types";
 import { Loading } from "../loading/Loading";
-import { Redirect, Link } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 
 class AccountDetails extends Component {
   constructor(props) {
@@ -23,7 +23,6 @@ class AccountDetails extends Component {
     this.state = {
       emailPrivate: "",
       phoneNumberPrivate: "",
-      profilePrivate: "",
       user: "",
       username: this.props.match.params.username,
       firstName: "",
@@ -54,7 +53,6 @@ class AccountDetails extends Component {
             phoneNumber: response.data.phoneNumber,
             emailPrivate: response.data.emailPrivate,
             phoneNumberPrivate: response.data.phoneNumberPrivate,
-            profilePrivate: response.data.profilePrivate,
             userExists: true,
             loading: false,
           });
@@ -95,13 +93,6 @@ class AccountDetails extends Component {
     });
   };
 
-  toggleProfilePrivacy = (e) => {
-    this.setState({
-      profilePrivate: !this.state.profilePrivate,
-    });
-  };
-
-
   // Submit event, update user information
   onSubmit = (e) => {
     // prevent page from reloading
@@ -124,7 +115,6 @@ class AccountDetails extends Component {
     formData.set("lastNamePrivate", this.state.lastNamePrivate);
     formData.set("emailPrivate", this.state.emailPrivate);
     formData.set("phoneNumberPrivate", this.state.phoneNumberPrivate);
-    formData.set("profilePrivate", this.state.profilePrivate);
     // formData.set("username", this.state.username);
 
     // configururation for post request since we aren't just posting json
@@ -188,9 +178,6 @@ class AccountDetails extends Component {
               Delete Account
             </Button>
           </OverlayTrigger>
-          <Link to="/changepassword">
-            <Button variant="secondary">Change password</Button>
-          </Link>
 
           <div style={{ maxWidth: "30rem", margin: "0 auto" }}>
             <div className="text-center">
@@ -226,7 +213,7 @@ class AccountDetails extends Component {
                 <Form.Check
                   type="switch"
                   id="phone number switch"
-                  label={this.state.phoneNumberPrivate ? "Public" : "Private"}
+                  label="Private"
                   checked={this.state.phoneNumberPrivate}
                   onClick={this.togglePhoneNumberPrivacy}
                 />
@@ -242,22 +229,9 @@ class AccountDetails extends Component {
                 <Form.Check
                   type="switch"
                   id="email switch"
-                  label={this.state.emailPrivate ? "Private" : "Public"}
+                  label="Private"
                   checked={this.state.emailPrivate}
                   onClick={this.toggleEmailPrivacy}
-                />
-              </Form.Group>
-
-              <Form.Group>
-                <Alert variant="warning">
-                    Whole Profile Privacy (Will also remove from user search)
-                </Alert>
-                <Form.Check 
-                  type="switch"
-                  id="profile Privacy"
-                  label={this.state.profilePrivate ? "Private" : "Public"}
-                  checked={this.state.profilePrivate}
-                  onClick={this.toggleProfilePrivacy}
                 />
               </Form.Group>
 

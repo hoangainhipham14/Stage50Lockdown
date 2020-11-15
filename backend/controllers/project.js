@@ -8,10 +8,10 @@ const moment = require("moment");
 
 const formidable = require("formidable");
 const fs = require("fs");
+const e = require("express");
 
 exports.hasAuthorisation = (req, res, next) => {
   const projectPublic = req.project && req.project.itemIsPublic;
-  
   const isOwner =
     req.project && req.auth && req.project._userId._id == req.auth._id;
   if (projectPublic || isOwner) {
@@ -411,10 +411,6 @@ exports.ProjectList = (req, res) => {
   const username = req.body.username;
 
   User.findOne({ username: username }).exec((err, user) => {
-
-    const isUser = req.auth && user._id == req.auth._id; 
-    //console.log("-----projectlist----------" + JSON.stringify(req.auth));
-
     if (err) {
       console.log("ERROR:", err);
       return res.status(500).json({
@@ -425,8 +421,6 @@ exports.ProjectList = (req, res) => {
       return res.status(400).json({
         error: "User does not exist.",
       });
-    } else if (user.profilePrivate && !isUser) {
-      return res.status(403).json({message: "Profile is private"});
     }
     Project.find(
       { _userId: user._id },
