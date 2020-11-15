@@ -50,9 +50,12 @@ class Profile extends Component {
         });
     });
 
+    //console.log(this);
+
     axios
       .get(`/api/user/profile/${this.props.match.params.username}`)
       .then((response) => {
+        console.log(response);
         if (response.error) {
           console.log(response.error);
         } else if (response.data.message === "Profile does not exist") {
@@ -61,7 +64,17 @@ class Profile extends Component {
             photoExist: response.data.photoExist,
             loading: false,
           });
+
+        // Case where the profile is private
+        } else if (response.data.message === "Profile is private") {
+            console.log("response and resetting userexists:", response);
+            this.setState({
+              userExists: false,
+              loading: false,
+            });
+        // Otherwise display the profile
         } else {
+          console.log("Success");
           this.setState({
             firstName: response.data.firstName,
             lastName: response.data.lastName,
@@ -89,23 +102,39 @@ class Profile extends Component {
     axios
       .post(`/api/project/list`, { username: this.state.profileUserName })
       .then((response) => {
+        // Check for an error
         if (response.error) {
           console.log("failure");
           console.log(response.error);
+
+        // Check if project exists
         } else if (response.data.message === "Projects do not exist") {
-          console.log("response:", response);
+          console.log("responseerror:", response);
           this.setState({
             projectExists: false,
             loading: false,
           });
+        
+        // Check if the profile is private
+        } else if (response.data.message === "Profile is private") {
+          console.log("responseerror:", response);
+          this.setState({
+            projectExists: false,
+            loading: false,
+          });
+  
+        // Otherwise display the project
         } else {
-          console.log("response:", response);
+          console.log("responsefinal:", response);
           this.setState({
             projects: Array.from(response.data),
             loading: false,
           });
         }
       });
+  
+  console.log("----------\n Current State \n ---------------")
+  console.log(this.state);
   };
 
   render() {
