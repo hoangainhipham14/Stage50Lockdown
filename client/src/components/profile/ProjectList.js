@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 class ProjectList extends Component {
   render() {
+    console.log(this.props.projects);
     const projectCards = this.props.projects.map((project, idx) =>
       this.props.isAuth ? (
         <ListGroup.Item key={idx}>

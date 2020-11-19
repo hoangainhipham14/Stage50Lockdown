@@ -139,6 +139,7 @@ class CreateProject extends Component {
       about: "",
       body: "",
       mainImageIndex: null,
+      carouselImageIndex: null,
       images: [],
       additionalFiles: [],
       submitSuccess: false,
@@ -223,6 +224,7 @@ class CreateProject extends Component {
     });
     formData.set("numImages", this.state.images.length);
     formData.set("mainImageIndex", this.state.mainImageIndex);
+    formData.set("carouselImageIndex", this.state.carouselImageIndex);
     this.state.additionalFiles.forEach((file, i) => {
       formData.set(`file-${i}`, file, file.name);
     });
@@ -258,15 +260,20 @@ class CreateProject extends Component {
   deleteImage = (i) => (e) => {
     this.state.images.splice(i, 1);
     const index = this.state.mainImageIndex;
+    const carouselIndex = this.state.carouselImageIndex;
     if (index) {
       console.log(index, i);
       if (index === i) {
         // just deleted the main image
         this.removeMainImage();
+      } else if (carouselIndex === i) {
+        // just deleted the carousel image
+        this.removeCarouselImage();
       } else if (index > i) {
-        // need to decrement the main image
+        // need to decrement the main image & carousel image
         console.log("need to decrement");
         this.setImageAsMain(index - 1)();
+        this.setImageOnCarousel(index - 1)();
       }
     }
     this.forceUpdate();
@@ -288,9 +295,22 @@ class CreateProject extends Component {
     });
   };
 
+  setImageOnCarousel = (i) => () => {
+    console.log("setting", i);
+    this.setState({
+      carouselImageIndex: i,
+    });
+  };
+
   removeMainImage = () => {
     this.setState({
       mainImageIndex: null,
+    });
+  };
+
+  removeCarouselImage = () => {
+    this.setState({
+      carouselImageIndex: null,
     });
   };
 
@@ -302,6 +322,7 @@ class CreateProject extends Component {
     const images = [];
     this.state.images.forEach((image, i) => {
       const isMain = this.state.mainImageIndex === i;
+      const isCarousel = this.state.carouselImageIndex === i;
       images.push(
         <div key={i} className="image-item">
           <span>{renderFileName(image.name)}</span>
@@ -315,6 +336,15 @@ class CreateProject extends Component {
           ) : (
             <span className="set-as-main" onClick={this.setImageAsMain(i)}>
               Set as main
+            </span>
+          )}
+          {isCarousel ? (
+            <span className="unset-as-main" onClick={this.removeCarouselImage}>
+              Remove from carousel
+            </span>
+          ) : (
+            <span className="set-as-main" onClick={this.setImageOnCarousel(i)}>
+              Display on carousel
             </span>
           )}
         </div>
@@ -368,7 +398,7 @@ class CreateProject extends Component {
                 </Form.Group>
 
                 <Form.Group controlId="body">
-                  <Form.Label>Text</Form.Label>
+                  <Form.Label>Body Text</Form.Label>
                   {/* <Form.Control
                     as="textarea"
                     rows="7"
@@ -485,15 +515,13 @@ export class EditProject extends Component {
       filesToDelete: new Set(),
       mainImageIndex: null,
       mainImageIsNew: false,
+      carouselImageIndex: null,
+      carouselImageIsNew: false,
     };
   }
 
   onSubmit = (e) => {
     e.preventDefault();
-
-    // this.setState({
-    //   body: this.state.updatedbody,
-    // });
 
     const formData = new FormData();
 
@@ -505,6 +533,10 @@ export class EditProject extends Component {
     // main image
     formData.set("mainImageIndex", this.state.mainImageIndex);
     formData.set("mainImageIsNew", this.state.mainImageIsNew);
+
+    // carousel image
+    formData.set("carouselImageIndex", this.state.carouselImageIndex);
+    formData.set("carouselImageIsNew", this.state.carouselImageIsNew);
 
     // images
     this.state.newImages.forEach((file, i) => {
@@ -536,8 +568,8 @@ export class EditProject extends Component {
     axios
       .post(`/api/project/${this.state.projectId}/edit`, formData, config)
       .then((response) => {
-        console.log("Success!");
-        console.log(response.data);
+        // console.log("Success!");
+        // console.log(response.data);
         this.setState({
           submitSuccess: true,
         });
@@ -608,7 +640,6 @@ export class EditProject extends Component {
 
   componentDidMount() {
     const projectId = this.props.match.params.projectId;
-    console.log(projectId);
     const func = (i) => `/api/project/${projectId}/image/${i}`;
 
     axios
@@ -619,7 +650,6 @@ export class EditProject extends Component {
           title: project.title,
           about: project.about,
           body: project.body,
-          updatedbody: project.body,
           oldImagesNames: project.imagesNames,
           oldImagePopovers: generateImagePopovers(
             project.imagesNames.length,
@@ -627,6 +657,7 @@ export class EditProject extends Component {
           ),
           oldAdditionalFilesNames: project.additionalFilesNames,
           mainImageIndex: project.mainImageIndex,
+          carouselImageIndex: project.carouselImageIndex,
           projectId: projectId,
         });
       })
@@ -668,6 +699,16 @@ export class EditProject extends Component {
     ) {
       this.removeMainImage();
     }
+
+    // deselect carousel image
+    const carouselImageIndex = this.state.carouselImageIndex;
+    if (
+      this.state.imagesToDelete.has(i) &&
+      !this.state.carouselImageIsNew &&
+      carouselImageIndex === i
+    ) {
+      this.removeCarouselImage();
+    }
   };
 
   toggleFileToDelete = (i) => () => {
@@ -683,11 +724,20 @@ export class EditProject extends Component {
   deleteNewImage = (i) => () => {
     this.state.newImages.splice(i, 1);
     const index = this.state.mainImageIndex;
+    const carouselIndex = this.state.carouselImageIndex;
     if (this.state.mainImageIsNew && index) {
       if (index === i) {
         this.removeMainImage();
       } else if (index > i) {
         this.setNewImageAsMain(index - 1)();
+      }
+    }
+
+    if (this.state.carouselImageIsNew && carouselIndex) {
+      if (carouselIndex === i) {
+        this.removeCarouselImage();
+      } else if (carouselIndex > i) {
+        this.setNewImageAsCarousel(carouselIndex - 1)();
       }
     }
     this.forceUpdate();
@@ -708,6 +758,16 @@ export class EditProject extends Component {
     }
   };
 
+  setOldImageOnCarousel = (i) => () => {
+    this.setState({
+      carouselImageIndex: i,
+      carouselImageIsNew: false,
+    });
+    if (this.state.imagesToDelete.has(i)) {
+      this.toggleImageToDelete(i)();
+    }
+  };
+
   setNewImageAsMain = (i) => () => {
     this.setState({
       mainImageIndex: i,
@@ -715,10 +775,24 @@ export class EditProject extends Component {
     });
   };
 
+  setNewImageOnCarousel = (i) => () => {
+    this.setState({
+      carouselImageIndex: i,
+      carouselImageIsNew: true,
+    });
+  };
+
   removeMainImage = () => {
     this.setState({
       mainImageIndex: null,
       mainImageIsNew: false,
+    });
+  };
+
+  removeCarouselImage = () => {
+    this.setState({
+      carouselImageIndex: null,
+      carouselImageIsNew: false,
     });
   };
 
@@ -741,6 +815,8 @@ export class EditProject extends Component {
       const toDelete = this.state.imagesToDelete.has(i);
       const isMain =
         this.state.mainImageIndex === i && !this.state.mainImageIsNew;
+      const isCarousel =
+        this.state.carouselImageIndex === i && !this.state.carouselImageIsNew;
       const deleteStyle = toDelete ? { textDecoration: "line-through" } : {};
       oldImages.push(
         <div key={i} className="image-item">
@@ -778,6 +854,19 @@ export class EditProject extends Component {
               Set as main
             </span>
           )}
+
+          {isCarousel ? (
+            <span className="unset-as-main" onClick={this.removeCarouselImage}>
+              Remove from carousel
+            </span>
+          ) : (
+            <span
+              className="set-as-main"
+              onClick={this.setOldImageOnCarousel(i)}
+            >
+              Display on carousel
+            </span>
+          )}
         </div>
       );
     });
@@ -787,6 +876,8 @@ export class EditProject extends Component {
     this.state.newImages.forEach((image, i) => {
       const isMain =
         this.state.mainImageIndex === i && this.state.mainImageIsNew;
+      const isCarousel =
+        this.state.carouselImageIndex === i && this.state.carouselImageIsNew;
       newImages.push(
         <div key={i} className="image-item">
           <span>{renderFileName(image.name)}</span>
@@ -804,6 +895,18 @@ export class EditProject extends Component {
           ) : (
             <span className="set-as-main" onClick={this.setNewImageAsMain(i)}>
               Set as main
+            </span>
+          )}
+          {isCarousel ? (
+            <span className="unset-as-main" onClick={this.removeCarouselImage}>
+              Remove from carousel
+            </span>
+          ) : (
+            <span
+              className="set-as-main"
+              onClick={this.setNewImageOnCarousel(i)}
+            >
+              Display on carousel
             </span>
           )}
         </div>
@@ -882,7 +985,7 @@ export class EditProject extends Component {
                 </Form.Group>
 
                 <Form.Group controlId="body">
-                  <Form.Label>Text</Form.Label>
+                  <Form.Label>Body Text</Form.Label>
                   {/* <Form.Control
                     as="textarea"
                     rows="7"

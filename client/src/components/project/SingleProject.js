@@ -8,14 +8,13 @@ import {
   Row,
   Col,
   Button,
+  Modal,
 } from "react-bootstrap";
 import { Center, HCenter } from "../layout";
 import { SRLWrapper } from "simple-react-lightbox";
 import axios from "axios";
-import ReactMarkdown from "react-markdown";
-import gfm from "remark-gfm";
 
-// const Purifier = require("html-purify");
+const Purifier = require("html-purify");
 
 class ImageWithLoading extends Component {
   state = { isLoaded: false };
@@ -46,6 +45,8 @@ class SingleProject extends Component {
       projectId: "",
       images: [],
       error: null,
+      redirectToHome: false,
+      showModal: false,
     };
   }
 
@@ -71,13 +72,13 @@ class SingleProject extends Component {
       });
     } else {
       // Otherwise go through the standard procedure
-      console.log("trying to access normally");
+      // console.log("trying to access normally");
       const projectId = this.props.match.params.projectId;
-      console.log("project id:", projectId);
+      // console.log("project id:", projectId);
       axios
         .get(`/api/project/${projectId}`)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           this.setState({
             project: response.data,
             projectId: projectId,
@@ -101,20 +102,8 @@ class SingleProject extends Component {
               });
           }
         });
-
-      // singleProject(projectId).then((data) => {
-      //   console.log(data);
-      //   if (data.error) {
-      //     console.log(data.error);
-      //   } else {
-      //     this.setState({
-      //       project: data,
-      //       projectId: projectId,
-      //     });
-      //   }
-      // });
     }
-    console.log("Current State: " + JSON.stringify(this.state));
+    // console.log("Current State: " + JSON.stringify(this.state));
   };
 
   convertRTFtoHTML = (txt) => {
@@ -129,6 +118,26 @@ class SingleProject extends Component {
       txt = txt.replace(/\[([^[]+)\]\(([^)]+)\)/g, "<a href='//$2'>$1</a>");
     }
     return txt;
+  };
+
+  deleteProject = () => {
+    axios.delete(`/api/project/${this.state.projectId}/delete`).then((err) => {
+      this.setState({
+        redirectToHome: true,
+      });
+    });
+  };
+
+  handleShow = () => {
+    this.setState({
+      showModal: true,
+    });
+  };
+
+  handleClose = () => {
+    this.setState({
+      showModal: false,
+    });
   };
 
   render() {
@@ -152,10 +161,8 @@ class SingleProject extends Component {
       imagesNames,
       mainImageIndex,
     } = project;
-
-    // const purifier = new Purifier();
-    // const markdowntohtml = markdown.toHTML(body);
-    // const formattedBody = purifier.purify(markdowntohtml);
+    const purifier = new Purifier();
+    const formattedBody = purifier.purify(this.convertRTFtoHTML(body));
     // const posterId = project.postedBy ? `/user/${project.postedBy._id}` : "";
     // const posterName = project.postedBy ? project.postedBy.name : "Unknown";
 
@@ -198,16 +205,14 @@ class SingleProject extends Component {
       );
     }
 
-    // const bodyJSX = (
-    //   <div>
-    //     <span
-    //       style={{ whiteSpace: "pre-line" }}
-    //       dangerouslySetInnerHTML={{ __html: formattedBody }}
-    //     ></span>
-    //   </div>
-    // );
-
-    console.log(body);
+    const bodyJSX = (
+      <div>
+        <span
+          style={{ whiteSpace: "pre-line" }}
+          dangerouslySetInnerHTML={{ __html: formattedBody }}
+        ></span>
+      </div>
+    );
 
     return (
       <Container>
@@ -233,12 +238,11 @@ class SingleProject extends Component {
                       className="img-responsive"
                     />
                   </Col>
-                  {/* {bodyJSX} */}
-                  <ReactMarkdown plugins={[gfm]}>{body}</ReactMarkdown>
+                  {bodyJSX}
                 </Col>
               </Row>
             ) : (
-              <ReactMarkdown plugins={[gfm]}>{body}</ReactMarkdown>
+              bodyJSX
             )}
           </Card.Body>
           <Row noGutters>
@@ -253,12 +257,38 @@ class SingleProject extends Component {
               <Col>{filesDisplay}</Col>
               <Col>
                 {this.state.project.editingPrivileges ? (
-                  <Link
-                    to={`/projects/${this.state.projectId}/edit`}
-                    style={{ float: "right" }}
-                  >
-                    <Button>Edit Project</Button>
-                  </Link>
+                  <>
+                    <Link
+                      to={`/projects/${this.state.projectId}/edit`}
+                      style={{ float: "right" }}
+                    >
+                      <Button>Edit Project</Button>
+                    </Link>
+                    <Button
+                      variant="danger"
+                      className="float-right"
+                      onClick={this.handleShow}
+                    >
+                      Delete Project
+                    </Button>
+                    <Modal
+                      show={this.state.showModal}
+                      onHide={this.handleClose}
+                    >
+                      <Modal.Header closeButton>
+                        <Modal.Title>
+                          Are you sure you want to delete this project?
+                        </Modal.Title>
+                      </Modal.Header>
+                      <Modal.Body>This action cannot be undone!</Modal.Body>
+                      <Modal.Footer>
+                        <Button onClick={this.handleClose}>Cancel</Button>
+                        <Button onClick={this.deleteProject} variant="danger">
+                          Delete
+                        </Button>
+                      </Modal.Footer>
+                    </Modal>
+                  </>
                 ) : null}
               </Col>
             </Row>
