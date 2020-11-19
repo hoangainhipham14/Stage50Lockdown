@@ -13,6 +13,8 @@ import {
 import { Center, HCenter } from "../layout";
 import { SRLWrapper } from "simple-react-lightbox";
 import axios from "axios";
+import ReactMarkdown from "react-markdown";
+import gfm from "remark-gfm";
 
 const Purifier = require("html-purify");
 
@@ -238,11 +240,11 @@ class SingleProject extends Component {
                       className="img-responsive"
                     />
                   </Col>
-                  {bodyJSX}
+                  <ReactMarkdown plugins={[gfm]}>{body}</ReactMarkdown>
                 </Col>
               </Row>
             ) : (
-              bodyJSX
+              <ReactMarkdown plugins={[gfm]}>{body}</ReactMarkdown>
             )}
           </Card.Body>
           <Row noGutters>
