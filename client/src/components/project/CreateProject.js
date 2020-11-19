@@ -890,6 +890,8 @@ export class EditProject extends Component {
                     onChange={this.onChange}
                     value={this.state.body}
                   /> */}
+
+                  {/* Markdown Editor */}
                   <Editor
                     id="body"
                     onChange={this.onBodyChange}
