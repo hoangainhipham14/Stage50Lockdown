@@ -207,14 +207,14 @@ class SingleProject extends Component {
       );
     }
 
-    const bodyJSX = (
-      <div>
-        <span
-          style={{ whiteSpace: "pre-line" }}
-          dangerouslySetInnerHTML={{ __html: formattedBody }}
-        ></span>
-      </div>
-    );
+    // const bodyJSX = (
+    //   <div>
+    //     <span
+    //       style={{ whiteSpace: "pre-line" }}
+    //       dangerouslySetInnerHTML={{ __html: formattedBody }}
+    //     ></span>
+    //   </div>
+    // );
 
     return (
       <Container>
