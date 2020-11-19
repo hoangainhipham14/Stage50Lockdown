@@ -15,6 +15,7 @@ const {
   editProject,
   isOwner,
   hasAuthorisation,
+  deleteProject,
 } = require("../controllers/project");
 
 const { userById } = require("../controllers/user");
@@ -41,6 +42,13 @@ router.post(
   requireAuthentication,
   isOwner,
   editProject
+);
+
+router.delete(
+  "/project/:projectId/delete",
+  requireAuthentication,
+  hasAuthorisation,
+  deleteProject
 );
 
 // this should post to exports.getProject
