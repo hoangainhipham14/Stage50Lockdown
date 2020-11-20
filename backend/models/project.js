@@ -18,6 +18,14 @@ const projectSchema = new Schema({
     // required: true,
   },
 
+  // images: [
+  //   {
+  //     data: Buffer,
+  //     contentType: String,
+  //     fileName: String,
+  //   },
+  // ],
+
   images: [
     {
       fileRef: {
@@ -35,9 +43,13 @@ const projectSchema = new Schema({
     type: Number,
   },
 
-  carouselImageIndex: {
-    type: Number,
-  },
+  // additionalFiles: [
+  //   {
+  //     data: Buffer,
+  //     contentType: String,
+  //     fileName: String,
+  //   },
+  // ],
 
   additionalFiles: [
     {
@@ -51,6 +63,11 @@ const projectSchema = new Schema({
       },
     },
   ],
+
+  // postedBy: {
+  //   type: ObjectId,
+  //   ref: "User",
+  // },
 
   created: {
     type: String,
