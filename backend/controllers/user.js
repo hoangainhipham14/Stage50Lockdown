@@ -3,7 +3,6 @@ const formidable = require("formidable");
 const fs = require("fs");
 const _ = require("lodash");
 
-
 exports.userById = (req, res, next, id) => {
   User.findById(id).exec((err, user) => {
     if (err || !user) {
@@ -65,7 +64,6 @@ exports.getUserAccountDetails = (req, res) => {
       lastNamePrivate: user.lastNamePrivate,
       emailPrivate: user.emailPrivate,
       phoneNumberPrivate: user.phoneNumberPrivate,
-      profilePrivate: user.profilePrivate,
     }
     
     req.data = data;
@@ -78,24 +76,11 @@ exports.getUserAccountDetails = (req, res) => {
 // getUserProfile displays the data that will be public on the profile page
 // of the user 
 exports.getUserProfile = (req, res) => {
-  //console.log("Entering GetUserProfile...");
+  
   User.findOne({ username: req.params.username }).exec((err, user) => {
-
     if (err || !user) {
       return res.send({
         message: "Profile does not exist",
-      });
-    }
-    
-    const isUser = req.profile && req.auth && req.profile._id == req.auth._id; 
-
-    //console.log("------\n"+req.profileprivate);
-    //console.log("------\n"+isUser);
-
-    // Check if the profile is private and another user is trying to access it 
-    if(!isUser && user.profilePrivate){
-      return res.json({
-        message: "Profile is private",
       });
     }
 
@@ -126,8 +111,7 @@ exports.getUserProfile = (req, res) => {
     }
 
     //console.log("Current Data: " + JSON.stringify(data));
-    //response.data.message === "Profile is private"
-
+    
     req.data = data;  
     
     return res.json(req.data);

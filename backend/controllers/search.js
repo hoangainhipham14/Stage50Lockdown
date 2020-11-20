@@ -11,7 +11,7 @@ exports.userSearch = (req, res) => {
     { $text: { $search: searchphrase } },
     { score: { $meta: "textScore" } },
     // Return only these fields
-    { select: "firstName lastName username profilePrivate" }
+    { select: "firstName lastName username " }
   )
     // .sort({ score: { $meta: "textScore" } })
     .exec((err, results) => {
@@ -20,19 +20,9 @@ exports.userSearch = (req, res) => {
           error: err,
         });
       } else {
-
-        console.log(results);
-
-        let publicUsers = [];
-        results.forEach((result) => {
-          if(result.profilePrivate == false){
-            publicUsers.push(result);
-          }
-        });
-        
         return res.json({
           searchphrase: searchphrase,
-          results: publicUsers,
+          results: results,
         });
       }
     });

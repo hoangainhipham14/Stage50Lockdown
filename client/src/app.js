@@ -123,11 +123,6 @@ class App extends Component {
                 <Route exact path="/carousel" component={DisplayCarousel} />
 
                 <Route exact path="/search" component={SearchResults} />
-                <Route
-                  exact
-                  path="/changepassword"
-                  component={ChangePassword}
-                />
 
                 {/* This must stay at the bottom. Add any new routes above */}
                 <Route component={NoMatch} />
