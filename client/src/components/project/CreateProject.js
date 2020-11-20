@@ -8,7 +8,6 @@ import {
   Popover,
   Row,
   Col,
-  Table,
   Image as BootstrapImage,
   Modal,
 } from "react-bootstrap";
@@ -16,6 +15,7 @@ import { HCenter } from "../layout";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
+import Editor from "rich-markdown-editor";
 
 const acceptedImageTypes = ["jpg", "png", "jpeg"];
 
@@ -75,37 +75,22 @@ function discardPopover(message, cb) {
 }
 
 const formattingPopover = (
-  <Popover style={{ maxWidth: "none" }}>
+  <Popover style={{ maxWidth: "20em" }}>
     <Popover.Title as="h3">Formatting help</Popover.Title>
-    <Popover.Content className="py-0 px-1">
-      <Table size="sm">
-        <thead>
-          <tr>
-            <th>You type:</th>
-            <th>You see:</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>*italics*</td>
-            <td>
-              <i>italics</i>
-            </td>
-          </tr>
-          <tr>
-            <td>**bold**</td>
-            <td>
-              <strong>bold</strong>
-            </td>
-          </tr>
-          <tr>
-            <td>[Google](https://google.com)</td>
-            <td>
-              <a href="https://google.com">Google</a>
-            </td>
-          </tr>
-        </tbody>
-      </Table>
+    {/* <Popover.Content className="py-0 px-1"> */}
+    <Popover.Content>
+      <ul>
+        <li>Click the + symbol to see formatting options.</li>
+        <li>
+          The<strong> info notice, warning notice, and tip notice </strong>
+          formatting options will not render as intended.{" "}
+        </li>
+        <li>All standard markdown options are available to use. </li>
+        <li>
+          If you see a \ at the end of your text, be sure to check there are no
+          trailing newlines at the end of your text.
+        </li>
+      </ul>
     </Popover.Content>
   </Popover>
 );
@@ -156,7 +141,6 @@ class CreateProject extends Component {
       about: "",
       body: "",
       mainImageIndex: null,
-      carouselImageIndex: null,
       images: [],
       additionalFiles: [],
       submitSuccess: false,
@@ -165,13 +149,11 @@ class CreateProject extends Component {
     };
   }
 
-
-
   modalClose = () => {
     this.setState({
       showModal: false,
-    })
-  }
+    });
+  };
 
   // called whenever a value is changed in the form
   onChange = (e) => {
@@ -181,14 +163,14 @@ class CreateProject extends Component {
       /* i know it looks strange to wrap case blocks in {}, but it means you 
       can "redeclare" a const across blocks, which is what i want to do since
       the blocks are mutually exclusive. */
-      case "images": {      
+      case "images": {
         const filesSelected = Array.from(e.target.files);
         const isAcceptable = (file) =>
           checkType(file, acceptedImageTypes) && checkSize(file);
         const filesSelectedValid = filesSelected.filter(isAcceptable);
         // Add if statement to toggle modal
-        if(filesSelectedValid.length !== filesSelected.length){
-          this.setState({showModal: true});
+        if (filesSelectedValid.length !== filesSelected.length) {
+          this.setState({ showModal: true });
         }
 
         const alreadyAdded = (file) =>
@@ -208,8 +190,8 @@ class CreateProject extends Component {
         const filesSelected = Array.from(e.target.files);
         const isAcceptable = (file) => checkSize(file);
         const filesSelectedValid = filesSelected.filter(isAcceptable);
-        if(filesSelectedValid.length !== filesSelected.length){
-          this.setState({showModal: true});
+        if (filesSelectedValid.length !== filesSelected.length) {
+          this.setState({ showModal: true });
         }
         const alreadyAdded = (file) =>
           this.state.additionalFiles.filter((f) => appearEqual(f, file))
@@ -233,6 +215,12 @@ class CreateProject extends Component {
     }
   };
 
+  onBodyChange = (e) => {
+    this.setState({
+      body: e(),
+    });
+  };
+
   onSubmit = (e) => {
     // prevent page from reloading
     e.preventDefault();
@@ -252,7 +240,6 @@ class CreateProject extends Component {
     });
     formData.set("numImages", this.state.images.length);
     formData.set("mainImageIndex", this.state.mainImageIndex);
-    formData.set("carouselImageIndex", this.state.carouselImageIndex);
     this.state.additionalFiles.forEach((file, i) => {
       formData.set(`file-${i}`, file, file.name);
     });
@@ -288,20 +275,15 @@ class CreateProject extends Component {
   deleteImage = (i) => (e) => {
     this.state.images.splice(i, 1);
     const index = this.state.mainImageIndex;
-    const carouselIndex = this.state.carouselImageIndex;
     if (index) {
       console.log(index, i);
       if (index === i) {
         // just deleted the main image
         this.removeMainImage();
-      } else if (carouselIndex === i) {
-        // just deleted the carousel image
-        this.removeCarouselImage();
       } else if (index > i) {
-        // need to decrement the main image & carousel image
+        // need to decrement the main image
         console.log("need to decrement");
         this.setImageAsMain(index - 1)();
-        this.setImageOnCarousel(index - 1)();
       }
     }
     this.forceUpdate();
@@ -323,22 +305,9 @@ class CreateProject extends Component {
     });
   };
 
-  setImageOnCarousel = (i) => () => {
-    console.log("setting", i);
-    this.setState({
-      carouselImageIndex: i,
-    });
-  };
-
   removeMainImage = () => {
     this.setState({
       mainImageIndex: null,
-    });
-  };
-
-  removeCarouselImage = () => {
-    this.setState({
-      carouselImageIndex: null,
     });
   };
 
@@ -350,7 +319,6 @@ class CreateProject extends Component {
     const images = [];
     this.state.images.forEach((image, i) => {
       const isMain = this.state.mainImageIndex === i;
-      const isCarousel = this.state.carouselImageIndex === i;
       images.push(
         <div key={i} className="image-item">
           <span>{renderFileName(image.name)}</span>
@@ -364,15 +332,6 @@ class CreateProject extends Component {
           ) : (
             <span className="set-as-main" onClick={this.setImageAsMain(i)}>
               Set as main
-            </span>
-          )}
-          {isCarousel ? (
-            <span className="unset-as-main" onClick={this.removeCarouselImage}>
-              Remove from carousel
-            </span>
-          ) : (
-            <span className="set-as-main" onClick={this.setImageOnCarousel(i)}>
-              Display on carousel
             </span>
           )}
         </div>
@@ -427,11 +386,16 @@ class CreateProject extends Component {
 
                 <Form.Group controlId="body">
                   <Form.Label>Body Text</Form.Label>
-                  <Form.Control
+                  {/* <Form.Control
                     as="textarea"
                     rows="7"
                     placeholder="More information about your project"
                     onChange={this.onChange}
+                  /> */}
+                  <Editor
+                    id="body"
+                    onChange={this.onBodyChange}
+                    placeholder="More information about your project"
                   />
                   <OverlayTrigger
                     trigger="click"
@@ -463,13 +427,12 @@ class CreateProject extends Component {
                       id="images"
                       onChange={this.onChange}
                     />
-                    
+
                     <label className="custom-file-label" htmlFor="images">
                       Choose files
                     </label>
                   </div>
                   <div className="mt-2 pl-2">{images}</div>
-
                 </Form.Group>
 
                 <Form.Group controlId="additionalFiles">
@@ -520,16 +483,16 @@ class CreateProject extends Component {
         </div>
 
         <Modal show={this.state.showModal} onHide={this.modalClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Invalid File</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>(Note): Files can be no larger than 1MB</Modal.Body>
-        <Modal.Footer>
-          <Button variant="warning" onClick={this.modalClose}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
+          <Modal.Header closeButton>
+            <Modal.Title>Invalid File</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>(Note): Files can be no larger than 1MB</Modal.Body>
+          <Modal.Footer>
+            <Button variant="warning" onClick={this.modalClose}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </Container>
     );
   }
@@ -543,6 +506,7 @@ export class EditProject extends Component {
       title: "",
       about: "",
       body: "",
+      updatedbody: "",
       newImages: [],
       newAdditionalFiles: [],
       oldImagesNames: [],
@@ -556,12 +520,12 @@ export class EditProject extends Component {
       carouselImageIsNew: false,
     };
   }
-  
+
   modalClose = () => {
     this.setState({
       showModal: false,
-    })
-  }
+    });
+  };
 
   onSubmit = (e) => {
     e.preventDefault();
@@ -570,15 +534,11 @@ export class EditProject extends Component {
     // text fields
     formData.set("title", this.state.title);
     formData.set("about", this.state.about);
-    formData.set("body", this.state.body);
+    formData.set("body", this.state.updatedbody);
 
     // main image
     formData.set("mainImageIndex", this.state.mainImageIndex);
     formData.set("mainImageIsNew", this.state.mainImageIsNew);
-
-    // carousel image
-    formData.set("carouselImageIndex", this.state.carouselImageIndex);
-    formData.set("carouselImageIsNew", this.state.carouselImageIsNew);
 
     // images
     this.state.newImages.forEach((file, i) => {
@@ -610,8 +570,8 @@ export class EditProject extends Component {
     axios
       .post(`/api/project/${this.state.projectId}/edit`, formData, config)
       .then((response) => {
-        // console.log("Success!");
-        // console.log(response.data);
+        console.log("Success!");
+        console.log(response.data);
         this.setState({
           submitSuccess: true,
         });
@@ -635,8 +595,8 @@ export class EditProject extends Component {
           checkType(file, acceptedImageTypes) && checkSize(file);
         const filesSelectedValid = filesSelected.filter(isAcceptable);
         // Add if statement to toggle modal
-        if(filesSelectedValid.length !== filesSelected.length){
-          this.setState({showModal: true});
+        if (filesSelectedValid.length !== filesSelected.length) {
+          this.setState({ showModal: true });
         }
         const alreadyAdded = (file) =>
           this.state.newImages.filter((f) => appearEqual(f, file)).length > 0;
@@ -655,8 +615,8 @@ export class EditProject extends Component {
         const filesSelected = Array.from(e.target.files);
         const isAcceptable = (file) => checkSize(file);
         const filesSelectedValid = filesSelected.filter(isAcceptable);
-        if(filesSelectedValid.length !== filesSelected.length){
-          this.setState({showModal: true});
+        if (filesSelectedValid.length !== filesSelected.length) {
+          this.setState({ showModal: true });
         }
         const alreadyAdded = (file) =>
           this.state.newAdditionalFiles.filter((f) => appearEqual(f, file))
@@ -681,8 +641,15 @@ export class EditProject extends Component {
     }
   };
 
+  onBodyChange = (e) => {
+    this.setState({
+      updatedbody: e(),
+    });
+  };
+
   componentDidMount() {
     const projectId = this.props.match.params.projectId;
+    console.log(projectId);
     const func = (i) => `/api/project/${projectId}/image/${i}`;
 
     axios
@@ -700,7 +667,6 @@ export class EditProject extends Component {
           ),
           oldAdditionalFilesNames: project.additionalFilesNames,
           mainImageIndex: project.mainImageIndex,
-          carouselImageIndex: project.carouselImageIndex,
           projectId: projectId,
         });
       })
@@ -742,16 +708,6 @@ export class EditProject extends Component {
     ) {
       this.removeMainImage();
     }
-
-    // deselect carousel image
-    const carouselImageIndex = this.state.carouselImageIndex;
-    if (
-      this.state.imagesToDelete.has(i) &&
-      !this.state.carouselImageIsNew &&
-      carouselImageIndex === i
-    ) {
-      this.removeCarouselImage();
-    }
   };
 
   toggleFileToDelete = (i) => () => {
@@ -767,20 +723,11 @@ export class EditProject extends Component {
   deleteNewImage = (i) => () => {
     this.state.newImages.splice(i, 1);
     const index = this.state.mainImageIndex;
-    const carouselIndex = this.state.carouselImageIndex;
     if (this.state.mainImageIsNew && index) {
       if (index === i) {
         this.removeMainImage();
       } else if (index > i) {
         this.setNewImageAsMain(index - 1)();
-      }
-    }
-
-    if (this.state.carouselImageIsNew && carouselIndex) {
-      if (carouselIndex === i) {
-        this.removeCarouselImage();
-      } else if (carouselIndex > i) {
-        this.setNewImageAsCarousel(carouselIndex - 1)();
       }
     }
     this.forceUpdate();
@@ -801,16 +748,6 @@ export class EditProject extends Component {
     }
   };
 
-  setOldImageOnCarousel = (i) => () => {
-    this.setState({
-      carouselImageIndex: i,
-      carouselImageIsNew: false,
-    });
-    if (this.state.imagesToDelete.has(i)) {
-      this.toggleImageToDelete(i)();
-    }
-  };
-
   setNewImageAsMain = (i) => () => {
     this.setState({
       mainImageIndex: i,
@@ -818,24 +755,10 @@ export class EditProject extends Component {
     });
   };
 
-  setNewImageOnCarousel = (i) => () => {
-    this.setState({
-      carouselImageIndex: i,
-      carouselImageIsNew: true,
-    });
-  };
-
   removeMainImage = () => {
     this.setState({
       mainImageIndex: null,
       mainImageIsNew: false,
-    });
-  };
-
-  removeCarouselImage = () => {
-    this.setState({
-      carouselImageIndex: null,
-      carouselImageIsNew: false,
     });
   };
 
@@ -858,8 +781,6 @@ export class EditProject extends Component {
       const toDelete = this.state.imagesToDelete.has(i);
       const isMain =
         this.state.mainImageIndex === i && !this.state.mainImageIsNew;
-      const isCarousel =
-        this.state.carouselImageIndex === i && !this.state.carouselImageIsNew;
       const deleteStyle = toDelete ? { textDecoration: "line-through" } : {};
       oldImages.push(
         <div key={i} className="image-item">
@@ -897,19 +818,6 @@ export class EditProject extends Component {
               Set as main
             </span>
           )}
-
-          {isCarousel ? (
-            <span className="unset-as-main" onClick={this.removeCarouselImage}>
-              Remove from carousel
-            </span>
-          ) : (
-            <span
-              className="set-as-main"
-              onClick={this.setOldImageOnCarousel(i)}
-            >
-              Display on carousel
-            </span>
-          )}
         </div>
       );
     });
@@ -919,8 +827,6 @@ export class EditProject extends Component {
     this.state.newImages.forEach((image, i) => {
       const isMain =
         this.state.mainImageIndex === i && this.state.mainImageIsNew;
-      const isCarousel =
-        this.state.carouselImageIndex === i && this.state.carouselImageIsNew;
       newImages.push(
         <div key={i} className="image-item">
           <span>{renderFileName(image.name)}</span>
@@ -938,18 +844,6 @@ export class EditProject extends Component {
           ) : (
             <span className="set-as-main" onClick={this.setNewImageAsMain(i)}>
               Set as main
-            </span>
-          )}
-          {isCarousel ? (
-            <span className="unset-as-main" onClick={this.removeCarouselImage}>
-              Remove from carousel
-            </span>
-          ) : (
-            <span
-              className="set-as-main"
-              onClick={this.setNewImageOnCarousel(i)}
-            >
-              Display on carousel
             </span>
           )}
         </div>
@@ -1029,11 +923,19 @@ export class EditProject extends Component {
 
                 <Form.Group controlId="body">
                   <Form.Label>Body Text</Form.Label>
-                  <Form.Control
+                  {/* <Form.Control
                     as="textarea"
                     rows="7"
                     placeholder="More information about your project"
                     onChange={this.onChange}
+                    value={this.state.body}
+                  /> */}
+
+                  {/* Markdown Editor */}
+                  <Editor
+                    id="body"
+                    onChange={this.onBodyChange}
+                    placeholder="More information about your project"
                     value={this.state.body}
                   />
                   <OverlayTrigger
@@ -1058,7 +960,6 @@ export class EditProject extends Component {
                 <Form.Group controlId="images">
                   <Form.Label>Images</Form.Label>
                   <div className="custom-file">
-
                     <input
                       type="file"
                       accept={typesToAcceptAttribute(acceptedImageTypes)}
@@ -1067,7 +968,7 @@ export class EditProject extends Component {
                       id="images"
                       onChange={this.onChange}
                     />
-                    
+
                     <label className="custom-file-label" htmlFor="images">
                       Choose images
                     </label>
@@ -1154,16 +1055,16 @@ export class EditProject extends Component {
           </Form>
         </div>
         <Modal show={this.state.showModal} onHide={this.modalClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Invalid File</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>(Note): Files can be no larger than 1MB</Modal.Body>
-        <Modal.Footer>
-          <Button variant="warning" onClick={this.modalClose}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
+          <Modal.Header closeButton>
+            <Modal.Title>Invalid File</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>(Note): Files can be no larger than 1MB</Modal.Body>
+          <Modal.Footer>
+            <Button variant="warning" onClick={this.modalClose}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </Container>
     );
   }

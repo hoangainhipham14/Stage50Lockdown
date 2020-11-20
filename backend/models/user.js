@@ -75,6 +75,11 @@ const userSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  profilePrivate: {
+    type: Boolean,
+    default: false,
+  }
+
 });
 
 // Add secondary indexes to userSchema. Allows searching
