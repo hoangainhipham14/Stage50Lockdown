@@ -72,13 +72,13 @@ class SingleProject extends Component {
       });
     } else {
       // Otherwise go through the standard procedure
-      // console.log("trying to access normally");
+      console.log("trying to access normally");
       const projectId = this.props.match.params.projectId;
-      // console.log("project id:", projectId);
+      console.log("project id:", projectId);
       axios
         .get(`/api/project/${projectId}`)
         .then((response) => {
-          // console.log(response);
+          console.log(response);
           this.setState({
             project: response.data,
             projectId: projectId,
@@ -102,8 +102,20 @@ class SingleProject extends Component {
               });
           }
         });
+
+      // singleProject(projectId).then((data) => {
+      //   console.log(data);
+      //   if (data.error) {
+      //     console.log(data.error);
+      //   } else {
+      //     this.setState({
+      //       project: data,
+      //       projectId: projectId,
+      //     });
+      //   }
+      // });
     }
-    // console.log("Current State: " + JSON.stringify(this.state));
+    console.log("Current State: " + JSON.stringify(this.state));
   };
 
   convertRTFtoHTML = (txt) => {
