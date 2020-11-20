@@ -33,13 +33,16 @@ class TermsOfService extends Component {
 
             <p>
               Your use of ePortfolio App is conditional on your acceptance of
-              our Privacy Statement
-              (https://stage50lockdown.herokuapp.com/privacypolicy). Please note
-              that certain data, content or information which you may submit
-              using the ePortfolio App are likely to, reveal your gender, ethnic
-              origin, nationality, age, or other personal information about you.
-              You acknowledge that your submission of any data, content or
-              information to our service is voluntary on your part.
+              our{" "}
+              <a href="https://stage50lockdown.herokuapp.com/privacypolicy">
+                Privacy Statement
+              </a>
+              . Please note that certain data, content or information which you
+              may submit using the ePortfolio App are likely to, reveal your
+              gender, ethnic origin, nationality, age, or other personal
+              information about you. You acknowledge that your submission of any
+              data, content or information to our service is voluntary on your
+              part.
             </p>
 
             <p>
