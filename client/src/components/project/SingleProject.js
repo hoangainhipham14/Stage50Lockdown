@@ -16,7 +16,7 @@ import axios from "axios";
 import ReactMarkdown from "react-markdown";
 import gfm from "remark-gfm";
 
-const Purifier = require("html-purify");
+// const Purifier = require("html-purify");
 
 class ImageWithLoading extends Component {
   state = { isLoaded: false };
@@ -163,8 +163,8 @@ class SingleProject extends Component {
       imagesNames,
       mainImageIndex,
     } = project;
-    const purifier = new Purifier();
-    const formattedBody = purifier.purify(this.convertRTFtoHTML(body));
+    // const purifier = new Purifier();
+    // const formattedBody = purifier.purify(this.convertRTFtoHTML(body));
     // const posterId = project.postedBy ? `/user/${project.postedBy._id}` : "";
     // const posterName = project.postedBy ? project.postedBy.name : "Unknown";
 
