@@ -9,6 +9,7 @@ import {
   Row,
   Col,
   Image as BootstrapImage,
+  Modal,
 } from "react-bootstrap";
 import { HCenter } from "../layout";
 import PropTypes from "prop-types";
@@ -44,6 +45,7 @@ function checkSize(file, maxSize = 1 * 1024 * 1024) {
   if (!acceptable) {
     console.log(`Rejected the file ${renderFileName(file.name)} (too large).`);
   }
+  // Popup here
   return acceptable;
 }
 
@@ -143,8 +145,15 @@ class CreateProject extends Component {
       additionalFiles: [],
       submitSuccess: false,
       projectId: null,
+      showModal: false,
     };
   }
+
+  modalClose = () => {
+    this.setState({
+      showModal: false,
+    });
+  };
 
   // called whenever a value is changed in the form
   onChange = (e) => {
@@ -159,6 +168,11 @@ class CreateProject extends Component {
         const isAcceptable = (file) =>
           checkType(file, acceptedImageTypes) && checkSize(file);
         const filesSelectedValid = filesSelected.filter(isAcceptable);
+        // Add if statement to toggle modal
+        if (filesSelectedValid.length !== filesSelected.length) {
+          this.setState({ showModal: true });
+        }
+
         const alreadyAdded = (file) =>
           this.state.images.filter((f) => appearEqual(f, file)).length > 0;
         const filesToAdd = [];
@@ -176,6 +190,9 @@ class CreateProject extends Component {
         const filesSelected = Array.from(e.target.files);
         const isAcceptable = (file) => checkSize(file);
         const filesSelectedValid = filesSelected.filter(isAcceptable);
+        if (filesSelectedValid.length !== filesSelected.length) {
+          this.setState({ showModal: true });
+        }
         const alreadyAdded = (file) =>
           this.state.additionalFiles.filter((f) => appearEqual(f, file))
             .length > 0;
@@ -410,6 +427,7 @@ class CreateProject extends Component {
                       id="images"
                       onChange={this.onChange}
                     />
+
                     <label className="custom-file-label" htmlFor="images">
                       Choose files
                     </label>
@@ -463,6 +481,18 @@ class CreateProject extends Component {
             </Row>
           </Form>
         </div>
+
+        <Modal show={this.state.showModal} onHide={this.modalClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Invalid File</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>(Note): Files can be no larger than 1MB</Modal.Body>
+          <Modal.Footer>
+            <Button variant="warning" onClick={this.modalClose}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </Container>
     );
   }
@@ -485,14 +515,22 @@ export class EditProject extends Component {
       filesToDelete: new Set(),
       mainImageIndex: null,
       mainImageIsNew: false,
+      showModal: false,
+      carouselImageIndex: null,
+      carouselImageIsNew: false,
     };
   }
+
+  modalClose = () => {
+    this.setState({
+      showModal: false,
+    });
+  };
 
   onSubmit = (e) => {
     e.preventDefault();
 
     const formData = new FormData();
-
     // text fields
     formData.set("title", this.state.title);
     formData.set("about", this.state.about);
@@ -556,6 +594,10 @@ export class EditProject extends Component {
         const isAcceptable = (file) =>
           checkType(file, acceptedImageTypes) && checkSize(file);
         const filesSelectedValid = filesSelected.filter(isAcceptable);
+        // Add if statement to toggle modal
+        if (filesSelectedValid.length !== filesSelected.length) {
+          this.setState({ showModal: true });
+        }
         const alreadyAdded = (file) =>
           this.state.newImages.filter((f) => appearEqual(f, file)).length > 0;
         const filesToAdd = [];
@@ -573,6 +615,9 @@ export class EditProject extends Component {
         const filesSelected = Array.from(e.target.files);
         const isAcceptable = (file) => checkSize(file);
         const filesSelectedValid = filesSelected.filter(isAcceptable);
+        if (filesSelectedValid.length !== filesSelected.length) {
+          this.setState({ showModal: true });
+        }
         const alreadyAdded = (file) =>
           this.state.newAdditionalFiles.filter((f) => appearEqual(f, file))
             .length > 0;
@@ -923,6 +968,7 @@ export class EditProject extends Component {
                       id="images"
                       onChange={this.onChange}
                     />
+
                     <label className="custom-file-label" htmlFor="images">
                       Choose images
                     </label>
@@ -1008,6 +1054,17 @@ export class EditProject extends Component {
             </Row>
           </Form>
         </div>
+        <Modal show={this.state.showModal} onHide={this.modalClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Invalid File</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>(Note): Files can be no larger than 1MB</Modal.Body>
+          <Modal.Footer>
+            <Button variant="warning" onClick={this.modalClose}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </Container>
     );
   }
